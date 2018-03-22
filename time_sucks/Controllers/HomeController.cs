@@ -15,18 +15,10 @@ namespace time_sucks.Controllers
             return View();
         }
 
-        public IActionResult About()
+        [HttpGet]
+        public string Hello()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            return "Hello World";
         }
 
         public IActionResult Error()

@@ -15,6 +15,7 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 <body ng-app="time" ng-controller="MasterCtrl">
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -26,13 +27,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">time_sucks</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Time</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+                    @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>*@
                 </ul>
             </div>
         </div>
@@ -43,10 +42,10 @@
 
         <div ng-view></div> <!-- Viewport for Angular -->
 
-        <hr />
+        @*<hr />
         <footer>
             <p>&copy; 2018 - time_sucks</p>
-        </footer>
+        </footer>*@
     </div>
 
     <environment include="Development">
