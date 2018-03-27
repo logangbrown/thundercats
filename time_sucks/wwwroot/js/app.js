@@ -6,10 +6,10 @@ app.config(function ($routeProvider) {
             templateUrl: "templates/login.html",
             controller: "LoginCtrl"
         })
-        //.when("/createUser", {
-        //    templateUrl: "createUser.html",
-        //    controller: "CreateUserCtrl"
-        //})
+        .when("/register", {
+            templateUrl: "register.html",
+            controller: "RegisterCtrl"
+        })
         //.when("/game", {
         //    templateUrl: "game.html",
         //    controller: "GameCtrl"
