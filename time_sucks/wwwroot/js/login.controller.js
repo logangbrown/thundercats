@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('LoginCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('LoginCtrl', function ($scope, $http, $routeParams, $location, userService) {
 
     $scope.hello = "";
     $scope.user = {};
@@ -6,55 +6,43 @@
     $scope.user.password = '';
     $scope.password = '';
 
-    toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-bottom-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "200",
-        "hideDuration": "500",
-        "timeOut": "3000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
+    //Check if a user is logged in, redirect if they are redirect to dashboard
+    if (!jQuery.isEmptyObject(userService.get())) { $location.path('/dashboard'); } else {
 
-    $http.get("/Home/Hello")
-        .then(function (response) {
-            $scope.hello = response.data;
-            toastr["success"]("You got data from the server!");
-        }, function () {
-            toastr["error"]("Error on GET.");
-        });
-
-    $scope.login = function () {
-        if ($scope.user.username === '') {
-            toastr['error']("Please enter a Username");
-            return;
-        } else if ($scope.password === '') {
-            toastr["error"]("Please enter a Password");
-            return;
-        }
-
-        $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
-
-        $http.post("/Home/Login", $scope.user)
-            .then(function () {
-                $location.path('/game'); //Changes to the game URL
+        $http.get("/Home/Hello")
+            .then(function (response) {
+                $scope.hello = response.data;
+                toastr["success"]("You got data from the server!");
             }, function () {
-                toastr["error"]("Username or password incorrect.");
+                toastr["error"]("Error on GET.");
             });
-    };
 
-    $scope.register = function () {
-        $location.path('/register'); //Changes to the register URL
-    };
+        $scope.login = function () {
+            if ($scope.user.username === '') {
+                toastr['error']("Please enter a Username");
+                return;
+            } else if ($scope.password === '') {
+                toastr["error"]("Please enter a Password");
+                return;
+            }
 
-    $("#username").focus();
+            $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
+
+            $http.post("/Home/Login", $scope.user)
+                .then(function (response) {
+                    userService.set(response.data);
+                    $location.path('/dashboard'); //Changes to the game URL
+                }, function () {
+                    toastr["error"]("Username or password incorrect.");
+                });
+        };
+
+        $scope.register = function () {
+            $location.path('/register'); //Changes to the register URL
+        };
+
+        $("#username").focus();
+
+    }
 
 });

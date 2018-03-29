@@ -7,7 +7,7 @@ app.config(function ($routeProvider) {
             controller: "LoginCtrl"
         })
         .when("/register", {
-            templateUrl: "register.html",
+            templateUrl: "templates/register.html",
             controller: "RegisterCtrl"
         })
         //.when("/game", {
@@ -18,4 +18,31 @@ app.config(function ($routeProvider) {
         //    templateUrl: "highScores.html",
         //    controller: "HighScoreCtrl"
         //});
+});
+
+app.factory('userService', function ($http) {
+    var user = {};
+
+    function set(data) {
+        user = data;
+    }
+
+    function get() {
+        if (!jQuery.isEmptyObject(user)) return user;
+
+        //TODO Make sure CheckSession is an endpoint
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                user = response.data;
+                return user;
+            }, function () {
+                toastr["error"]("Not logged in.");
+                return {};
+            });
+    }
+
+    return {
+        set: set,
+        get: get
+    }
 });

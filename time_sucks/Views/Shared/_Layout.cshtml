@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body ng-app="time" ng-controller="MasterCtrl">
+<body ng-app="time" ng-controller="MasterCtrl"> <!--TODO redo navbar with Bootstrap 4-->
     <nav class="navbar bg-primary">
         <div class="container">
             <div class="navbar-header">
@@ -32,7 +32,7 @@
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Time</a>
             </div>
-            <div class="collapse navbar-collapse">
+            <div class="float-left">
                 <ul class="nav navbar-nav">
                     <li><a href="/#!/courses">Courses</a></li>
                 </ul>
@@ -79,6 +79,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="~/js/unsavedChanges.min.js"></script>
 
     <!-- Angular Scripts -->

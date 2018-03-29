@@ -1,3 +1,3 @@
-﻿angular.module('time').controller('GroupCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('GroupCtrl', function ($scope, $http, $routeParams, $location, userService) {
 
 });

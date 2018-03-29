@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('RegisterCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('RegisterCtrl', function ($scope, $http, $routeParams, $location, userService) {
 
     $scope.user = {};
     $scope.user.username = '';

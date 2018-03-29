@@ -1,3 +1,3 @@
-﻿angular.module('time').controller('ProjectCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('ProjectCtrl', function ($scope, $http, $routeParams, $location, userService) {
 
 });

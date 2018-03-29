@@ -1,3 +1,3 @@
-﻿angular.module('time').controller('CourseCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('CourseCtrl', function ($scope, $http, $routeParams, $location, userService) {
 
 });
