@@ -18,4 +18,9 @@
         "hideMethod": "fadeOut"
     };
 
+    $scope.user = userService.get();
+
+    $scope.updateUser = function () {
+        userService.set($scope.user);
+    }
 });

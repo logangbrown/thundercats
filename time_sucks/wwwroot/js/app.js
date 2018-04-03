@@ -10,34 +10,34 @@ app.config(function ($routeProvider) {
             templateUrl: "templates/register.html",
             controller: "RegisterCtrl"
         })
-        //.when("/game", {
-        //    templateUrl: "game.html",
-        //    controller: "GameCtrl"
-        //})
-        //.when("/highScores", {
-        //    templateUrl: "highScores.html",
-        //    controller: "HighScoreCtrl"
-        //});
+        .when("/courses", {
+            templateUrl: "templates/courses.html",
+            controller: "CoursesCtrl"
+        })
+        .when("/course/:ID", {
+            templateUrl: "templates/course.html",
+            controller: "CourseCtrl"
+        });
 });
 
 app.factory('userService', function ($http) {
-    var user = {};
+    //TODO User should be set to null by default
+    var user = { id: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
 
     function set(data) {
         user = data;
     }
 
     function get() {
-        if (!jQuery.isEmptyObject(user)) return user;
+        if (user) return user;
 
-        //TODO Make sure CheckSession is an endpoint
+        ////TODO Make sure CheckSession is an endpoint
         $http.get("/Home/CheckSession")
             .then(function (response) {
                 user = response.data;
                 return user;
             }, function () {
-                toastr["error"]("Not logged in.");
-                return {};
+                return null;
             });
     }
 

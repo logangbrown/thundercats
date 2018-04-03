@@ -16,27 +16,38 @@
             <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
         </environment>*@
     <link rel="stylesheet" href="~/lib/bootstrap4/bootswatch-flatly.css">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body ng-app="time" ng-controller="MasterCtrl"> <!--TODO redo navbar with Bootstrap 4-->
-    <nav class="navbar bg-primary">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Time</a>
+<body ng-app="time" ng-controller="MasterCtrl">
+    <!--TODO redo navbar with Bootstrap 4-->
+    <nav class="navbar navbar-expand bg-primary">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Time</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"><i class="fa fa-bars navbar-text-color" style="font-size:30px;"></i></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" ng-class="{active: location === '/dashboard'}">
+                    <a class="nav-link" href="/#!/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item" ng-class="{active: location === '/courses'}">
+                    <a class="nav-link" href="/#!/courses">Courses</a>
+                </li>
+            </ul>
+        </div>
+        <div class="my-2 my-lg-0" ng-if="user">
+            <!-- TODO: Remove Instructor Toggle -->
+            <div class="pretty p-switch p-slim navbar-text-color">
+                <input type="checkbox" ng-model="user.isInstructor" ng-change="updateUser()"/>
+                <div class="mr-3 state">
+                    <label>Instructor</label>
+                </div>
             </div>
-            <div class="float-left">
-                <ul class="nav navbar-nav">
-                    <li><a href="/#!/courses">Courses</a></li>
-                </ul>
-            </div>
+            <span class="mr-2 navbar-text-color">Logan Brown</span>
+            <button class="btn btn-default my-2 my-sm-0">Logout</button>
         </div>
     </nav>
     <div class="container body-content">

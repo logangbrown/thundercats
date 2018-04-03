@@ -1,21 +1,23 @@
 ﻿angular.module('time').controller('LoginCtrl', function ($scope, $http, $routeParams, $location, userService) {
 
+    $scope.$parent.user = userService.get();
     $scope.hello = "";
     $scope.user = {};
-    $scope.user.username = '';
-    $scope.user.password = '';
     $scope.password = '';
 
-    //Check if a user is logged in, redirect if they are redirect to dashboard
-    if (!jQuery.isEmptyObject(userService.get())) { $location.path('/dashboard'); } else {
+    //Check if a user is logged in, if they are, redirect to appropriate page
+    if ($scope.$parent.user) {
+        if ($scope.$parent.user.isInstructor) $location.path('/courses');
+        else $location.path('/dashboard');
+    } else {
 
-        $http.get("/Home/Hello")
-            .then(function (response) {
-                $scope.hello = response.data;
-                toastr["success"]("You got data from the server!");
-            }, function () {
-                toastr["error"]("Error on GET.");
-            });
+        //$http.get("/Home/Hello")
+        //    .then(function (response) {
+        //        $scope.hello = response.data;
+        //        toastr["success"]("You got data from the server!");
+        //    }, function () {
+        //        toastr["error"]("Error on GET.");
+        //    });
 
         $scope.login = function () {
             if ($scope.user.username === '') {
