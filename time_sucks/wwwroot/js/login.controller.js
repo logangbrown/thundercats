@@ -5,6 +5,16 @@
     $scope.user = {};
     $scope.password = '';
 
+    $scope.test = {
+        "UserID": "1",
+        "Username": "",
+        "Password": "",
+        "FirstName": "a",
+        "LastName": "b",
+        "IsInstructor": "false"
+
+    };
+
     //Check if a user is logged in, if they are, redirect to appropriate page
     if ($scope.$parent.user) {
         if ($scope.$parent.user.isInstructor) $location.path('/courses');
@@ -37,7 +47,17 @@
                 }, function () {
                     toastr["error"]("Username or password incorrect.");
                 });
+
+            //$http.post("/Home/RegisterUser", $scope.test)
+            //    .then(function () {
+            //        toastr["success"]("success");
+            //    }, function () {
+            //        toastr["error"]("Username or password incorrect.");
+            //    });
         };
+
+
+    
 
         $scope.register = function () {
             $location.path('/register'); //Changes to the register URL

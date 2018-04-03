@@ -9,3 +9,14 @@ C:\Users\loganb\Desktop\GitHub\time_sucks\time_sucks\obj\Debug\netcoreapp2.0\tim
 C:\Users\loganb\Desktop\GitHub\time_sucks\time_sucks\bin\Debug\netcoreapp2.0\time_sucks.pdb
 C:\Users\loganb\Desktop\GitHub\time_sucks\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.dll
 C:\Users\loganb\Desktop\GitHub\time_sucks\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.pdb
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\bin\Debug\netcoreapp2.0\time_sucks.deps.json
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\bin\Debug\netcoreapp2.0\time_sucks.runtimeconfig.json
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\bin\Debug\netcoreapp2.0\time_sucks.runtimeconfig.dev.json
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\bin\Debug\netcoreapp2.0\time_sucks.dll
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\bin\Debug\netcoreapp2.0\time_sucks.pdb
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.csprojResolveAssemblyReference.cache
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.csproj.CoreCompileInputs.cache
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.AssemblyInfoInputs.cache
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.AssemblyInfo.cs
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.dll
+C:\Users\Rizwan_Laptop\Source\Repos\time_sucks\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.pdb
