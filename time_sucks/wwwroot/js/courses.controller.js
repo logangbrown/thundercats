@@ -1,7 +1,7 @@
 ﻿angular.module('time').controller('CoursesCtrl', function ($scope, $http, $routeParams, $location, userService) {
     $scope.$parent.user = userService.get();
-    $scope.showInactive = false;
-
+    $scope.config = {};
+    $scope.config.showInactiveCourses = false;
 
     //Check if a user is logged in, if not, redirect to login
     if (!$scope.$parent.user) {

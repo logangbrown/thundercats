@@ -28,7 +28,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"><i class="fa fa-bars navbar-text-color" style="font-size:30px;"></i></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" ng-cloak ng-if="user">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item" ng-class="{active: location === '/dashboard'}">
                     <a class="nav-link" href="/#!/dashboard">Dashboard</a>
@@ -36,9 +36,12 @@
                 <li class="nav-item" ng-class="{active: location === '/courses'}">
                     <a class="nav-link" href="/#!/courses">Courses</a>
                 </li>
+                <li class="nav-item" ng-class="{active: location === '/users'}" ng-cloak ng-if="user.isInstructor">
+                    <a class="nav-link" href="/#!/users">Users</a>
+                </li>
             </ul>
         </div>
-        <div class="my-2 my-lg-0" ng-if="user">
+        <div class="my-2 my-lg-0" ng-cloak ng-if="user">
             <!-- TODO: Remove Instructor Toggle -->
             <div class="pretty p-switch p-slim navbar-text-color">
                 <input type="checkbox" ng-model="user.isInstructor" ng-change="updateUser()"/>
@@ -46,7 +49,7 @@
                     <label>Instructor</label>
                 </div>
             </div>
-            <span class="mr-2 navbar-text-color">Logan Brown</span>
+            <span class="mr-2 navbar-text-color">{{user.firstName}} {{user.lastName}}</span>
             <button class="btn btn-default my-2 my-sm-0">Logout</button>
         </div>
     </nav>

@@ -31,7 +31,7 @@
 
             $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
 
-            $http.post("/Home/Register", $scope.user)
+            $http.post("/Home/RegisterUser", $scope.user)
                 .then(function () { //Success Callback
                     toastr["success"]("User created.");
                     $http.post("/Home/Login", $scope.user)

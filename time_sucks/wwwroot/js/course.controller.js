@@ -1,6 +1,7 @@
 ﻿angular.module('time').controller('CourseCtrl', function ($scope, $http, $routeParams, $location, userService) {
     $scope.$parent.user = userService.get();
-    $scope.showInactive = false;
+    $scope.config = {};
+    $scope.config.showInactiveProjects = false;
 
     //Check if a user is logged in, if not, redirect to login
     if (!$scope.$parent.user) {
@@ -150,10 +151,15 @@
 
         $scope.course = $scope.getCourse();
 
+        $scope.createProject = function () {
+            //TODO Create functionality
+            toastr["info"]("Create project.");
+        }
+
         $scope.saveCourse = function () {
             //TODO Save course functionality
             toastr["info"]("Attempted to save course.");
-        };
+        }
 
         $scope.joinCourse = function () {
             //TODO Join course functionality

@@ -6,9 +6,17 @@ app.config(function ($routeProvider) {
             templateUrl: "templates/login.html",
             controller: "LoginCtrl"
         })
+        .when("/login", {
+            templateUrl: "templates/login.html",
+            controller: "LoginCtrl"
+        })
         .when("/register", {
             templateUrl: "templates/register.html",
             controller: "RegisterCtrl"
+        })
+        .when("/dashboard", {
+            templateUrl: "templates/dashboard.html",
+            controller: "DashboardCtrl"
         })
         .when("/courses", {
             templateUrl: "templates/courses.html",
@@ -17,12 +25,29 @@ app.config(function ($routeProvider) {
         .when("/course/:ID", {
             templateUrl: "templates/course.html",
             controller: "CourseCtrl"
+        })
+        .when("/project/:ID", {
+            templateUrl: "templates/project.html",
+            controller: "ProjectCtrl"
+        })
+        .when("/group/:ID", {
+            templateUrl: "templates/group.html",
+            controller: "GroupCtrl"
+        })
+        .when("/users", {
+            templateUrl: "templates/users.html",
+            controller: "UsersCtrl"
+        })
+        .when("/user/:ID", {
+            templateUrl: "templates/user.html",
+            controller: "UserCtrl"
         });
 });
 
 app.factory('userService', function ($http) {
     //TODO User should be set to null by default
-    var user = { id: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
+    var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
+    //var user = null;
 
     function set(data) {
         user = data;

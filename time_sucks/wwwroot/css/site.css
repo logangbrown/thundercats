@@ -47,6 +47,27 @@
     font-size: 35px;
     cursor: pointer;
     color: #2d3d50;
+    position: absolute;
+    right: -8px;
+    top: 25px;
+}
+
+.small-button {
+    font-size: 30px;
+    cursor: pointer;
+    color: #2d3d50;
+    position: absolute;
+    right: -8px;
+    top: 0;
+}
+
+.card-button {
+    font-size: 30px;
+    cursor: pointer;
+    color: #2d3d50;
+    position: absolute;
+    right: 3px;
+    top: 8px;
 }
 
 .input-header {
@@ -69,4 +90,15 @@
     position: absolute;
     bottom: 0;
     right: 10px;
+}
+.timeslot-input {
+    width: 33%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.is-edited {
+    color: #fd7e14;
 }
