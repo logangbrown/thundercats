@@ -5,24 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - time_sucks</title>
 
-    @*<environment include="Development">
-            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-            <link rel="stylesheet" href="~/css/site.css" />
-        </environment>
-        <environment exclude="Development">
-            <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-        </environment>*@
     <link rel="stylesheet" href="~/lib/bootstrap4/bootswatch-flatly.css">
     <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
+
 <body ng-app="time" ng-controller="MasterCtrl">
-    <!--TODO redo navbar with Bootstrap 4-->
     <nav class="navbar navbar-expand bg-primary">
         <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Time</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,13 +34,14 @@
         <div class="my-2 my-lg-0" ng-cloak ng-if="user">
             <!-- TODO: Remove Instructor Toggle -->
             <div class="pretty p-switch p-slim navbar-text-color">
-                <input type="checkbox" ng-model="user.isInstructor" ng-change="updateUser()"/>
+                <input type="checkbox" ng-model="user.isInstructor" ng-change="updateUser()" />
                 <div class="mr-3 state">
                     <label>Instructor</label>
                 </div>
             </div>
-            <span class="mr-2 navbar-text-color">{{user.firstName}} {{user.lastName}}</span>
-            <button class="btn btn-default my-2 my-sm-0">Logout</button>
+            <!---->
+            <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}">{{user.firstName}} {{user.lastName}}</a></span>
+            <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
         </div>
     </nav>
     <div class="container body-content">
@@ -58,32 +49,7 @@
         @{ IgnoreBody(); }
 
         <div ng-view></div> <!-- Viewport for Angular -->
-        @*<hr />
-            <footer>
-                <p>&copy; 2018 - time_sucks</p>
-            </footer>*@
     </div>
-
-    @*<environment include="Development">
-            <script src="~/lib/jquery/dist/jquery.js"></script>
-            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-            <script src="~/js/site.js" asp-append-version="true"></script>
-        </environment>
-        <environment exclude="Development">
-            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                    asp-fallback-test="window.jQuery"
-                    crossorigin="anonymous"
-                    integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-            </script>
-            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                    crossorigin="anonymous"
-                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-            </script>
-            <script src="~/js/site.min.js" asp-append-version="true"></script>
-        </environment>*@
 
     <!-- Libraries -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
@@ -107,6 +73,7 @@
     <script src="~/js/project.controller.js"></script>
     <script src="~/js/register.controller.js"></script>
     <script src="~/js/users.controller.js"></script>
+    <script src="~/js/user.controller.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

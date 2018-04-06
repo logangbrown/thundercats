@@ -102,3 +102,15 @@
 .is-edited {
     color: #fd7e14;
 }
+.group-name {
+    font-size: 1.2em;
+}
+.project-name {
+    font-size: 1em;
+}
+.course-name{
+    font-size: 0.8em;
+}
+.instructor-name{
+    font-size: 0.8em;
+}

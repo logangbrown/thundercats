@@ -36,7 +36,12 @@
                     toastr["success"]("User created.");
                     $http.post("/Home/Login", $scope.user)
                         .then(function () {
-                            $location.path('/dashboard'); //Changes to the dashboard URL
+                            userService.set(response.data);
+                            if (response.data.isInstructor) {
+                                $location.path('/courses'); //Changes to the courses URL for Instructor
+                            } else {
+                                $location.path('/dashboard'); //Changes to the dashboard URL for normal user
+                            }
                         }, function () {
                             toastr["error"]("Error logging in.");
                         });
@@ -49,6 +54,6 @@
             $location.path('/'); //Changes to the login URL
         };
 
-        $("#username").focus();
+        $("#username").focus(); //Username focus for quicker typing
     }
 });

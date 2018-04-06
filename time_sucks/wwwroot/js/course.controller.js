@@ -152,8 +152,8 @@
         $scope.course = $scope.getCourse();
 
         $scope.createProject = function () {
-            //TODO Create functionality
-            toastr["info"]("Create project.");
+            //TODO Create project functionality, progress to the new project page on success, using the passed back projectID
+            toastr["info"]("Attempted to create a project.");
         }
 
         $scope.saveCourse = function () {

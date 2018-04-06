@@ -1,4 +1,58 @@
-﻿<div id="users">
-    <!-- Intended as a page to display individual user information to allow updating name, username, or password -->
-
+﻿<div id="user">
+    <h3 class="mt-2">{{user.firstName}} {{user.lastName}}</h3>
+    <div class="row">
+        <div class="col-12 col-md-6 mt-4">
+            <div class="row">
+                <div class="col-6 text-right">
+                    <label class="mb-2" for="username">Username</label>
+                    <br />
+                    <label class="mb-2" for="firstName">First Name</label>
+                    <br />
+                    <label class="mb-2" for="lastName">Last Name</label>
+                </div>
+                <div class="col-6 pl-0">
+                    <input class="mb-1" type="text" name="username" ng-model="user.username" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
+                    <br />
+                    <input class="mb-1" type="text" name="firstName" ng-model="user.firstName" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
+                    <br />
+                    <input class="mb-1" type="text" name="lastName" ng-model="user.lastName" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
+                </div>
+                <div class="mx-auto">
+                    <div class="pretty p-default">
+                        <input type="checkbox" ng-model="user.isActive" ng-change="saveUser()" ng-disabled="!$parent.user.isInstructor" />
+                        <div class="state p-primary">
+                            <label>Active</label>
+                        </div>
+                    </div>
+                    <div class="pretty p-default">
+                        <input type="checkbox" ng-model="user.isInstructor" ng-change="saveUser()" ng-disabled="!$parent.user.isInstructor" />
+                        <div class="state p-primary">
+                            <label>Instructor</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 mt-4">
+            <div class="row">
+                <div class="col-6 text-right">
+                    <label class="mb-2"  for="currentPassword">Current Password</label>
+                    <br />
+                    <label class="mb-2"  for="newPassword">New Password</label>
+                    <br />
+                    <label class="mb-2"  for="repeatPassword">Repeat Password</label>
+                </div>
+                <div class="col-6 pl-0">
+                    <input class="mb-1" type="password" name="currentPassword" ng-disabled="$parent.user.isInstructor" />
+                    <br />
+                    <input class="mb-1" type="password" name="newPassword" />
+                    <br />
+                    <input class="mb-1" type="password" name="repeatPassword" />
+                </div>
+                <div class="row mt-2 mx-auto">
+                    <button type="button" class="btn btn-primary col mr-1" ng-click="changePassword()">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

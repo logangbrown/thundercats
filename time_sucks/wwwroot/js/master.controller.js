@@ -23,4 +23,11 @@
     $scope.updateUser = function () {
         userService.set($scope.user);
     }
+
+    $scope.logout = function () {
+        //TODO hit logout endpoint, and then set the user to null and redirect to the login page
+        userService.set(null);
+        $location.path('/login');
+        toastr["info"]("Logged out. Refresh page to log back in.");
+    }
 });

@@ -6,7 +6,7 @@
     if (!$scope.$parent.user) {
         toastr["error"]("Not logged in.");
         $location.path('/login');
-    } else { //TODO make Group controller
+    } else {
         $scope.groupID = $routeParams.ID;
 
         if (!$scope.groupID) $location.path('/courses');
@@ -78,24 +78,25 @@
         $scope.group = $scope.getGroup();
 
         $scope.createTime = function (userID) {
-            //TODO Create functionality: hit endpoint to make a time, on success, add time slot to the user using their userID and the new timeID
+            //TODO Create time functionality, on success add time slot to the user using their userID and the new timeID
             $scope.group.users[userID].time[$scope.newNumber] = {
-                timeID: $scope.newNumber,
+                timeID: $scope.newNumber, //TODO replace with actual timeID from server
                 hours: "",
                 isEdited: false,
                 timeIn: "",
                 timeOut: ""
             }
-            $scope.newNumber++;
+            $scope.newNumber++; //TODO - get rid of when getting actual timeID
             toastr["info"]("Create time for userID " + userID);
         }
 
         $scope.saveGroup = function () {
-            //TODO Save course functionality
+            //TODO Save group functionality
             toastr["info"]("Attempted to save group.");
             $scope.updateChart();
         }
 
+        //Used to check whether the currently logged in user is trying to change their own time, or is an instructor
         $scope.isUser = function (userID) {
             return (userID === Number($scope.$parent.user.userID) || $scope.$parent.user.isInstructor);
         }

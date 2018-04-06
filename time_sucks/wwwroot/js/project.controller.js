@@ -7,7 +7,7 @@
     if (!$scope.$parent.user) {
         toastr["error"]("Not logged in.");
         $location.path('/login');
-    } else { //TODO make Project controller
+    } else {
 
         $scope.projectID = $routeParams.ID;
 
@@ -203,12 +203,12 @@
         $scope.project = $scope.getProject();
 
         $scope.createGroup = function () {
-            //TODO Create functionality: hit endpoint to make a group, on success, go to group page with the returned ID
-            toastr["info"]("Create group.");
+            //TODO Create group functionality: hit endpoint to make a group, on success, go to group page with the returned groupID
+            toastr["info"]("Attempted to create a group.");
         }
 
         $scope.saveProject = function () {
-            //TODO Save course functionality
+            //TODO Save project functionality
             toastr["info"]("Attempted to save project.");
         }
 
