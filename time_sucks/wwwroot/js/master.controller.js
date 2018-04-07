@@ -23,4 +23,19 @@
     $scope.updateUser = function () {
         userService.set($scope.user);
     }
+
+    $scope.logout = function () {
+        //TODO Enable logout functionality, disable stuff below
+        //$http.get("/Home/Logout")
+        //    .then(function (response) {
+        //        userService.set(null);
+        //        $location.path('/login');
+        //    }, function () {
+        //        toastr["error"]("Failed to logout.");
+        //    });
+
+        userService.set(null);
+        $location.path('/login');
+        toastr["info"]("Logged out. Refresh page to log back in.");
+    }
 });

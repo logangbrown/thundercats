@@ -6,9 +6,17 @@ app.config(function ($routeProvider) {
             templateUrl: "templates/login.html",
             controller: "LoginCtrl"
         })
+        .when("/login", {
+            templateUrl: "templates/login.html",
+            controller: "LoginCtrl"
+        })
         .when("/register", {
             templateUrl: "templates/register.html",
             controller: "RegisterCtrl"
+        })
+        .when("/dashboard", {
+            templateUrl: "templates/dashboard.html",
+            controller: "DashboardCtrl"
         })
         .when("/courses", {
             templateUrl: "templates/courses.html",
@@ -17,13 +25,31 @@ app.config(function ($routeProvider) {
         .when("/course/:ID", {
             templateUrl: "templates/course.html",
             controller: "CourseCtrl"
+        })
+        .when("/project/:ID", {
+            templateUrl: "templates/project.html",
+            controller: "ProjectCtrl"
+        })
+        .when("/group/:ID", {
+            templateUrl: "templates/group.html",
+            controller: "GroupCtrl"
+        })
+        .when("/users", {
+            templateUrl: "templates/users.html",
+            controller: "UsersCtrl"
+        })
+        .when("/user/:ID", {
+            templateUrl: "templates/user.html",
+            controller: "UserCtrl"
         });
 });
 
 app.factory('userService', function ($http) {
-    //TODO User should be set to null by default
-    //var user = { id: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
-    var user = null;
+
+    //TODO Disable auto-login
+    var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
+    //var user = null;
+
 
     function set(data) {
         user = data;
@@ -32,14 +58,15 @@ app.factory('userService', function ($http) {
     function get() {
         if (user) return user;
 
-        ////TODO Make sure CheckSession is an endpoint
-        //$http.get("/Home/CheckSession")
-        //    .then(function (response) {
-        //        user = response.data;
-        //        return user;
-        //    }, function () {
-        //        return null;
-        //    });
+
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                user = response.data;
+                return user;
+            }, function () {
+                return null;
+            });
+
     }
 
     return {
