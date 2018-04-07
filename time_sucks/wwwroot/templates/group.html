@@ -20,7 +20,7 @@
             <div class="position-relative">
                 <h5>Users</h5>
                 <div class="float-right top-right-buttons">
-                    <button class="btn btn-primary" ng-click="joinGroup()">Join</button>
+                    <button class="btn btn-primary" ng-click="joinGroup()" ng-if="!userInGroup()">Join</button>
                 </div>
             </div>
 

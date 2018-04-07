@@ -12,7 +12,15 @@
         if (!$scope.groupID) $location.path('/courses');
 
         $scope.getGroup = function () {
-            //TODO get real group
+            //TODO Enable Group functionality, disable if statement below
+            $http.post("/Home/Group", $scope.groupID)
+                .then(function (response) {
+                    return response.data;
+                }, function () {
+                    toastr["error"]("Failed to get group.");
+                });
+
+
             if ($scope.groupID === "1") {
                 return {
                     groupID: "1",
@@ -78,20 +86,45 @@
         $scope.group = $scope.getGroup();
 
         $scope.createTime = function (userID) {
-            //TODO Create time functionality, on success add time slot to the user using their userID and the new timeID
+            var data = {
+                userID: userID,
+                groupID: $scope.groupID
+            };
+
+            //TODO Enable create time functionality, disable extra stuff below
+            //$http.post("/Home/CreateTime", data)
+            //    .then(function (response) {
+            //        $scope.group.users[userID].time[response.data] = {
+            //            timeID: response.data, 
+            //            hours: "",
+            //            isEdited: false,
+            //            timeIn: "",
+            //            timeOut: ""
+            //        }
+            //    }, function () {
+            //        toastr["error"]("Failed to create time.");
+            //    });
+
+
             $scope.group.users[userID].time[$scope.newNumber] = {
-                timeID: $scope.newNumber, //TODO replace with actual timeID from server
+                timeID: $scope.newNumber, 
                 hours: "",
                 isEdited: false,
                 timeIn: "",
                 timeOut: ""
             }
-            $scope.newNumber++; //TODO - get rid of when getting actual timeID
+            $scope.newNumber++;
             toastr["info"]("Create time for userID " + userID);
         }
 
         $scope.saveGroup = function () {
-            //TODO Save group functionality
+            //TODO Enable save group functionality, disable info toast
+            //$http.post("/Home/SaveGroup", $scope.group)
+            //    .then(function (response) {
+            //        toastr["success"]("Group saved.");
+            //    }, function () {
+            //        toastr["error"]("Failed to save group.");
+            //    });
             toastr["info"]("Attempted to save group.");
             $scope.updateChart();
         }
@@ -141,6 +174,17 @@
         $scope.updateChart = function () {
             $scope.setData();
             myChart.update();
+        }
+
+        $scope.userInGroup = function () {
+            //Checks that the current user is listed in the current group.
+            //Should be used to hide the Join button if it's true
+            for (var u in $scope.group.users) {
+                if (Number(u) === Number($scope.$parent.user.userID)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 });

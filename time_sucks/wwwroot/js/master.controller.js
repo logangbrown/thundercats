@@ -25,7 +25,15 @@
     }
 
     $scope.logout = function () {
-        //TODO hit logout endpoint, and then set the user to null and redirect to the login page
+        //TODO Enable logout functionality, disable stuff below
+        //$http.get("/Home/Logout")
+        //    .then(function (response) {
+        //        userService.set(null);
+        //        $location.path('/login');
+        //    }, function () {
+        //        toastr["error"]("Failed to logout.");
+        //    });
+
         userService.set(null);
         $location.path('/login');
         toastr["info"]("Logged out. Refresh page to log back in.");

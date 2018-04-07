@@ -5,9 +5,16 @@
     if (!$scope.$parent.user) {
         toastr["error"]("Not logged in.");
         $location.path('/login');
-    } else { //TODO make Dashboard controller
+    } else {
         $scope.getGroups = function () {
-            //TODO get real groups
+            //TODO Enable Dashboard groups functionality, disable return below
+            //$http.get("/Home/Dashboard")
+            //    .then(function (response) {
+            //        return response.data;
+            //    }, function () {
+            //        toastr["error"]("Error retrieving dashboard groups.");
+            //    });
+
             return {
                 1: {
                     groupID: "1",

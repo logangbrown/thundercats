@@ -10,7 +10,15 @@
         $location.path('/dashboard');
     } else {
         $scope.getUsers = function () {
-            //TODO get real users, on fail kick back to dashboard, might be lying about being an instructor
+            //TODO Enable Users functionality, disable return below
+            $http.get("/Home/Users")
+                .then(function (response) {
+                    return response.data;
+                }, function () {
+                    toastr["error"]("Failed to get users.");
+                    $location.path('/dashboard');
+                });
+
             return {
                 1: {
                     userID: 1,
@@ -41,9 +49,15 @@
 
         $scope.users = $scope.getUsers();
 
-        $scope.saveUser = function (userID) {
-            //TODO Save user functionality
-            toastr["info"]("Attempted to save user: " + userID);
+        $scope.saveUser = function (user) {
+            //TODO Enable save user functionality, disable info toast
+            //$http.post("/Home/SaveUser", user)
+            //    .then(function (response) {
+            //        toastr["success"]("User saved.");
+            //    }, function () {
+            //        toastr["error"]("Failed to save user.");
+            //    });
+            toastr["info"]("Attempted to save user: " + user.userID);
         }
     }
 });

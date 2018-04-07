@@ -45,7 +45,7 @@ app.config(function ($routeProvider) {
 });
 
 app.factory('userService', function ($http) {
-    //TODO User should be set to null by default
+    //TODO Disable auto-login
     var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
     //var user = null;
 
@@ -56,7 +56,6 @@ app.factory('userService', function ($http) {
     function get() {
         if (user) return user;
 
-        ////TODO Make sure CheckSession is an endpoint
         $http.get("/Home/CheckSession")
             .then(function (response) {
                 user = response.data;

@@ -13,7 +13,14 @@
         if (!$scope.courseID) $location.path('/courses');
 
         $scope.getCourse = function () {
-            //TODO get real course
+            //TODO Enable course functionality, disable the big if statement below it
+            //$http.post("/Home/GetCourse", $scope.courseID)
+            //    .then(function (response) {
+            //        return response.data;
+            //    }, function () {
+            //        toastr["error"]("Failed retrieving course.");
+            //    });
+
             if ($scope.courseID === "12") {
                 return {
                     name: "CS 3750 Spring 2018 MW 7:30",
@@ -82,12 +89,6 @@
                         }
                     },
                     users: {
-                        1: {
-                            userID: 1,
-                            firstName: "Logan",
-                            lastName: "Brown",
-                            isActive: true
-                        },
                         2: {
                             userID: 2,
                             firstName: "Rizwan",
@@ -152,18 +153,53 @@
         $scope.course = $scope.getCourse();
 
         $scope.createProject = function () {
-            //TODO Create project functionality, progress to the new project page on success, using the passed back projectID
+            //TODO Enable create project functionality, disable info toast
+            //$http.post("/Home/CreateProject", $scope.course)
+            //    .then(function (response) {
+            //        $location.path('/project/'+response.data);
+            //    }, function () {
+            //        toastr["error"]("Failed to create project.");
+            //    });
             toastr["info"]("Attempted to create a project.");
         }
 
         $scope.saveCourse = function () {
-            //TODO Save course functionality
+            //TODO Enable save course functionality, disable info toast
+            //$http.post("/Home/SaveCourse", $scope.course)
+            //    .then(function (response) {
+            //        toastr["success"]("Saved course.");
+            //    }, function () {
+            //        toastr["error"]("Failed saving course.");
+            //    });
             toastr["info"]("Attempted to save course.");
         }
 
         $scope.joinCourse = function () {
-            //TODO Join course functionality
+            //TODO Enable join course functionality, disable info toast
+            //$http.post("/Home/JoinCourse", $scope.courseID)
+            //    .then(function (response) {
+            //        $scope.courses.users[$scope.$parent.user.userID] = {
+            //            userID: $scope.$parent.user.userID,
+            //            firstName: $scope.$parent.user.firstName,
+            //            lastName: $scope.$parent.user.lastName,
+            //            isActive: false
+            //        };
+            //        toastr["info"]("You've requested to join the course. The instructor must accept your request before you can join any groups.");
+            //    }, function () {
+            //        toastr["error"]("Failed to join course.");
+            //    });
             toastr["info"]("Attempted to join course.");
+        }
+
+        $scope.userInCourse = function () {
+            //Checks that the current user is listed in the current course.
+            //Should be used to hide the Join button if it's true
+            for (var u in $scope.course.users) {
+                if (Number(u) === Number($scope.$parent.user.userID)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 });

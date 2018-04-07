@@ -14,7 +14,14 @@
         if (!$scope.projectID) $location.path('/courses');
 
         $scope.getProject = function () {
-            //TODO get real project
+            //TODO Enable get project functionality, disable stuff below
+            //$http.post("/Home/Project", $scope.projectID)
+            //    .then(function (response) {
+            //        return response.data;
+            //    }, function () {
+            //        toastr["error"]("Failed to retrieve project.");
+            //    });
+
             if ($scope.projectID === "1") {
                 return {
                     name: "PHP Game",
@@ -203,12 +210,24 @@
         $scope.project = $scope.getProject();
 
         $scope.createGroup = function () {
-            //TODO Create group functionality: hit endpoint to make a group, on success, go to group page with the returned groupID
+            //TODO Enable Create Group functionality, disable info toast
+            //$http.post("/Home/CreateGroup", $scope.projectID)
+            //    .then(function (response) {
+            //        $location.path('/group/'+response.data);
+            //    }, function () {
+            //        toastr["error"]("Failed to create group.");
+            //    });
             toastr["info"]("Attempted to create a group.");
         }
 
         $scope.saveProject = function () {
-            //TODO Save project functionality
+            //TODO Enable save group functionality, disable info toast
+            //$http.post("/Home/SaveProject", $scope.project)
+            //    .then(function (response) {
+            //        toastr["success"]("Saved group.");
+            //    }, function () {
+            //        toastr["error"]("Failed to save group.");
+            //    });
             toastr["info"]("Attempted to save project.");
         }
 
