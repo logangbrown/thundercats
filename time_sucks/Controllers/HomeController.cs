@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using time_sucks.Models;
 
@@ -20,7 +21,24 @@ namespace time_sucks.Controllers
         [HttpGet]
         public string Hello()
         {
-            return "Hello World";
+            MongoGateway dbGateway = new MongoGateway();
+
+            //var collection = dbGateway.Users;
+            //var list = collection.Find(_ => true).ToList();
+            //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
+
+
+
+            //var list = DataAccess.GetUserList();
+            //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
+
+          
+           return Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser("Sky"));
+
+            
+
+
+            // return "Hello World";
         }
 
         public IActionResult Error()

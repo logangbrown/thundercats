@@ -7,6 +7,7 @@ namespace time_sucks.Models
 {
     public class GroupUser
     {
+        
         public int UserID { get; set; }
         public int GroupID { get; set; }
 

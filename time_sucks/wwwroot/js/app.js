@@ -22,7 +22,8 @@ app.config(function ($routeProvider) {
 
 app.factory('userService', function ($http) {
     //TODO User should be set to null by default
-    var user = { id: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
+    //var user = { id: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
+    var user = null;
 
     function set(data) {
         user = data;
@@ -32,13 +33,13 @@ app.factory('userService', function ($http) {
         if (user) return user;
 
         ////TODO Make sure CheckSession is an endpoint
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                user = response.data;
-                return user;
-            }, function () {
-                return null;
-            });
+        //$http.get("/Home/CheckSession")
+        //    .then(function (response) {
+        //        user = response.data;
+        //        return user;
+        //    }, function () {
+        //        return null;
+        //    });
     }
 
     return {

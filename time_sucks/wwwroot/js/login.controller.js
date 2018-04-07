@@ -4,6 +4,7 @@
     $scope.hello = "";
     $scope.user = {};
     $scope.password = '';
+   // $scope.hello = {};
 
     $scope.test = {
         "UserID": "1",
@@ -21,13 +22,13 @@
         else $location.path('/dashboard');
     } else {
 
-        //$http.get("/Home/Hello")
-        //    .then(function (response) {
-        //        $scope.hello = response.data;
-        //        toastr["success"]("You got data from the server!");
-        //    }, function () {
-        //        toastr["error"]("Error on GET.");
-        //    });
+        $http.get("/Home/Hello")
+            .then(function (response) {
+                $scope.hello = response.data;
+                toastr["success"]("You got data from the server!");
+            }, function () {
+                toastr["error"]("Error on GET.");
+            });
 
         $scope.login = function () {
             if ($scope.user.username === '') {
