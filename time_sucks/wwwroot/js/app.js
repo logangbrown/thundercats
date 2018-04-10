@@ -59,12 +59,21 @@ app.factory('userService', function ($http) {
         if (user) return user;
 
         //TODO Test this part
-        if (!getCookie("sessionID")) return null;
+        //if (!getCookie("sessionID")) return null;
 
-        $http.post("/Home/CheckSession", getCookie("sessionID"))
+        //Cookie Version
+        //$http.post("/Home/CheckSession", getCookie("sessionID"))
+        //    .then(function (response) {
+        //        user = response.data.user;
+        //        setCookie("sessionID", response.data.sessionID, 1);
+        //        return user;
+        //    }, function () {
+        //        return null;
+        //    });
+
+        $http.get("/Home/CheckSession")
             .then(function (response) {
-                user = response.data.user;
-                setCookie("sessionID", response.data.sessionID, 1);
+                user = response.data;
                 return user;
             }, function () {
                 return null;
