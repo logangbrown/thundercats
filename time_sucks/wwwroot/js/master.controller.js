@@ -18,6 +18,19 @@
         "hideMethod": "fadeOut"
     };
 
+    //Cookie Testing
+    //$scope.setCookie = function () {
+    //    setCookie("sessionID", "123456", 1);
+    //}
+
+    //$scope.getCookie = function () {
+    //    console.log(getCookie("sessionID"));
+    //}
+
+    //$scope.deleteCookie = function () {
+    //    deleteCookie();
+    //}
+
     $scope.user = userService.get();
 
     $scope.updateUser = function () {
@@ -29,6 +42,7 @@
         //$http.get("/Home/Logout")
         //    .then(function (response) {
         //        userService.set(null);
+        //        deleteCookie();
         //        $location.path('/login');
         //    }, function () {
         //        toastr["error"]("Failed to logout.");

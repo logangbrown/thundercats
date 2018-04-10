@@ -47,7 +47,11 @@ app.config(function ($routeProvider) {
 app.factory('userService', function ($http) {
 
     //TODO Disable auto-login
+<<<<<<< HEAD
    // var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
+=======
+  //  var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
+>>>>>>> 4f260656f8a0221edd0c8404c3c3bda429994bdc
     var user = null;
 
 
@@ -58,6 +62,18 @@ app.factory('userService', function ($http) {
     function get() {
         if (user) return user;
 
+        //TODO Test this part
+        //if (!getCookie("sessionID")) return null;
+
+        //Cookie Version
+        //$http.post("/Home/CheckSession", getCookie("sessionID"))
+        //    .then(function (response) {
+        //        user = response.data.user;
+        //        setCookie("sessionID", response.data.sessionID, 1);
+        //        return user;
+        //    }, function () {
+        //        return null;
+        //    });
 
         $http.get("/Home/CheckSession")
             .then(function (response) {

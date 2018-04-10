@@ -13,7 +13,6 @@
         "FirstName": "a",
         "LastName": "b",
         "IsInstructor": "false"
-
     };
 
     //Check if a user is logged in, if they are, redirect to appropriate page
@@ -41,14 +40,15 @@
 
             $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
 
-            $http.post("/Home/Login", $scope.user)
+            $http.post("/Home/LoginUser", $scope.user)
                 .then(function (response) {
-                    userService.set(response.data);
-                    if (response.data.isInstructor) {
-                        $location.path('/courses'); //Changes to the courses URL for Instructor
-                    } else {
+                    //userService.set(response.data);
+                    //setCookie("sessionID", response.data.sessionID);
+                    //if (response.data.isInstructor) {
+                    //    $location.path('/courses'); //Changes to the courses URL for Instructor
+                    //} else {
                         $location.path('/dashboard'); //Changes to the dashboard URL for normal user
-                    }
+                    //}
                 }, function () {
                     toastr["error"]("Username or password incorrect.");
                 });
