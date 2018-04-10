@@ -58,10 +58,13 @@ app.factory('userService', function ($http) {
     function get() {
         if (user) return user;
 
+        //TODO Test this part
+        if (!getCookie("sessionID")) return null;
 
-        $http.get("/Home/CheckSession")
+        $http.post("/Home/CheckSession", getCookie("sessionID"))
             .then(function (response) {
-                user = response.data;
+                user = response.data.user;
+                setCookie("sessionID", response.data.sessionID, 1);
                 return user;
             }, function () {
                 return null;

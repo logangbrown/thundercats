@@ -36,8 +36,10 @@
                     toastr["success"]("User created.");
                     $http.post("/Home/Login", $scope.user)
                         .then(function () {
-                            userService.set(response.data);
-                            if (response.data.isInstructor) {
+                            //TODO Make sure this works with the way we get sessionID
+                            userService.set(response.data.user);
+                            setCookie("sessionID", response.data.sessionID);
+                            if (response.data.user.isInstructor) {
                                 $location.path('/courses'); //Changes to the courses URL for Instructor
                             } else {
                                 $location.path('/dashboard'); //Changes to the dashboard URL for normal user
