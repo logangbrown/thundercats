@@ -40,9 +40,8 @@
 
             $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
 
-            $http.post("/Home/Login", $scope.user)
+            $http.post("/Home/LoginUser", $scope.user)
                 .then(function (response) {
-                    //TODO Make sure this works with the way we get sessionID
                     userService.set(response.data);
                     //setCookie("sessionID", response.data.sessionID);
                     if (response.data.isInstructor) {
