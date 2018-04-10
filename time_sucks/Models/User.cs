@@ -19,7 +19,7 @@ namespace time_sucks.Models
         public string LastName { get; set; }
         public bool IsInstructor { get; set; }
 
-        List<TimeCard> TimeCards { get; set; }
+        public List<TimeCard> TimeCards { get; set; }
 
 
     }

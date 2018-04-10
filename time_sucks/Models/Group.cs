@@ -17,7 +17,7 @@ namespace time_sucks.Models
 
         public bool IsActive { get; set; }
 
-       List<User> Users { get; set; }
+       public List<User> Users { get; set; }
 
         //public int projectID { get; set; }
     }

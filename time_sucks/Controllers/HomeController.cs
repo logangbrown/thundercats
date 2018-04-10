@@ -53,6 +53,9 @@ namespace time_sucks.Controllers
             User user = JsonConvert.DeserializeObject<User>(JsonString);
 
             //TODO: Add database information here and put the User in it
+
+            DataAccess.AddUser(user);
+
             return Ok();
         }
 
@@ -65,15 +68,22 @@ namespace time_sucks.Controllers
 
             //Check database for User and create a session
 
+
             /*
              * Query the database here
              * 
+             *  User dbUser = DataAccess.GetUser(user.UserName);
+             *  
+             *  if(dbUser != null)
+             *  {
+             *      if (user.UserName == dbUser.UserName && user.Password == dbUser.Password)
+             *      {
+             *          We found a user! Send them to the Dashboard and save their Session
+             *      }
+             *  }
              * 
-             * If (User.username == db.user && User.password == db.password)
-             * {
-             *      We found a user! Send them to the Dashboard and save their Session
-             * }
              */
+
             HttpContext.Session.SetString("blah", "test");
             String asdf = HttpContext.Session.GetString("blah");
             return Ok();

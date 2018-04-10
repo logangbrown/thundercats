@@ -17,7 +17,7 @@ namespace time_sucks.Models
 
         public bool IsActive { get; set; }
 
-        List<Group> Groups { get; set; }
+        public List<Group> Groups { get; set; }
 
         // public int CourseID { get; set; }
         // public int UserID { get; set; }

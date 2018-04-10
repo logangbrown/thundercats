@@ -11,10 +11,11 @@
         $scope.user.firstname = '';
         $scope.user.lastname = '';
         $scope.user.password = '';
+        $scope.user.isInstructor = false;
         $scope.password = '';
         $scope.repeatPassword = '';
 
-        $scope.createUser = function () {
+        $scope.register = function () {
             if ($scope.user.username === '') {
                 toastr['error']("Please enter a Username");
                 return;

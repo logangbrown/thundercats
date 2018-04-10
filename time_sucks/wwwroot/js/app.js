@@ -47,8 +47,8 @@ app.config(function ($routeProvider) {
 app.factory('userService', function ($http) {
 
     //TODO Disable auto-login
-    var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
-    //var user = null;
+   // var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
+    var user = null;
 
 
     function set(data) {

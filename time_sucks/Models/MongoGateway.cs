@@ -72,7 +72,7 @@ namespace time_sucks.Models
             }
         }
 
-        public IMongoCollection<Course> CollectionOfCourses
+        public IMongoCollection<Course> FullCollection
         {
             get
             {
