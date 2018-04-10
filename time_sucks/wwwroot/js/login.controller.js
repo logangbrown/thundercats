@@ -42,13 +42,13 @@
 
             $http.post("/Home/LoginUser", $scope.user)
                 .then(function (response) {
-                    userService.set(response.data);
+                    //userService.set(response.data);
                     //setCookie("sessionID", response.data.sessionID);
-                    if (response.data.isInstructor) {
-                        $location.path('/courses'); //Changes to the courses URL for Instructor
-                    } else {
+                    //if (response.data.isInstructor) {
+                    //    $location.path('/courses'); //Changes to the courses URL for Instructor
+                    //} else {
                         $location.path('/dashboard'); //Changes to the dashboard URL for normal user
-                    }
+                    //}
                 }, function () {
                     toastr["error"]("Username or password incorrect.");
                 });

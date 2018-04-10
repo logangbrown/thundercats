@@ -29,21 +29,21 @@ namespace time_sucks.Models
 
         }
 
-        public static User GetUser(string userName)
-        {
-            MongoGateway dbGateway = new MongoGateway();
+        //public static User GetUser(string userName)
+        //{
+        //    MongoGateway dbGateway = new MongoGateway();
 
-            var filter = Builders<User>.Filter.Eq("UserName", userName);
+        //    var filter = Builders<User>.Filter.Eq("UserName", userName);
 
-            User user = dbGateway.Users.Find(filter).FirstOrDefault();
+        //    User user = dbGateway.Users.Find(filter).FirstOrDefault();
 
-            return user;
+        //    return user;
 
-            //User user = dbGateway.Users.Find(filter).ToJson<User>();
-            // collection.InsertOne(document);
-            //var list = userCollection.Find(_ => true).ToList();
+        //    //User user = dbGateway.Users.Find(filter).ToJson<User>();
+        //    // collection.InsertOne(document);
+        //    //var list = userCollection.Find(_ => true).ToList();
             
-        }
+        //}
 
         //public static string GetUserjson() // Returns users as json string
         //{

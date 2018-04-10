@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using time_sucks.Models;
+using time_sucks.Session;
 
 namespace time_sucks.Controllers
 {
@@ -18,27 +19,47 @@ namespace time_sucks.Controllers
             return View();
         }
 
+        //[HttpGet]
+        //public string Hello()
+        //{
+        //    MongoGateway dbGateway = new MongoGateway();
+
+        //    //var collection = dbGateway.Users;
+        //    //var list = collection.Find(_ => true).ToList();
+        //    //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
+
+
+
+        //    //var list = DataAccess.GetUserList();
+        //    //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
+
+
+        //    return Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser("Sky"));
+
+
+
+
+        //    // return "Hello World";
+        //}
+
+        /// <summary>
+        /// Returns the session for a given User
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpGet]
-        public string Hello()
+        public User CheckSession()
         {
-            MongoGateway dbGateway = new MongoGateway();
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            if (user != null)
+            {
+                return user;
+            }
+            else
+            {
+                return null;
+            }
 
-            //var collection = dbGateway.Users;
-            //var list = collection.Find(_ => true).ToList();
-            //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
-
-
-
-            //var list = DataAccess.GetUserList();
-            //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
-
-          
-           return Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser("Sky"));
-
-            
-
-
-            // return "Hello World";
         }
 
         public IActionResult Error()
@@ -46,6 +67,11 @@ namespace time_sucks.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        /// <summary>
+        /// Registers a User, returns a 200 status code if successful
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult RegisterUser([FromBody]Object json)
         {
@@ -53,12 +79,18 @@ namespace time_sucks.Controllers
             User user = JsonConvert.DeserializeObject<User>(JsonString);
 
             //TODO: Add database information here and put the User in it
+
+
+            //Store Session information for this user using Username
+            HttpContext.Session.SetObjectAsJson(user.UserName, user);
+
             return Ok();
         }
 
         [HttpPost]
         public IActionResult LoginUser([FromBody]Object json)
         {
+            Dictionary<String, String> dict = new Dictionary<string, string>();
             String JsonString = json.ToString();
             //Username and Password must be here, everything else can be empty
             User user = JsonConvert.DeserializeObject<User>(JsonString);
@@ -74,9 +106,34 @@ namespace time_sucks.Controllers
              *      We found a user! Send them to the Dashboard and save their Session
              * }
              */
-            HttpContext.Session.SetString("blah", "test");
-            String asdf = HttpContext.Session.GetString("blah");
+            //HttpContext.Session.SetString("blah", "test");
+            //String asdf = HttpContext.Session.GetString("blah");
+            //return Ok();
+
+            /*
+             * This will be a test to determine if sessions are working, 
+             * first, last, instructor
+             */
+            if (user.UserName == "zedop")
+            {
+                //  HttpContext.Session.Set("blah", dict);
+                HttpContext.Session.SetObjectAsJson("zedop", user);
+
+            }
+
+            HttpContext.Session.SetObjectAsJson("user", user);
+
+            User fdsa = HttpContext.Session.GetObjectFromJson<User>("zedop");
+            string ID = HttpContext.Session.Id;
+
+            //test to determine if session being removed correctly
+            //   HttpContext.Session.Remove("zedop");
+            // User blah = HttpContext.Session.GetObjectFromJson<User>("zedop");
+
             return Ok();
+            //Send object back instead of status code?
+            //return fdsa;
+
         }
 
         /**
