@@ -18,6 +18,8 @@ namespace time_sucks.Models
         public string firstName { get; set; }
         public string lastName { get; set; }
         public bool isInstructor { get; set; }
+        public bool isActive { get; set; }
+
 
         public List<TimeCard> TimeCards { get; set; }
 
