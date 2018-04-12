@@ -7,8 +7,8 @@ namespace time_sucks.Models
 {
     public class CourseUser
     {
-        public int UserID { get; set; }
-        public int CourseID { get; set; }
-        public bool IsActive { get; set; }
+        public int userID { get; set; }
+        public int courseID { get; set; }
+        public bool isActive { get; set; }
     }
 }

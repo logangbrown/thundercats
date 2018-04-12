@@ -11,11 +11,11 @@ namespace time_sucks.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public int TimeID { get; set; }
-        public int Hours { get; set; }
-        public DateTime In { get; set; }
-        public DateTime Out { get; set; }
-        public bool IsEdited { get; set; }
+        public int timeID { get; set; }
+        public int hours { get; set; }
+        public DateTime timeIn { get; set; }
+        public DateTime timeOut { get; set; }
+        public bool isEdited { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

@@ -13,11 +13,11 @@ namespace time_sucks.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public int _id { get; set; }
 
-        public string Name { get; set; }
+        public string name { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool isActive { get; set; }
 
-        public List<Group> Groups { get; set; }
+        public List<Group> groups { get; set; }
 
         // public int CourseID { get; set; }
         // public int UserID { get; set; }

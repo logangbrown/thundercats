@@ -12,6 +12,6 @@ namespace time_sucks.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
-        List<String> Projects { get; set; }
+        List<String> projects { get; set; }
     }
 }

@@ -8,8 +8,8 @@ namespace time_sucks.Models
     public class GroupUser
     {
         
-        public int UserID { get; set; }
-        public int GroupID { get; set; }
+        public int userID { get; set; }
+        public int groupID { get; set; }
 
     }
 }

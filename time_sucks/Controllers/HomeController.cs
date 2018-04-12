@@ -19,31 +19,31 @@ namespace time_sucks.Controllers
             return View();
         }
 
-        //[HttpGet]
-        //public string Hello()
-        //{
-        //    MongoGateway dbGateway = new MongoGateway();
+        [HttpGet]
+        public string Hello()
+        {
+            MongoGateway dbGateway = new MongoGateway();
 
-        //    //var collection = dbGateway.Users;
-        //    //var list = collection.Find(_ => true).ToList();
-        //    //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
-
-
-
-        //    //var list = DataAccess.GetUserList();
-        //    //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
-
-
-        //    return Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser("Sky"));
+            //var collection = dbGateway.Users;
+            //var list = collection.Find(_ => true).ToList();
+            //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
 
 
 
+            //var list = DataAccess.GetUserList();
+            //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
 
-        //    // return "Hello World";
-        //}
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser("asdf"));
+
+
+
+
+            // return "Hello World";
+        }
 
         /// <summary>
-        /// Returns the session for a given User
+        /// Returns the session for a given User. Otherwise returns null
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
@@ -78,15 +78,16 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
             User user = JsonConvert.DeserializeObject<User>(JsonString);
 
-            //TODO: Add database information here and put the User in it
 
-<<<<<<< HEAD
+
+            //put the User in the Database
             DataAccess.AddUser(user);
-=======
+
+            //Check if user already exists?
+
 
             //Store Session information for this user using Username
-            HttpContext.Session.SetObjectAsJson(user.UserName, user);
->>>>>>> 4f260656f8a0221edd0c8404c3c3bda429994bdc
+            HttpContext.Session.SetObjectAsJson("user", user);
 
             return Ok();
         }
@@ -100,27 +101,26 @@ namespace time_sucks.Controllers
             User user = JsonConvert.DeserializeObject<User>(JsonString);
 
             //Check database for User and create a session
-
-
             /*
              * Query the database here
-             * 
-             *  User dbUser = DataAccess.GetUser(user.UserName);
-             *  
-             *  if(dbUser != null)
-             *  {
-             *      if (user.UserName == dbUser.UserName && user.Password == dbUser.Password)
-             *      {
-             *          We found a user! Send them to the Dashboard and save their Session
-             *      }
-             *  }
-             * 
              */
-<<<<<<< HEAD
+            User DBUser = JsonConvert.DeserializeObject<User>(Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser(user.username)));
 
-            HttpContext.Session.SetString("blah", "test");
-            String asdf = HttpContext.Session.GetString("blah");
-=======
+            //return 404 if we dont have a user
+            if (DBUser == null)
+                return NotFound(); // return NoContent();
+
+
+
+            if (user.username == DBUser.username && user.password == DBUser.password)
+            {
+                // We found a user! Send them to the Dashboard and save their Session
+                HttpContext.Session.SetObjectAsJson("user", DBUser);
+                return Ok();
+
+            }
+
+            return NotFound();
             //HttpContext.Session.SetString("blah", "test");
             //String asdf = HttpContext.Session.GetString("blah");
             //return Ok();
@@ -129,31 +129,45 @@ namespace time_sucks.Controllers
              * This will be a test to determine if sessions are working, 
              * first, last, instructor
              */
-            if (user.UserName == "zedop")
-            {
-                //  HttpContext.Session.Set("blah", dict);
-                HttpContext.Session.SetObjectAsJson("zedop", user);
+            //if (user.UserName == "zedop")
+            //{
+            //    //  HttpContext.Session.Set("blah", dict);
+            //    HttpContext.Session.SetObjectAsJson("zedop", user);
 
-            }
+            //}
 
-            HttpContext.Session.SetObjectAsJson("user", user);
 
-            User fdsa = HttpContext.Session.GetObjectFromJson<User>("zedop");
-            string ID = HttpContext.Session.Id;
 
             //test to determine if session being removed correctly
             //   HttpContext.Session.Remove("zedop");
             // User blah = HttpContext.Session.GetObjectFromJson<User>("zedop");
 
->>>>>>> 4f260656f8a0221edd0c8404c3c3bda429994bdc
-            return Ok();
             //Send object back instead of status code?
             //return fdsa;
 
         }
 
-        /**
-         * Create a logout method here that eliminates the session if a user logs out
-         */
+
+        /// <summary>
+        /// Returns OK if a users session succesfully ended. 204 otherwise
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.DestroySession<User>("user");
+            //HttpContext.Session.Clear();
+
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            if (user == null)
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
     }
 }
