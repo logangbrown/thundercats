@@ -1,5 +1,5 @@
-﻿angular.module('time').controller('MasterCtrl', function ($scope, $http, $routeParams, $location, userService) {
-
+﻿angular.module('time').controller('MasterCtrl', function ($scope, $http, $routeParams, $location) {
+    $scope.loaded = false;
     toastr.options = {
         "closeButton": false,
         "debug": false,
@@ -18,38 +18,15 @@
         "hideMethod": "fadeOut"
     };
 
-    //Cookie Testing
-    //$scope.setCookie = function () {
-    //    setCookie("sessionID", "123456", 1);
-    //}
-
-    //$scope.getCookie = function () {
-    //    console.log(getCookie("sessionID"));
-    //}
-
-    //$scope.deleteCookie = function () {
-    //    deleteCookie();
-    //}
-
-    $scope.user = userService.get();
-
-    $scope.updateUser = function () {
-        userService.set($scope.user);
-    }
+    $scope.user = null;
 
     $scope.logout = function () {
-        //TODO Enable logout functionality, disable stuff below
-        //$http.get("/Home/Logout")
-        //    .then(function (response) {
-        //        userService.set(null);
-        //        deleteCookie();
-        //        $location.path('/login');
-        //    }, function () {
-        //        toastr["error"]("Failed to logout.");
-        //    });
-
-        userService.set(null);
-        $location.path('/login');
-        toastr["info"]("Logged out. Refresh page to log back in.");
+        $http.get("/Home/Logout")
+            .then(function (response) {
+                $scope.user = null;
+                $location.path('/login');
+            }, function () {
+                toastr["error"]("Failed to logout.");
+            });
     }
 });

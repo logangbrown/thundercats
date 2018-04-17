@@ -1,13 +1,13 @@
-﻿<div id="dashboard">
+﻿<div id="dashboard"  ng-cloak>
     <h3 class="mt-3">Dashboard</h3>
-    <div ng-if="!groups">
+    <div ng-if="!groups && loaded">
         <h4>You are not a member of any groups. Find a group through the <a href="/#!/courses">courses</a> page.</h4>
     </div>
     <div class="row">
         <div class="col-12 col-sm-6 col-md-4 mb-4" ng-repeat="g in groups">
             <div class="card">
                 <div class="card-header group-name">
-                    <a href="/#!/group/{{g.groupID}}">{{g.name}}</a>
+                    <a href="/#!/group/{{g._id}}">{{g.name}}</a>
                 </div>
                 <div class="card-body">
                     <span class="project-name">{{g.project}}</span>

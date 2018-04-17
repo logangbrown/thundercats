@@ -20,7 +20,6 @@ namespace time_sucks.Models
         public bool isInstructor { get; set; }
         public bool isActive { get; set; }
 
-
         public List<TimeCard> TimeCards { get; set; }
 
 

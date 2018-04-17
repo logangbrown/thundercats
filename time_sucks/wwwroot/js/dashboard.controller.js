@@ -1,11 +1,6 @@
-﻿angular.module('time').controller('DashboardCtrl', function ($scope, $http, $routeParams, $location, userService) {
-    $scope.$parent.user = userService.get();
-
-    //Check if a user is logged in, if not, redirect to login
-    if (!$scope.$parent.user) {
-        toastr["error"]("Not logged in.");
-        $location.path('/login');
-    } else {
+﻿angular.module('time').controller('DashboardCtrl', function ($scope, $http, $routeParams, $location) {
+    $scope.loaded = false;
+    $scope.load = function() {
         $scope.getGroups = function () {
             //TODO Enable Dashboard groups functionality, disable return below
             //$http.get("/Home/Dashboard")
@@ -17,7 +12,7 @@
 
             return {
                 1: {
-                    groupID: "1",
+                    _id: "1",
                     name: "Group Badass",
                     isActive: true,
                     project: "PHP Game",
@@ -25,7 +20,7 @@
                     instructor: "Brad Peterson"
                 },
                 2: {
-                    groupID: "2",
+                    _id: "2",
                     name: "Group One Thing",
                     isActive: true,
                     project: "Multiplayer Conway's Game of Life",
@@ -33,7 +28,7 @@
                     instructor: "Brad Peterson"
                 },
                 3: {
-                    groupID: "3",
+                    _id: "3",
                     name: "Group Other Thing",
                     isActive: true,
                     project: "Student Time Tracker",
@@ -44,5 +39,25 @@
         }
 
         $scope.groups = $scope.getGroups();
+        $scope.loaded = true;
     }
+
+    //Standard login check, if there is a user, load the page, if not, redirect to login
+    if (!$scope.$parent.user || $scope.$parent.user === '') {
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                $scope.$parent.user = response.data;
+                $scope.$parent.loaded = true;
+                $scope.load();
+            }, function () {
+                toastr["error"]("Not logged in.");
+                $location.path('/login');
+            });
+    } else if ($scope.$parent.user.isInstructor) {
+        $location.path('/courses');
+    } else {
+        $scope.load();
+    }
+
+
 });

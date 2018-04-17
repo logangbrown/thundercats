@@ -44,49 +44,24 @@ app.config(function ($routeProvider) {
         });
 });
 
-app.factory('userService', function ($http) {
+//app.factory('userService', function ($http) {
 
-    //TODO Disable auto-login
-<<<<<<< HEAD
-   // var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
-=======
-  //  var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
->>>>>>> 4f260656f8a0221edd0c8404c3c3bda429994bdc
-    var user = null;
+//    //TODO Disable auto-login
+//    //var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
+//    var user;
 
 
-    function set(data) {
-        user = data;
-    }
+//    function set(data) {
+//        user = data;
+//    }
 
-    function get() {
-        if (user) return user;
+//    function get() {
+//        if (user) return user;
+//        return null;
+//    }
 
-        //TODO Test this part
-        //if (!getCookie("sessionID")) return null;
-
-        //Cookie Version
-        //$http.post("/Home/CheckSession", getCookie("sessionID"))
-        //    .then(function (response) {
-        //        user = response.data.user;
-        //        setCookie("sessionID", response.data.sessionID, 1);
-        //        return user;
-        //    }, function () {
-        //        return null;
-        //    });
-
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                user = response.data;
-                return user;
-            }, function () {
-                return null;
-            });
-
-    }
-
-    return {
-        set: set,
-        get: get
-    }
-});
+//    return {
+//        set: set,
+//        get: get
+//    }
+//});

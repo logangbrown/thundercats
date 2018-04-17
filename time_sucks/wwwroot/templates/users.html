@@ -1,4 +1,4 @@
-﻿<div id="users">
+﻿<div id="users" ng-cloak>
     <h3 class="mt-3">Users</h3>
     <div ng-if="!users">
         <h4>There are not any users... IT'S BROKEN!</h4>
@@ -14,7 +14,7 @@
         </thead>
         <tbody ng-repeat="u in users">
             <tr>
-                <td><a href="/#!/user/{{u.userID}}">{{u.firstName}} {{u.lastName}}</a></td>
+                <td><a href="/#!/user/{{u._id}}">{{u.firstName}} {{u.lastName}}</a></td>
                 <td>{{u.username}}</td>
                 <td class="text-center">
                     <div class="pretty p-default mr-0">

@@ -1,69 +1,65 @@
-﻿angular.module('time').controller('ProjectCtrl', function ($scope, $http, $routeParams, $location, userService) {
-    $scope.$parent.user = userService.get();
+﻿angular.module('time').controller('ProjectCtrl', function ($scope, $http, $routeParams, $location) {
+    $scope.loaded = false;
     $scope.config = {};
     $scope.config.showInactiveGroups = false;
 
-    //Check if a user is logged in, if not, redirect to login
-    if (!$scope.$parent.user) {
-        toastr["error"]("Not logged in.");
-        $location.path('/login');
-    } else {
+    $scope.load = function() {
 
-        $scope.projectID = $routeParams.ID;
+        $scope._id = $routeParams.ID;
 
-        if (!$scope.projectID) $location.path('/courses');
+        if (!$scope._id) $location.path('/courses');
 
         $scope.getProject = function () {
             //TODO Enable get project functionality, disable stuff below
-            //$http.post("/Home/Project", $scope.projectID)
+            //$http.post("/Home/Project", $scope._id)
             //    .then(function (response) {
             //        return response.data;
             //    }, function () {
             //        toastr["error"]("Failed to retrieve project.");
             //    });
 
-            if ($scope.projectID === "1") {
+            if ($scope._id === "1") {
                 return {
                     name: "PHP Game",
-                    projectID: "1",
+                    _id: "1",
                     isActive: true,
                     groups: {
                         1: {
-                            groupID: "1",
+                            _id: "1",
                             name: "Group Badass",
                             isActive: true,
                             users: {
                                 1: {
-                                    userID: 1,
+                                    _id: 1,
                                     firstName: "Logan",
                                     lastName: "Brown",
                                     time: {
                                         1: {
-                                            timeID: "1",
+                                            _id: "1",
                                             hours: "3",
                                             isEdited: false
                                         }
                                     }
                                 },
                                 2: {
-                                    userID: 2,
+                                    _id: 2,
                                     firstName: "Rizwan",
                                     lastName: "Mohammed",
                                     time: {
                                         2: {
-                                            timeID: "2",
+                                            _id: "2",
                                             hours: "4",
                                             isEdited: false
                                         }
                                     }
                                 },
                                 3: {
-                                    userID: 3,
+                                    _id: 3,
                                     firstName: "Skylar",
                                     lastName: "Olsen",
                                     time: {
                                         3: {
-                                            timeID: "3",
+                                            _id: "3",
                                             hours: "5",
                                             isEdited: false
                                         }
@@ -72,41 +68,41 @@
                             }
                         },
                         2: {
-                            groupID: "2",
+                            _id: "2",
                             name: "Group One Thing",
                             isActive: true,
                             users: {
                                 1: {
-                                    userID: 1,
+                                    _id: 1,
                                     firstName: "Logan",
                                     lastName: "Brown",
                                     time: {
                                         4: {
-                                            timeID: "4",
+                                            _id: "4",
                                             hours: "1",
                                             isEdited: false
                                         }
                                     }
                                 },
                                 2: {
-                                    userID: 2,
+                                    _id: 2,
                                     firstName: "Rizwan",
                                     lastName: "Mohammed",
                                     time: {
                                         5: {
-                                            timeID: "5",
+                                            _id: "5",
                                             hours: "1",
                                             isEdited: false
                                         }
                                     }
                                 },
                                 3: {
-                                    userID: 3,
+                                    _id: 3,
                                     firstName: "Skylar",
                                     lastName: "Olsen",
                                     time: {
                                         6: {
-                                            timeID: "6",
+                                            _id: "6",
                                             hours: "1",
                                             isEdited: false
                                         }
@@ -115,41 +111,41 @@
                             }
                         },
                         3: {
-                            groupID: "3",
+                            _id: "3",
                             name: "Group Other Thing",
                             isActive: true,
                             users: {
                                 1: {
-                                    userID: 1,
+                                    _id: 1,
                                     firstName: "Logan",
                                     lastName: "Brown",
                                     time: {
                                         7: {
-                                            timeID: "7",
+                                            _id: "7",
                                             hours: "2",
                                             isEdited: false
                                         }
                                     }
                                 },
                                 2: {
-                                    userID: 2,
+                                    _id: 2,
                                     firstName: "Rizwan",
                                     lastName: "Mohammed",
                                     time: {
                                         8: {
-                                            timeID: "8",
+                                            _id: "8",
                                             hours: "2",
                                             isEdited: false
                                         }
                                     }
                                 },
                                 3: {
-                                    userID: 3,
+                                    _id: 3,
                                     firstName: "Skylar",
                                     lastName: "Olsen",
                                     time: {
                                         9: {
-                                            timeID: "9",
+                                            _id: "9",
                                             hours: "2",
                                             isEdited: false
                                         }
@@ -158,41 +154,41 @@
                             }
                         },
                         4: {
-                            groupID: "4",
+                            _id: "4",
                             name: "Group Four (Inactive)",
                             isActive: false,
                             users: {
                                 1: {
-                                    userID: 1,
+                                    _id: 1,
                                     firstName: "Logan",
                                     lastName: "Brown",
                                     time: {
                                         10: {
-                                            timeID: "10",
+                                            _id: "10",
                                             hours: "2",
                                             isEdited: false
                                         }
                                     }
                                 },
                                 2: {
-                                    userID: 2,
+                                    _id: 2,
                                     firstName: "Rizwan",
                                     lastName: "Mohammed",
                                     time: {
                                         11: {
-                                            timeID: "11",
+                                            _id: "11",
                                             hours: "2",
                                             isEdited: false
                                         }
                                     }
                                 },
                                 3: {
-                                    userID: 3,
+                                    _id: 3,
                                     firstName: "Skylar",
                                     lastName: "Olsen",
                                     time: {
                                         12: {
-                                            timeID: "12",
+                                            _id: "12",
                                             hours: "2",
                                             isEdited: false
                                         }
@@ -211,7 +207,7 @@
 
         $scope.createGroup = function () {
             //TODO Enable Create Group functionality, disable info toast
-            //$http.post("/Home/CreateGroup", $scope.projectID)
+            //$http.post("/Home/CreateGroup", $scope._id)
             //    .then(function (response) {
             //        $location.path('/group/'+response.data);
             //    }, function () {
@@ -276,5 +272,21 @@
             $scope.setData();
             myChart.update();
         }
+        $scope.loaded = true;
+    }
+
+    //Standard login check, if there is a user, load the page, if not, redirect to login
+    if (!$scope.$parent.user || $scope.$parent.user === '') {
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                $scope.$parent.user = response.data;
+                $scope.$parent.loaded = true;
+                $scope.load();
+            }, function () {
+                toastr["error"]("Not logged in.");
+                $location.path('/login');
+            });
+    } else {
+        $scope.load();
     }
 });

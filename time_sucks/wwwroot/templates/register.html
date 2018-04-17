@@ -1,11 +1,11 @@
-﻿<div id="register">
+﻿<div id="register" ng-cloak>
 
     <div class="row no-gutters">
         <div class="col"></div> <!-- Extra col div for some auto bootstrap centering -->
         <div class="card mt-5 col-10 col-sm-6 col-md-5 col-xl-3">
             <div class="card-header">Create User</div>
             <div class="card-body">
-                <form ng-submit="register()">
+                <form>
                     <div class="input-group">
                         <div class="input-group-prepend"><span class="input-group-text" style="width: 40px; border: none; border-bottom-left-radius: 0;"><i class="fa fa-user" aria-hidden="true"></i></span></div>
                         <input id="username" type="text" class="form-control bg-light" style="border: none; border-bottom-right-radius: 0;" name="username" placeholder="Username" ng-model="user.username">
@@ -28,7 +28,7 @@
                     </div>
                     <div class="row mt-2 pl-3 pr-3">
                         <button type="button" class="btn btn-danger col mr-1" ng-click="cancel()">Cancel</button>
-                        <button type="submit" class="btn btn-primary col ml-1">Create</button>
+                        <button type="button" class="btn btn-primary col ml-1" ng-click="register()">Register</button>
                     </div>
 
                 </form>

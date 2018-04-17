@@ -1,15 +1,10 @@
-﻿angular.module('time').controller('RegisterCtrl', function ($scope, $http, $routeParams, $location, userService) {
+﻿angular.module('time').controller('RegisterCtrl', function ($scope, $http, $routeParams, $location) {
+    $scope.loaded = false;
 
-    $scope.$parent.user = userService.get();
-
-    //Check if a user is logged in, if they are, redirect to appropriate page
-    if ($scope.$parent.user) {
-        if ($scope.$parent.user.isInstructor) $location.path('/courses');
-        else $location.path('/dashboard');
-    } else {
+    $scope.load = function () {
         $scope.user = {};
-        $scope.user.firstname = '';
-        $scope.user.lastname = '';
+        $scope.user.firstName = '';
+        $scope.user.lastName = '';
         $scope.user.password = '';
         $scope.user.isInstructor = false;
         $scope.password = '';
@@ -35,19 +30,7 @@
             $http.post("/Home/RegisterUser", $scope.user)
                 .then(function () { //Success Callback
                     toastr["success"]("User created.");
-                    $http.post("/Home/Login", $scope.user)
-                        .then(function () {
-                            //TODO Make sure this works with the way we get sessionID
-                            userService.set(response.data.user);
-                            setCookie("sessionID", response.data.sessionID);
-                            if (response.data.user.isInstructor) {
-                                $location.path('/courses'); //Changes to the courses URL for Instructor
-                            } else {
-                                $location.path('/dashboard'); //Changes to the dashboard URL for normal user
-                            }
-                        }, function () {
-                            toastr["error"]("Error logging in.");
-                        });
+                    $location.path('/dashboard');
                 }, function () { //Failure Callback
                     toastr["error"]("Username already taken.");
                 });
@@ -57,6 +40,28 @@
             $location.path('/'); //Changes to the login URL
         };
 
+        $scope.loaded = true;
+
         $("#username").focus(); //Username focus for quicker typing
+    };
+
+    //Check if a user is logged in, if they are, redirect to appropriate page
+    if (!$scope.$parent.user || $scope.$parent.user === '') {
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                if (response.data === '') {
+                    $scope.load();
+                    return;
+                }
+                $scope.$parent.user = response.data;
+                $scope.$parent.loaded = true;
+                if ($scope.$parent.user.isInstructor) $location.path('/courses');
+                else $location.path('/dashboard');
+            }, function () {
+                $scope.load();
+            });
+    } else {
+        if ($scope.$parent.user.isInstructor) $location.path('/courses');
+        else $location.path('/dashboard');
     }
 });
