@@ -1,21 +1,13 @@
-﻿angular.module('time').controller('UserCtrl', function ($scope, $http, $routeParams, $location, userService) {
-    $scope.$parent.user = userService.get();
+﻿angular.module('time').controller('UserCtrl', function ($scope, $http, $routeParams, $location) {
+    $scope.loaded = false;
+    $scope._id = $routeParams.ID;
 
-    $scope.userID = $routeParams.ID;
+    if (!$scope._id) $location.path('/users');
 
-    if (!$scope.userID) $location.path('/users');
-
-    //Check if a user is logged in, if not, redirect to login
-    if (!$scope.$parent.user) {
-        toastr["error"]("Not logged in.");
-        $location.path('/login');
-    } else if (!$scope.$parent.user.isInstructor && Number($scope.$parent.user.userID) !== Number($scope.userID)) {
-        toastr["error"]("Not Instructor or the specified user.");
-        $location.path('/dashboard');
-    } else {
+    $scope.load = function() {
         $scope.getUser = function () {
             //TODO Enable User functionality, disable return below
-            //$http.post("/Home/User", $scope.userID)
+            //$http.post("/Home/User", $scope._id)
             //    .then(function (response) {
             //        return response.data;
             //    }, function () {
@@ -24,7 +16,7 @@
             //    });
 
             return {
-                userID: 1,
+                _id: 1,
                 username: "logan",
                 firstName: "Logan",
                 lastName: "Brown",
@@ -78,5 +70,24 @@
 
             toastr["info"]("Attempted to change password.");
         }
+        $scope.loaded = true;
+    }
+
+    //Standard login check, if there is a user, load the page, if not, redirect to login
+    if (!$scope.$parent.user || $scope.$parent.user === '') {
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                $scope.$parent.user = response.data;
+                $scope.$parent.loaded = true;
+                $scope.load();
+            }, function () {
+                toastr["error"]("Not logged in.");
+                $location.path('/login');
+            });
+    } else if (!$scope.$parent.user.isInstructor && $scope.$parent.user._id !== $scope._id) {
+        toastr["error"]("Not Instructor or the specified user.");
+        $location.path('/dashboard');
+    } else {
+        $scope.load();
     }
 });
