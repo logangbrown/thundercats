@@ -191,7 +191,7 @@
             //Checks that the current user is listed in the current course.
             //Should be used to hide the Join button if it's true
             for (var u in $scope.course.users) {
-                if (Number(u) === Number($scope.$parent.user._id)) {
+                if (u === $scope.$parent.user._id) {
                     return true;
                 }
             }

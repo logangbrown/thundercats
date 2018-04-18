@@ -12,29 +12,37 @@
             //    });
 
             return {
-                1: {
-                    _id: 1,
+                '5ad54b26fb49e95bf06a1c92': {
+                    _id: '5ad54b26fb49e95bf06a1c92',
                     username: "logan",
                     firstName: "Logan",
                     lastName: "Brown",
-                    isActive: false,
-                    isInstructor: true
+                    isActive: true,
+                    isInstructor: false
                 },
-                2: {
-                    _id: 2,
+                '5ad54b26fb49e95bf06a1c93': {
+                     _id: '5ad54b26fb49e95bf06a1c93',
                     username: "riz",
                     firstName: "Rizwan",
                     lastName: "Mohammed",
                     isActive: true,
                     isInstructor: false
                 },
-                3: {
-                    _id: 3,
+                '5ad54b26fb49e95bf06a1c94': {
+                    _id: '5ad54b26fb49e95bf06a1c94',
                     username: "skylar",
                     firstName: "Skylar",
                     lastName: "Olsen",
-                    isActive: true,
+                    isActive: false,
                     isInstructor: false
+                },
+                '5ad54b26fb49e95bf06a1c95': {
+                    _id: '5ad54b26fb49e95bf06a1c95',
+                    username: "brad",
+                    firstName: "Brad",
+                    lastName: "Peterson",
+                    isActive: true,
+                    isInstructor: true
                 }
             };
         }

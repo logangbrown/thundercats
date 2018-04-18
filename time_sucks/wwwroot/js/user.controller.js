@@ -16,12 +16,12 @@
             //    });
 
             return {
-                _id: 1,
+                _id: '5ad54b26fb49e95bf06a1c92',
                 username: "logan",
                 firstName: "Logan",
                 lastName: "Brown",
-                isActive: false,
-                isInstructor: true
+                isActive: true,
+                isInstructor: false
             };
         }
 

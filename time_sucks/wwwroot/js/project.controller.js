@@ -26,7 +26,7 @@
                     groups: {
                         1: {
                             _id: "1",
-                            name: "Group Badass",
+                            name: "Group Awesome",
                             isActive: true,
                             users: {
                                 1: {

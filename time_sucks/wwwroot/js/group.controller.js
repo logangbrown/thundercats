@@ -20,11 +20,11 @@
             if ($scope._id === "1") {
                 return {
                     _id: "1",
-                    name: "Group Badass",
+                    name: "Group Awesome",
                     isActive: true,
                     users: {
-                        1: {
-                            _id: 1,
+                        '5ad54b26fb49e95bf06a1c92': {
+                            _id: '5ad54b26fb49e95bf06a1c92',
                             firstName: "Logan",
                             lastName: "Brown",
                             time: {
@@ -44,8 +44,8 @@
                                 }
                             }
                         },
-                        2: {
-                            _id: 2,
+                        '5ad54b26fb49e95bf06a1c93': {
+                            _id: '5ad54b26fb49e95bf06a1c93',
                             firstName: "Rizwan",
                             lastName: "Mohammed",
                             time: {
@@ -58,8 +58,8 @@
                                 }
                             }
                         },
-                        3: {
-                            _id: 3,
+                        '5ad54b26fb49e95bf06a1c94': {
+                            _id: '5ad54b26fb49e95bf06a1c94',
                             firstName: "Skylar",
                             lastName: "Olsen",
                             time: {
@@ -127,7 +127,7 @@
 
         //Used to check whether the currently logged in user is trying to change their own time, or is an instructor
         $scope.isUser = function (id) {
-            return (id === Number($scope.$parent.user._id) || $scope.$parent.user.isInstructor);
+            return (id === $scope.$parent.user._id || $scope.$parent.user.isInstructor);
         }
 
         var data = { //Data and labels are set in the setData function
@@ -176,7 +176,7 @@
             //Checks that the current user is listed in the current group.
             //Should be used to hide the Join button if it's true
             for (var u in $scope.group.users) {
-                if (Number(u) === Number($scope.$parent.user._id)) {
+                if (u === $scope.$parent.user._id) {
                     return true;
                 }
             }

@@ -13,7 +13,7 @@
             return {
                 1: {
                     _id: "1",
-                    name: "Group Badass",
+                    name: "Group Awesome",
                     isActive: true,
                     project: "PHP Game",
                     course: "CS 3750 Spring 2018 MW 7:30",

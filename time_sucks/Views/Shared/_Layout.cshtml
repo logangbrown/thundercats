@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - time_sucks</title>
+    <title>CS 3750 Time Tracker</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap4/bootswatch-flatly.css">
     <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" />
@@ -34,12 +34,12 @@
         <div class="my-2 my-lg-0" ng-cloak ng-if="user">
 
             <!-- TODO: Remove Instructor Toggle -->
-            <div class="pretty p-switch p-slim navbar-text-color">
+            @*<div class="pretty p-switch p-slim navbar-text-color">
                 <input type="checkbox" ng-model="user.isInstructor" ng-change="updateUser()" />
                 <div class="mr-3 state">
                     <label>Instructor</label>
                 </div>
-            </div>
+            </div>*@
             <!---->
             <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user._id}}">{{user.firstName}} {{user.lastName}}</a></span>
             <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
