@@ -50,6 +50,7 @@ namespace time_sucks.Models
             instructorID = course.instructorID;
             isActive = course.isActive;
             Projects = course.Projects;
+            Users = course.Users;
         }
 
     }
