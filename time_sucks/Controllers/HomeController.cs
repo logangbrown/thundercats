@@ -158,14 +158,15 @@ namespace time_sucks.Controllers
 
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-            
+
             //Check database for Course based on ID
+            Course DBCourse = DataAccess.GetDetailedCourse(course._id);
 
             //return 404 if we dont have a user
-            if (course == null)
+            if (DBCourse == null)
                 return null;
 
-            return Ok(course);
+            return Ok(DBCourse);
 
         }
 
@@ -183,6 +184,9 @@ namespace time_sucks.Controllers
 
 
             //Send ID and course name to the DB
+            DataAccess.UpdateCourse(course);
+
+
 
             //what will i get back?
             return Ok();
@@ -200,12 +204,13 @@ namespace time_sucks.Controllers
             Project project = JsonConvert.DeserializeObject<Project>(JsonString);
 
             //Check database for Project based on ID
+           Project DBProject = DataAccess.GetCourseProjects(project._id);
 
             //return 404 if we dont have a user
-            if (project == null)
+            if (DBProject == null)
                 return null;
 
-            return Ok(project);
+            return Ok(DBProject);
 
         }
         
@@ -223,6 +228,7 @@ namespace time_sucks.Controllers
             Project project = JsonConvert.DeserializeObject<Project>(JsonString);
 
             //Send DB ID and name
+            DataAccess.UpdateProject(project);
 
             //What do I get back?
             return Ok();
