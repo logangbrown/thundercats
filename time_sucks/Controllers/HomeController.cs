@@ -204,7 +204,7 @@ namespace time_sucks.Controllers
             Project project = JsonConvert.DeserializeObject<Project>(JsonString);
 
             //Check database for Project based on ID
-           Project DBProject = DataAccess.GetCourseProjects(project._id);
+           Project DBProject = DataAccess.GetProject(project._id);
 
             //return 404 if we dont have a user
             if (DBProject == null)
