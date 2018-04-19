@@ -30,16 +30,9 @@ namespace time_sucks.Models
 
             User user = dbGateway.Users.Find(filter).FirstOrDefault();
 
-
             return user;
 
-
-            //    //User user = dbGateway.Users.Find(filter).ToJson<User>();
-            //    // collection.InsertOne(document);
-            //    //var list = userCollection.Find(_ => true).ToList();
-
-
-            }
+         }
 
 
             public static void AddUser(User user)
@@ -47,23 +40,6 @@ namespace time_sucks.Models
             MongoGateway dbGateway = new MongoGateway();
             var userCollection = dbGateway.Users;
 
-            //var document = new BsonDocument
-            //{
-            //    { "username", "MongoDB" },
-            //    { "PW", "password" },
-            //    { "First", "Mongo"  },
-            //    { "Last", "Database" },
-            //    { "IsProf", true }
-            //};
-
-            //var newUser = new User
-            //{
-            //    username = user.username,
-            //    firstName = user.firstName,
-            //    lastName = user.lastName,
-            //    Password = user.Password,
-            //    IsInstructor = user.IsInstructor
-            //};
             userCollection.InsertOne(user);
            // var id = newUser._id;
 
@@ -72,25 +48,82 @@ namespace time_sucks.Models
 
 
         #region CourseRequests
-        public static void AddCourse(Course course)
+        public static string AddCourse( Course course ) // add course with passed course object
         {
             MongoGateway dbGateway = new MongoGateway();
 
             var courseCollection = dbGateway.Courses;
             var fullCollection = dbGateway.FullCollection;
-            var newCourse = course;
- 
+
+
+            //var newCourse = course;
+
+            courseCollection.InsertOne(course);
+            var id = course._id;
+
+
+            fullCollection.InsertOne(course);
+            return id;
+
+        }
+
+        public static string AddCourse(String name, String instID) // add course with passed name and Instructor ID
+        {
+            MongoGateway dbGateway = new MongoGateway();
+
+            var courseCollection = dbGateway.Courses;
+            var fullCollection = dbGateway.FullCollection;
+            // var newCourse = course;
+            Course newCourse = new Course(name, instID);
+
+
             courseCollection.InsertOne(newCourse);
             var id = newCourse._id;
 
-            var colCourse = new Course
-            {
-                _id = id
-            };
-
-            fullCollection.InsertOne(colCourse);
+            fullCollection.InsertOne(newCourse);
+            return id;
 
         }
+
+        public static string AddCourse(String instID) // add course with only instructor ID passed.
+        {
+            MongoGateway dbGateway = new MongoGateway();
+
+            var courseCollection = dbGateway.Courses;
+            var fullCollection = dbGateway.FullCollection;
+            // var newCourse = course;
+            Course newCourse = new Course(instID);
+
+
+            courseCollection.InsertOne(newCourse);
+            var id = newCourse._id;
+
+            fullCollection.InsertOne(newCourse);
+            return id;
+
+        }
+
+        //public static string AddCourse()
+        //{
+        //    MongoGateway dbGateway = new MongoGateway();
+
+        //    var courseCollection = dbGateway.Courses;
+        //    var fullCollection = dbGateway.FullCollection;
+        //    Course newCourse = new Course();
+
+
+        //    courseCollection.InsertOne(newCourse);
+        //    var id = newCourse._id;
+
+        //    var colCourse = new Course
+        //    {
+        //        _id = id
+        //    };
+
+        //    fullCollection.InsertOne(colCourse);
+        //    return id;
+
+        //}
 
         public static List<Course> GetCourses()
         {
@@ -99,6 +132,8 @@ namespace time_sucks.Models
             var list = collection.Find(_ => true).ToList();
             return list;
         }
+
+
 
         public static Course GetDetailedCourse(String id) //Build course object to return
         { 
@@ -265,43 +300,86 @@ namespace time_sucks.Models
         }
         #endregion
 
-        public static void AddProject(String courseID, Project project)
+        #region ProjectRegion
+
+        public static string AddProject(String courseID) // add projet with only a course ID
         {
             MongoGateway dbGateway = new MongoGateway();
 
             var projectCollection = dbGateway.Projects;
+            var collection = dbGateway.FullCollection;
 
 
-            var newProject = new Project
-            {
-                name = project.name,
-                isActive = project.isActive
+            Project project = new Project();
 
-            };
-            projectCollection.InsertOne(newProject);
-            var id = newProject._id;
+            projectCollection.InsertOne(project);
+            var id = project._id;
 
-       
+           
+            var filter = Builders<Course>.Filter.Eq("_id", courseID);
+            var update = Builders<Course>.Update.Push("Projects", project);
+            collection.UpdateOne(filter, update);
+
+            return id;
+
+        }
+
+        public static string AddProject(String courseID, Project project) // add projeect with course ID and project object
+        {
+            MongoGateway dbGateway = new MongoGateway();
+
+            var projectCollection = dbGateway.Projects;
+            var collection = dbGateway.FullCollection;
+
+            
+            projectCollection.InsertOne(project);
+            var id = project._id;
 
             var courseProject = new Project
             {
                 _id = id,
             };
-            var collection = dbGateway.FullCollection;
-
-
             var filter = Builders<Course>.Filter.Eq("_id", courseID);
             var update = Builders<Course>.Update.Push("Projects", courseProject);
             collection.UpdateOne(filter, update);
 
+            return id;
+
         }
+
+        public static void UpdateProject(Project project)
+        {
+            MongoGateway dbGateway = new MongoGateway();
+            var projectCollection = dbGateway.Projects;
+
+            var filter = Builders<Project>.Filter.Eq("_id", project._id);
+            var update = Builders<Project>.Update.Set("name", project.name).Set("isActive", project.isActive).Set("groups", project.groups);
+            projectCollection.UpdateOne(filter, update);
+   
+        }
+
+
+        public static List<Project> GetCourseProjects(string courseID)
+        {
+
+            Course course = GetDetailedCourse(courseID);
+            List<Project> courseProjects = new List<Project>(); ;
+
+            foreach (Project project in course.Projects)
+            {
+                courseProjects.Add(project);
+            }
+
+             return courseProjects;
+        }
+
 
         public static void GetUserProjectsList(String userID)
         {
             List<Course> courses = GetDetailedCoursesList();
-            List<Project> usersProjects = new List<Project>(); ;
+            List<Project> usersProjects = new List<Project>(); 
 
-            foreach(Course course in courses)
+            foreach (Course course in courses)
             {
                 foreach (Project project in course.Projects)
                 {
@@ -320,6 +398,19 @@ namespace time_sucks.Models
                 }
             }
         }
-
+        #endregion
     }
 }
+// Insert Course
+// Get Courses
+// 
+
+
+// Insert Project
+// Get Projects of Course
+// Update Projects
+
+
+
+
+
