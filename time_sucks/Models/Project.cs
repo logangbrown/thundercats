@@ -11,7 +11,7 @@ namespace time_sucks.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public int _id { get; set; }
+        public string _id { get; set; }
 
         public string name { get; set; }
 
@@ -21,7 +21,25 @@ namespace time_sucks.Models
 
         // public int CourseID { get; set; }
         // public int UserID { get; set; }
-       
+
+        public Project()
+        {
+            isActive = true;
+        }
+
+        public Project(String newName)
+        {
+            name = newName;
+            isActive = true;
+        }
+
+        public Project(Project project)
+        {
+          
+            name = project.name;
+            isActive = project.isActive;
+            groups = project.groups;
+        }
 
     }
 }

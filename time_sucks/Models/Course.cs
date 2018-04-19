@@ -20,9 +20,35 @@ namespace time_sucks.Models
 
         public bool isActive { get; set; }
 
-
         // public int UserID { get; set; }
         public List<Project> Projects { get; set; }
+
+        public Course()
+        {
+            isActive = true;
+        }
+
+        public Course(String instID)
+        {
+            instructorID = instID;
+            isActive = true;
+        }
+
+        public Course(String newName, String instID)
+        {
+            name = newName;
+            instructorID = instID;
+            isActive = true;
+        }
+
+        public Course(Course course)
+        {
+            //_id = course._id;
+            name = course.name;
+            instructorID = course.instructorID;
+            isActive = course.isActive;
+            Projects = course.Projects;
+        }
 
     }
 }
