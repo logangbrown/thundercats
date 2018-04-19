@@ -410,6 +410,23 @@ namespace time_sucks.Models
              return courseProjects;
         }
 
+        public static Project GetProject(string projectID)
+        {
+
+            //Project project = GetDetailedCourse(projectID);
+            //Project courseProject = new List<Project>();
+
+            MongoGateway dbGateway = new MongoGateway();
+
+            var filter = Builders<Project>.Filter.Eq("_id", projectID);
+
+            Project project = dbGateway.Projects.Find(filter).FirstOrDefault();
+
+            return project;
+        }
+
+
+
 
         public static void GetUserProjectsList(String userID)
         {
