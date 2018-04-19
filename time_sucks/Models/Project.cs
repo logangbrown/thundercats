@@ -25,12 +25,15 @@ namespace time_sucks.Models
         public Project()
         {
             isActive = true;
+            name = "New Project";
+            groups = new List<Group>();
         }
 
         public Project(String newName)
         {
             name = newName;
             isActive = true;
+            groups = new List<Group>();
         }
 
         public Project(Project project)

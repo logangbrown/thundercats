@@ -28,12 +28,18 @@ namespace time_sucks.Models
         public Course()
         {
             isActive = true;
+            name = "New Course";
+            Projects = new List<Project>();
+            Users = new List<User>();
         }
 
         public Course(String instID)
         {
             instructorID = instID;
             isActive = true;
+            name = "New Course";
+            Projects = new List<Project>();
+            Users = new List<User>();
         }
 
         public Course(String newName, String instID)
@@ -41,6 +47,8 @@ namespace time_sucks.Models
             name = newName;
             instructorID = instID;
             isActive = true;
+            Projects = new List<Project>();
+            Users = new List<User>();
         }
 
         public Course(Course course)

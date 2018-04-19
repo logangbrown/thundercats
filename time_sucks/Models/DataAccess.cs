@@ -168,7 +168,7 @@ namespace time_sucks.Models
             /*
             * Get Project Collection and add details
             */
-
+            if(fullCourse.Users != null)
             foreach (User users in fullCourse.Users) // Loop through projects list, get project details, fill project list item
             {
                 var userIdFilter = Builders<User>.Filter.Eq("_id", users._id);
@@ -179,53 +179,55 @@ namespace time_sucks.Models
                 users.username = user.username;
 
             }
-                /*
-                * Get Project Collection and add details
-                */
-
-                foreach (Project projects in fullCourse.Projects) // Loop through projects list, get project details, fill project list item
+            
+            /*
+            * Get Project Collection and add details
+            */
+            if(fullCourse.Projects != null)
+            foreach (Project projects in fullCourse.Projects) // Loop through projects list, get project details, fill project list item
             {
                 var projIdFilter = Builders<Project>.Filter.Eq("_id", projects._id);
                 Project project = projectCollection.Find(projIdFilter).FirstOrDefault();
                 projects.isActive = project.isActive;
                 projects.name = project.name;
 
+                /*
+                * Get group Collection and add dteails
+                */
+                if(projects.groups != null)
+                foreach (Group groups in projects.groups) // Loop through groups list, get group details, fill group list item
+                {
+                    var groupIdFilter = Builders<Group>.Filter.Eq("_id", groups._id);
+                    Group group = groupCollection.Find(groupIdFilter).FirstOrDefault();
+                    groups.name = group.name;
+                    groups.isActive = group.isActive;
+
                     /*
-                    * Get group Collection and add dteails
+                    * Get user Collection and add dteails
                     */
-                    
-                    foreach (Group groups in projects.groups) // Loop through groups list, get group details, fill group list item
+                    if(groups.users != null)
+                    foreach (User users in groups.users) // Loop through User list, get User details, fill user list item
                     {
-                        var groupIdFilter = Builders<Group>.Filter.Eq("_id", groups._id);
-                        Group group = groupCollection.Find(groupIdFilter).FirstOrDefault();
-                        groups.name = group.name;
-                        groups.isActive = group.isActive;
+                        var userIdFilter = Builders<User>.Filter.Eq("_id", users._id);
+                        User user = userCollection.Find(userIdFilter).FirstOrDefault();
+                        users.firstName = user.firstName;
+                        users.lastName = user.lastName;
+                        users.username = user.username;
 
-                            /*
-                            * Get user Collection and add dteails
-                            */
-                           
-                            foreach (User users in groups.users) // Loop through User list, get User details, fill user list item
-                            {
-                                var userIdFilter = Builders<User>.Filter.Eq("_id", users._id);
-                                User user = userCollection.Find(userIdFilter).FirstOrDefault();
-                                users.firstName = user.firstName;
-                                users.lastName = user.lastName;
-                                users.username = user.username;
-
-                                    /*
-                                    * Get timecard Collection and add dteails
-                                    */
-                                    foreach (TimeCard timecards in users.TimeCards) // Loop through timecard list, get card details, fill card list item
-                                    {
-                                        var timeIdFilter = Builders<TimeCard>.Filter.Eq("_id", users._id);
-                                        TimeCard timecard = timeCollection.Find(timeIdFilter).FirstOrDefault();
-                                        timecards.CreatedOn = timecard.CreatedOn;
-                                        timecards.hours = timecard.hours;
-                                        timecards.timeIn = timecard.timeIn;
-                                        timecards.timeOut = timecard.timeOut;
-                                        timecards.isEdited = timecard.isEdited;
-                                    }
+                        /*
+                        * Get timecard Collection and add dteails
+                        */
+                        if(users.TimeCards != null)
+                        foreach (TimeCard timecards in users.TimeCards) // Loop through timecard list, get card details, fill card list item
+                        {
+                            var timeIdFilter = Builders<TimeCard>.Filter.Eq("_id", users._id);
+                            TimeCard timecard = timeCollection.Find(timeIdFilter).FirstOrDefault();
+                            timecards.CreatedOn = timecard.CreatedOn;
+                            timecards.hours = timecard.hours;
+                            timecards.timeIn = timecard.timeIn;
+                            timecards.timeOut = timecard.timeOut;
+                            timecards.isEdited = timecard.isEdited;
+                        }
 
                     }
 
@@ -331,7 +333,7 @@ namespace time_sucks.Models
             var courseCollection = dbGateway.Courses;
 
             var filter = Builders<Course>.Filter.Eq("_id", course._id);
-            var update = Builders<Course>.Update.Set("name", course.name).Set("isActive", course.isActive).Set("isInstructor", course.instructorID);
+            var update = Builders<Course>.Update.Set("name", course.name).Set("isActive", course.isActive).Set("instructorID", course.instructorID);
             courseCollection.UpdateOne(filter, update);
 
         }
@@ -358,7 +360,6 @@ namespace time_sucks.Models
             collection.UpdateOne(filter, update);
 
             return id;
-
         }
 
         public static string AddProject(String courseID, Project project) // add projeect with course ID and project object

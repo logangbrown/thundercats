@@ -147,7 +147,7 @@ namespace time_sucks.Controllers
 
         }
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult AddCourse([FromBody]Object json)
         {
             String CourseID = null;
@@ -173,7 +173,7 @@ namespace time_sucks.Controllers
         /// Return a course based on the ID. Returns a course if successful 204 otherwise
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         public IActionResult GetCourse([FromBody]Object json)
         {
             String JsonString = json.ToString();
@@ -215,17 +215,15 @@ namespace time_sucks.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCourses([FromBody]Object json)
-        {
-            String JsonString = json.ToString();
-
+        public IActionResult Courses()
+        { 
             List<Course> allCourses = DataAccess.GetCourses();
 
             return Ok(allCourses);
         }
 
-        [HttpGet]
-        public IActionResult AddProject([FromBody]Object json)
+        [HttpPost]
+        public IActionResult CreateProject([FromBody]Object json)
         {
             String JsonString = json.ToString();
 
@@ -241,7 +239,7 @@ namespace time_sucks.Controllers
         /// Return a Project based on the ID. Returns a Project if successful 204 otherwise
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         public IActionResult Project([FromBody]Object json)
         {
             String JsonString = json.ToString();
