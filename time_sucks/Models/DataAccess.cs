@@ -324,6 +324,17 @@ namespace time_sucks.Models
             return fullCourses;
 
         }
+
+        public static void UpdateCourse(Course course)
+        {
+            MongoGateway dbGateway = new MongoGateway();
+            var courseCollection = dbGateway.Courses;
+
+            var filter = Builders<Course>.Filter.Eq("_id", course._id);
+            var update = Builders<Course>.Update.Set("name", course.name).Set("isActive", course.isActive).Set("isInstructor", course.instructorID);
+            courseCollection.UpdateOne(filter, update);
+
+        }
         #endregion
 
         #region ProjectRegion
