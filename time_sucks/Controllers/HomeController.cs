@@ -120,7 +120,7 @@ namespace time_sucks.Controllers
 
             }
 
-            return NotFound();
+            return null;
             //HttpContext.Session.SetString("blah", "test");
             //String asdf = HttpContext.Session.GetString("blah");
             //return Ok();
@@ -165,9 +165,19 @@ namespace time_sucks.Controllers
             }
             else
             {
-                return NotFound();
+                return null;
             }
 
         }
-    }
+
+        /// <summary>
+        /// Returns OK if a users session succesfully ended. 204 otherwise
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Courses()
+        {
+
+
+        }
 }
