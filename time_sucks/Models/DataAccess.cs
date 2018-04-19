@@ -164,11 +164,26 @@ namespace time_sucks.Models
             fullCourse.name = course.name;
 
 
+
             /*
             * Get Project Collection and add details
             */
-           
-            foreach (Project projects in fullCourse.Projects) // Loop through projects list, get project details, fill project list item
+
+            foreach (User users in fullCourse.Users) // Loop through projects list, get project details, fill project list item
+            {
+                var userIdFilter = Builders<User>.Filter.Eq("_id", users._id);
+                User user = userCollection.Find(userIdFilter).FirstOrDefault();
+                users.firstName = user.firstName;
+                users.lastName = user.lastName;
+                users.isActive = user.isActive;
+                users.username = user.username;
+
+            }
+                /*
+                * Get Project Collection and add details
+                */
+
+                foreach (Project projects in fullCourse.Projects) // Loop through projects list, get project details, fill project list item
             {
                 var projIdFilter = Builders<Project>.Filter.Eq("_id", projects._id);
                 Project project = projectCollection.Find(projIdFilter).FirstOrDefault();
@@ -240,6 +255,17 @@ namespace time_sucks.Models
                 courses.instructorID = course.instructorID;
                 courses.isActive = course.isActive;
                 courses.name = course.name;
+
+                foreach (User users in courses.Users) // Loop through projects list, get project details, fill project list item
+                {
+                    var userIdFilter = Builders<User>.Filter.Eq("_id", users._id);
+                    User user = userCollection.Find(userIdFilter).FirstOrDefault();
+                    users.firstName = user.firstName;
+                    users.lastName = user.lastName;
+                    users.isActive = user.isActive;
+                    users.username = user.username;
+
+                }
 
                 /*
                 * Get Project Collection and add details
