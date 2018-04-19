@@ -13,14 +13,12 @@
             });
 
         $scope.createCourse = function () {
-            //TODO Enable create course functionality, disable info toast
             $http.post("/Home/AddCourse", $scope.user)
                 .then(function (response) {
                     $location.path('/course/'+response.data);
                 }, function () {
                     toastr["error"]("Error creating course.");
                 });
-            //toastr["info"]("Attempted to create a course");
         };
 
         $scope.loaded = true;

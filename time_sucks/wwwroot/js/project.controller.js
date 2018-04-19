@@ -28,14 +28,12 @@
         }
 
         $scope.saveProject = function () {
-            //TODO Enable save group functionality, disable info toast
             $http.post("/Home/SaveProject", $scope.project)
                 .then(function (response) {
                     toastr["success"]("Saved group.");
                 }, function () {
                     toastr["error"]("Failed to save group.");
                 });
-            //toastr["info"]("Attempted to save project.");
         }
 
         var data = { //Data and labels are set in the setData function

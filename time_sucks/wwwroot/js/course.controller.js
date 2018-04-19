@@ -18,25 +18,21 @@
             });       
 
         $scope.createProject = function () {
-            //TODO Enable create project functionality, disable info toast
             $http.post("/Home/CreateProject", $scope.course)
                 .then(function (response) {
                     $location.path('/project/'+response.data);
                 }, function () {
                     toastr["error"]("Failed to create project.");
                 });
-            //toastr["info"]("Attempted to create a project.");
         }
 
         $scope.saveCourse = function () {
-            //TODO Enable save course functionality, disable info toast
             $http.post("/Home/SaveCourse", $scope.course)
                 .then(function (response) {
                     toastr["success"]("Saved course.");
                 }, function () {
                     toastr["error"]("Failed saving course.");
                 });
-            //toastr["info"]("Attempted to save course.");
         }
 
         $scope.joinCourse = function () {
