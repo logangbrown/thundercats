@@ -147,6 +147,28 @@ namespace time_sucks.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult AddCourse([FromBody]Object json)
+        {
+            String CourseID = null;
+            String JsonString = json.ToString();
+
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user.isInstructor == true)
+            {
+                CourseID = DataAccess.AddCourse(user._id.ToString());
+                return Ok(CourseID);
+
+            }
+
+            return null;
+
+        }
+
+
         /// <summary>
         /// Return a course based on the ID. Returns a course if successful 204 otherwise
         /// </summary>
@@ -190,6 +212,29 @@ namespace time_sucks.Controllers
 
             //what will i get back?
             return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult GetCourses([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            List<Course> allCourses = DataAccess.GetCourses();
+
+            return Ok(allCourses);
+        }
+
+        [HttpGet]
+        public IActionResult AddProject([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+
+            String DBProjectID = DataAccess.AddProject(course._id);
+
+            return Ok(DBProjectID);
         }
 
         /// <summary>
