@@ -95,7 +95,7 @@ namespace time_sucks.Controllers
         [HttpPost]
         public IActionResult LoginUser([FromBody]Object json)
         {
-            Dictionary<String, String> dict = new Dictionary<string, string>();
+         //   Dictionary<String, String> dict = new Dictionary<string, string>();
             String JsonString = json.ToString();
             //Username and Password must be here, everything else can be empty
             User user = JsonConvert.DeserializeObject<User>(JsonString);
@@ -108,7 +108,7 @@ namespace time_sucks.Controllers
 
             //return 404 if we dont have a user
             if (DBUser == null)
-                return NotFound(); // return NoContent();
+                return null; 
 
 
 
@@ -147,6 +147,88 @@ namespace time_sucks.Controllers
 
         }
 
+        /// <summary>
+        /// Return a course based on the ID. Returns a course if successful 204 otherwise
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+            
+            //Check database for Course based on ID
+
+            //return 404 if we dont have a user
+            if (course == null)
+                return null;
+
+            return Ok(course);
+
+        }
+
+        /// <summary>
+        /// Updates a Course name
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult SaveCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+
+            //Send ID and course name to the DB
+
+            //what will i get back?
+            return Ok();
+        }
+
+        /// <summary>
+        /// Return a Project based on the ID. Returns a Project if successful 204 otherwise
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Project([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+
+            //Check database for Project based on ID
+
+            //return 404 if we dont have a user
+            if (project == null)
+                return null;
+
+            return Ok(project);
+
+        }
+        
+
+        /// <summary>
+        /// Update a Project name.
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult SaveProject([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+
+            //Send DB ID and name
+
+            //What do I get back?
+            return Ok();
+
+        }
+
 
         /// <summary>
         /// Returns OK if a users session succesfully ended. 204 otherwise
@@ -170,14 +252,5 @@ namespace time_sucks.Controllers
 
         }
 
-        /// <summary>
-        /// Returns OK if a users session succesfully ended. 204 otherwise
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Courses()
-        {
-
-
-        }
+    }
 }

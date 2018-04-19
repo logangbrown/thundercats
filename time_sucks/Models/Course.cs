@@ -23,6 +23,8 @@ namespace time_sucks.Models
         // public int UserID { get; set; }
         public List<Project> Projects { get; set; }
 
+        public List<User> Users { get; set; }
+
         public Course()
         {
             isActive = true;
