@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using MongoDB.Driver.Linq;
 using MongoDB.Bson.Serialization;
+using System.Security.Authentication;
 
 namespace time_sucks.Models
 {
@@ -24,30 +25,15 @@ namespace time_sucks.Models
             try
             {
 
-                var client = new MongoClient();
-                _database = client.GetDatabase("ProjectManagement");
-                //MongoClientSettings settings = MongoClientSettings.FromUrl(new MongoUrl(ConnectionString));
-                //if (IsSSL) // SSL connection to hosted db
-                //{
-                //    settings.SslSettings = new SslSettings { EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 };
-                //}
+                //var client = new MongoClient();
+                //_database = client.GetDatabase("ProjectManagement");
 
-                //var mongoClient = new MongoClient(settings);
-                //_database = mongoClient.GetDatabase(DatabaseName);
+                string connectionString = @"mongodb://badass:mWIhFC1OjRSOldacJyIoha1WSL8SSrGFwTM18nzKRw6zBy3G0jbY5oySJMm26M8ZNKUG8WwaRbjrZDANOBRppA==@badass.documents.azure.com:10255/?ssl=true&replicaSet=globaldb";
+                MongoClientSettings settings = MongoClientSettings.FromUrl( new MongoUrl(connectionString) );
+                settings.SslSettings = new SslSettings() { EnabledSslProtocols = SslProtocols.Tls12 };
+                var mongoClient = new MongoClient(settings);
 
-                ////MongoClient client = new MongoClient(ConnectionString);
-                ////MongoServerAddress server = client.GetServer();
-                ////MongoDatabase database = server.GetDatabase("Test");
-                ////MongoCollection symbolcollection = database.GetCollection<Symbol>("Symbols");
-
-
-                // ConnectionString = "mongodb://localhost";
-                //BsonClassMap.RegisterClassMap<User>();
-
-                // _database = client.GetDatabase(DatabaseName);
-                //var database = client.GetDatabase("timetables");
-                //var collection = database.GetCollection<User>("User");
-                //List<User> userList = collection.Find(_ => true).ToList();
+                _database = mongoClient.GetDatabase("ProjectManagement"); // NEW
 
             }
             catch (Exception ex)
