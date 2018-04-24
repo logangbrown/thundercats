@@ -1,4 +1,4 @@
-﻿var app = angular.module('time', ['ngRoute', 'unsavedChanges']); //Sets up the Angular app, and includes the ngRoute module
+﻿var app = angular.module('time', ['ngRoute']); //Sets up the Angular app, and includes the ngRoute module
 
 app.config(function ($routeProvider) {
     $routeProvider //Assigns the template file and controller for the routes
@@ -43,25 +43,3 @@ app.config(function ($routeProvider) {
             controller: "UserCtrl"
         });
 });
-
-//app.factory('userService', function ($http) {
-
-//    //TODO Disable auto-login
-//    //var user = { userID: "1", username: "zedop", firstName: "Logan", lastName: "Brown", isInstructor: true };
-//    var user;
-
-
-//    function set(data) {
-//        user = data;
-//    }
-
-//    function get() {
-//        if (user) return user;
-//        return null;
-//    }
-
-//    return {
-//        set: set,
-//        get: get
-//    }
-//});
