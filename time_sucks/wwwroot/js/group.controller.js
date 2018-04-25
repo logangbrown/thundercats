@@ -9,12 +9,12 @@
 
         $scope.getGroup = function () {
             //TODO Enable Group functionality, disable if statement below
-            $http.post("/Home/Group", $scope._id)
-                .then(function (response) {
-                    return response.data;
-                }, function () {
-                    toastr["error"]("Failed to get group.");
-                });
+            //$http.post("/Home/Group", $scope._id)
+            //    .then(function (response) {
+            //        return response.data;
+            //    }, function () {
+            //        toastr["error"]("Failed to get group.");
+            //    });
 
 
             if ($scope._id === "1") {
