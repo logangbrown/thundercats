@@ -36,7 +36,7 @@
         <div class="col-md-6 col-12 mb-4" ng-repeat="u in group.users">
             <div class="card position-relative">
                 <div class="card-header">{{u.firstName}} {{u.lastName}}</div>
-                <i class="fa fa-plus mt-2 mr-2 my-auto card-button" ng-click="createTime(u._id)" ng-if="isUser(u._id)"></i>
+                <i class="fa fa-plus mt-2 mr-2 my-auto card-button" ng-click="createTime(u.userID)" ng-if="isUser(u.userID)"></i>
                 <div class="card-body">
                     <table>
                         <thead>
@@ -49,11 +49,11 @@
                         <tbody>
                             <tr ng-repeat="t in u.time" class="row no-gutters">
                                 <td class="col-5 pr-1"><input class="full-width" type="text" ng-model="t.timeIn" placeholder="mm/dd/yy 00:00" 
-                                                              ng-readonly="!isUser(u._id)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
+                                                              ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
                                 <td class="col-5 pr-1"><input class="full-width" type="text" ng-model="t.timeOut" placeholder="mm/dd/yy 00:00" 
-                                                              ng-readonly="!isUser(u._id)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
+                                                              ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
                                 <td class="col-2 pr-1"><input class="full-width" type="text" ng-model="t.hours" placeholder="0" 
-                                                              ng-readonly="!isUser(u._id)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
+                                                              ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
                             </tr>
                         </tbody>
                     </table>

@@ -27,13 +27,15 @@
 
             $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
 
-            $http.post("/Home/RegisterUser", $scope.user)
-                .then(function () { //Success Callback
-                    toastr["success"]("User created.");
-                    $location.path('/dashboard');
-                }, function () { //Failure Callback
-                    toastr["error"]("Username already taken.");
-                });
+            //TODO Enable RegisterUser, disable info toast
+            //$http.post("/Home/RegisterUser", $scope.user)
+            //    .then(function () { //Success Callback
+            //        toastr["success"]("User created.");
+            //        $location.path('/dashboard');
+            //    }, function () { //Failure Callback
+            //        toastr["error"]("Username already taken.");
+            //    });
+            toastr["info"]("Attempted to register user - enable REST endpoint");
         };
 
         $scope.cancel = function () {
@@ -47,19 +49,23 @@
 
     //Check if a user is logged in, if they are, redirect to appropriate page
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                if (response.data === '') {
-                    $scope.load();
-                    return;
-                }
-                $scope.$parent.user = response.data;
-                $scope.$parent.loaded = true;
-                if ($scope.$parent.user.isInstructor) $location.path('/courses');
-                else $location.path('/dashboard');
-            }, function () {
-                $scope.load();
-            });
+        //TODO Enable CheckSession
+        //$http.get("/Home/CheckSession")
+        //    .then(function (response) {
+        //        if (response.data === '') {
+        //            $scope.load();
+        //            return;
+        //        }
+        //        $scope.$parent.user = response.data;
+        //        $scope.$parent.loaded = true;
+        //        if ($scope.$parent.user.isInstructor) $location.path('/courses');
+        //        else $location.path('/dashboard');
+        //    }, function () {
+        //        $scope.load();
+        //    });
+
+        //Dummy
+        $scope.load();
     } else {
         if ($scope.$parent.user.isInstructor) $location.path('/courses');
         else $location.path('/dashboard');

@@ -17,7 +17,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="c in courses" ng-if="c.isActive || config.showInactiveCourses" ng-class="{inactive: !c.isActive}">
-                <td><a href="/#!/course/{{c._id}}">{{c.name}}</a></td>
+                <td><a href="/#!/course/{{c.courseID}}">{{c.name}}</a></td>
                 <td>{{c.instructorName}}</td>
             </tr>
         </tbody>

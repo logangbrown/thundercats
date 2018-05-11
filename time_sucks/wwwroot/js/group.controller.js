@@ -1,97 +1,97 @@
 ﻿angular.module('time').controller('GroupCtrl', function ($scope, $http, $routeParams, $location) {
     $scope.loaded = false;
+    $scope.group = {};
+    $scope.group.users = {};
     $scope.newNumber = 10; //TODO get rid of this
 
     $scope.load = function() {
-        $scope._id = $routeParams.ID;
+        $scope.groupID = $routeParams.ID;
 
-        if (!$scope._id) $location.path('/courses');
+        if (!$scope.groupID) $location.path('/courses');
 
-        $scope.getGroup = function () {
-            //TODO Enable Group functionality, disable if statement below
-            //$http.post("/Home/Group", $scope._id)
-            //    .then(function (response) {
-            //        return response.data;
-            //    }, function () {
-            //        toastr["error"]("Failed to get group.");
-            //    });
+        
+        //TODO Enable Group functionality, disable dummy data
+        //$http.post("/Home/Group", $scope.groupID)
+        //    .then(function (response) {
+        //        $scope.group = response.data;
+        //    }, function () {
+        //        toastr["error"]("Failed to get group.");
+        //    });
 
-
-            if ($scope._id === "1") {
-                return {
-                    _id: "1",
-                    name: "Group Awesome",
-                    isActive: true,
-                    users: {
-                        '5ad54b26fb49e95bf06a1c92': {
-                            _id: '5ad54b26fb49e95bf06a1c92',
-                            firstName: "Logan",
-                            lastName: "Brown",
-                            time: {
-                                1: {
-                                    _id: "1",
-                                    hours: "3",
-                                    isEdited: false,
-                                    timeIn: "04/05/18 19:30",
-                                    timeOut: "04/05/18 21:30"
-                                },
-                                4: {
-                                    _id: "4",
-                                    hours: "2",
-                                    isEdited: true,
-                                    timeIn: "04/05/18 19:30",
-                                    timeOut: "04/05/18 21:30"
-                                }
+        //Dummy data
+        if ($scope.groupID === "1") {
+            $scope.group = {
+                groupID: "1",
+                name: "Group Awesome",
+                isActive: true,
+                users: {
+                    '1': {
+                        userID: '1',
+                        firstName: "Test",
+                        lastName: "User",
+                        time: {
+                            1: {
+                                timeID: "1",
+                                hours: "3",
+                                isEdited: false,
+                                timeIn: "04/05/18 19:30",
+                                timeOut: "04/05/18 21:30"
+                            },
+                            4: {
+                                timeID: "4",
+                                hours: "2",
+                                isEdited: true,
+                                timeIn: "04/05/18 19:30",
+                                timeOut: "04/05/18 21:30"
                             }
-                        },
-                        '5ad54b26fb49e95bf06a1c93': {
-                            _id: '5ad54b26fb49e95bf06a1c93',
-                            firstName: "Rizwan",
-                            lastName: "Mohammed",
-                            time: {
-                                2: {
-                                    _id: "2",
-                                    hours: "4",
-                                    isEdited: false,
-                                    timeIn: "04/05/18 19:30",
-                                    timeOut: "04/05/18 21:30"
-                                }
+                        }
+                    },
+                    '2': {
+                        userID: '2',
+                        firstName: "Rizwan",
+                        lastName: "Mohammed",
+                        time: {
+                            2: {
+                                timeID: "2",
+                                hours: "4",
+                                isEdited: false,
+                                timeIn: "04/05/18 19:30",
+                                timeOut: "04/05/18 21:30"
                             }
-                        },
-                        '5ad54b26fb49e95bf06a1c94': {
-                            _id: '5ad54b26fb49e95bf06a1c94',
-                            firstName: "Skylar",
-                            lastName: "Olsen",
-                            time: {
-                                3: {
-                                    _id: "3",
-                                    hours: "5",
-                                    isEdited: false,
-                                    timeIn: "04/05/18 19:30",
-                                    timeOut: "04/05/18 21:30"
-                                }
+                        }
+                    },
+                    '3': {
+                        userID: '3',
+                        firstName: "Skylar",
+                        lastName: "Olsen",
+                        time: {
+                            3: {
+                                timeID: "3",
+                                hours: "5",
+                                isEdited: false,
+                                timeIn: "04/05/18 19:30",
+                                timeOut: "04/05/18 21:30"
                             }
                         }
                     }
-                };
-            } else {
-                return null;
-            }
+                }
+            };
+        } else {
+            toastr["info"]("No dummy data for this group.");
+            window.history.back();
         }
-
-        $scope.group = $scope.getGroup();
 
         $scope.createTime = function (id) {
             var data = {
                 userID: id,
-                groupID: $scope._id
+                groupID: $scope.groupID
             };
 
             //TODO Enable create time functionality, disable extra stuff below
             //$http.post("/Home/CreateTime", data)
             //    .then(function (response) {
             //        $scope.group.users[id].time[response.data] = {
-            //            _id: response.data,
+            //            timeID: response.data,
             //            hours: "",
             //            isEdited: false,
             //            timeIn: "",
@@ -103,7 +103,7 @@
 
 
             $scope.group.users[id].time[$scope.newNumber] = {
-                _id: $scope.newNumber, 
+                timeID: $scope.newNumber, 
                 hours: "",
                 isEdited: false,
                 timeIn: "",
@@ -121,13 +121,13 @@
             //    }, function () {
             //        toastr["error"]("Failed to save group.");
             //    });
-            toastr["info"]("Attempted to save group.");
+            toastr["info"]("Attempted to save group - enable REST endpoint");
             $scope.updateChart();
         }
 
         //Used to check whether the currently logged in user is trying to change their own time, or is an instructor
         $scope.isUser = function (id) {
-            return (id === $scope.$parent.user._id || $scope.$parent.user.isInstructor);
+            return (id === $scope.$parent.user.userID || $scope.$parent.user.isInstructor);
         }
 
         var data = { //Data and labels are set in the setData function
@@ -176,7 +176,7 @@
             //Checks that the current user is listed in the current group.
             //Should be used to hide the Join button if it's true
             for (var u in $scope.group.users) {
-                if (u === $scope.$parent.user._id) {
+                if (u === $scope.$parent.user.userID) {
                     return true;
                 }
             }
@@ -187,15 +187,20 @@
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                $scope.$parent.user = response.data;
-                $scope.$parent.loaded = true;
-                $scope.load();
-            }, function () {
-                toastr["error"]("Not logged in.");
-                $location.path('/login');
-            });
+        //TODO Enable CheckSession, remove dummy data
+        //$http.get("/Home/CheckSession")
+        //    .then(function (response) {
+        //        $scope.$parent.user = response.data;
+        //        $scope.$parent.loaded = true;
+        //        $scope.load();
+        //    }, function () {
+        //        toastr["error"]("Not logged in.");
+        //        $location.path('/login');
+        //    });
+
+        //Dummy data
+        toastr["error"]("Not logged in - enable REST endpoint");
+        $location.path('/login');
     } else {
         $scope.load();
     }

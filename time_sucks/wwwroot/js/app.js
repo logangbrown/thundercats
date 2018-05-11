@@ -1,4 +1,4 @@
-﻿var app = angular.module('time', ['ngRoute']); //Sets up the Angular app, and includes the ngRoute module
+﻿var app = angular.module('time', ['ngRoute', 'unsavedChanges']); //Sets up the Angular app, and includes the ngRoute module
 
 app.config(function ($routeProvider) {
     $routeProvider //Assigns the template file and controller for the routes
@@ -41,5 +41,6 @@ app.config(function ($routeProvider) {
         .when("/user/:ID", {
             templateUrl: "templates/user.html",
             controller: "UserCtrl"
-        });
+        })
+        .otherwise("/");
 });

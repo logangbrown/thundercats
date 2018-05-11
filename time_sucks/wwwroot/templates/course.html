@@ -25,7 +25,7 @@
             
             <div class="card" ng-if="hasProjects()">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item" ng-repeat="p in course.projects" ng-if="p.isActive || config.showInactiveProjects"><a href="/#!/project/{{p._id}}">{{p.name}}</a></li>
+                    <li class="list-group-item" ng-repeat="p in course.projects" ng-if="p.isActive || config.showInactiveProjects"><a href="/#!/project/{{p.projectID}}">{{p.name}}</a></li>
                 </ul>
             </div>
         </div>

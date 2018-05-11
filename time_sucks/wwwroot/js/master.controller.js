@@ -1,4 +1,5 @@
 ﻿angular.module('time').controller('MasterCtrl', function ($scope, $http, $routeParams, $location) {
+    $scope.user = null;
     $scope.loaded = false;
     toastr.options = {
         "closeButton": false,
@@ -18,15 +19,27 @@
         "hideMethod": "fadeOut"
     };
 
-    $scope.user = null;
+    $scope.userExists = function () {
+        if ($scope.user !== null) {
+            $('#navbarSupportedContent').removeClass('invisible');
+            return true;
+        } 
+        return false;
+    }
 
     $scope.logout = function () {
-        $http.get("/Home/Logout")
-            .then(function (response) {
-                $scope.user = null;
-                $location.path('/login');
-            }, function () {
-                toastr["error"]("Failed to logout.");
-            });
+        //Enable Logout, disable dummy data and info toast
+        //$http.get("/Home/Logout")
+        //    .then(function (response) {
+        //        $scope.user = null;
+        //        $location.path('/login');
+        //    }, function () {
+        //        toastr["error"]("Failed to logout.");
+        //    });
+
+        //Dummy Data
+        $scope.user = null;
+        $location.path('/login');
+        toastr["info"]("Simulated logout - enable REST endpoint");
     }
 });

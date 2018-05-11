@@ -18,7 +18,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"><i class="fa fa-bars navbar-text-color" style="font-size:30px;"></i></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent" ng-cloak ng-if="user">
+        <div class="collapse navbar-collapse invisible" id="navbarSupportedContent" ng-cloak ng-if="userExists()">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item" ng-class="{active: location === '/dashboard'}">
                     <a class="nav-link" href="/#!/dashboard">Dashboard</a>
@@ -34,14 +34,14 @@
         <div class="my-2 my-lg-0" ng-cloak ng-if="user">
 
             <!-- TODO: Remove Instructor Toggle -->
-            @*<div class="pretty p-switch p-slim navbar-text-color">
-                <input type="checkbox" ng-model="user.isInstructor" ng-change="updateUser()" />
+            <div class="pretty p-switch p-slim navbar-text-color">
+                <input type="checkbox" ng-model="user.isInstructor" />
                 <div class="mr-3 state">
                     <label>Instructor</label>
                 </div>
-            </div>*@
+            </div>
             <!---->
-            <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user._id}}">{{user.firstName}} {{user.lastName}}</a></span>
+            <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}"><i class="fa fa-user" aria-hidden="true"></i> {{user.firstName}} {{user.lastName}}</a></span>
             <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
         </div>
     </nav>
@@ -62,7 +62,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="~/js/unsavedChanges.min.js"></script>
-    <script src="~/js/cookies.js"></script>
 
     <!-- Angular Scripts -->
     <script src="~/js/app.js"></script>

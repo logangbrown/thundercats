@@ -5,20 +5,31 @@
 
     $scope.load = function() {
 
-        $http.get("/Home/Courses")
-            .then(function (response) {
-                $scope.courses = response.data;
-            }, function () {
-                toastr["error"]("Error retrieving courses.");
-            });
+        //TODO enable Courses (rename GetCourses), remove dummy data
+        //$http.get("/Home/Courses")
+        //    .then(function (response) {
+        //        $scope.courses = response.data;
+        //    }, function () {
+        //        toastr["error"]("Error retrieving courses.");
+        //    });
+
+        //Dummy Data
+        $scope.courses = {
+            12: { name: "CS 3750 Spring 2018 MW 7:30", courseID: "12", instructorName: "Brad Peterson", isActive: true },
+            14: { name: "CS 3750 Fall 2018 MW 7:30", courseID: "14", instructorName: "Brad Peterson", isActive: true },
+            15: { name: "CS 3750 Spring 2019 MW 7:30", courseID: "15", instructorName: "Brad Peterson", isActive: false }
+        };
 
         $scope.createCourse = function () {
-            $http.post("/Home/AddCourse", $scope.user)
-                .then(function (response) {
-                    $location.path('/course/'+response.data);
-                }, function () {
-                    toastr["error"]("Error creating course.");
-                });
+            //TODO Enable AddCourse (Rename CreateCourse?), disable info toast
+            //$http.post("/Home/AddCourse", $scope.user)
+            //    .then(function (response) {
+            //        $location.path('/course/'+response.data);
+            //    }, function () {
+            //        toastr["error"]("Error creating course.");
+            //    });
+
+            toastr["info"]("Attempted to create course - enable REST endpoint");
         };
 
         $scope.loaded = true;
@@ -26,15 +37,20 @@
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                $scope.$parent.user = response.data;
-                $scope.$parent.loaded = true;
-                $scope.load();
-            }, function () {
-                toastr["error"]("Not logged in.");
-                $location.path('/login');
-            });
+        //TODO Enable CheckSession, remove dummy data
+        //$http.get("/Home/CheckSession")
+        //    .then(function (response) {
+        //        $scope.$parent.user = response.data;
+        //        $scope.$parent.loaded = true;
+        //        $scope.load();
+        //    }, function () {
+        //        toastr["error"]("Not logged in.");
+        //        $location.path('/login');
+        //    });
+
+        //Dummy data
+        toastr["error"]("Not logged in - enable REST endpoint");
+        $location.path('/login');
     } else {
         $scope.load();
     }

@@ -1,31 +1,28 @@
 ﻿angular.module('time').controller('UserCtrl', function ($scope, $http, $routeParams, $location) {
     $scope.loaded = false;
-    $scope._id = $routeParams.ID;
+    $scope.userID = $routeParams.ID;
 
-    if (!$scope._id) $location.path('/users');
+    if (!$scope.userID) $location.path('/users');
 
     $scope.load = function() {
-        $scope.getUser = function () {
-            //TODO Enable User functionality, disable return below
-            //$http.post("/Home/User", $scope._id)
-            //    .then(function (response) {
-            //        return response.data;
-            //    }, function () {
-            //        toastr["error"]("Failed to get user.");
-            //        $location.path('/dashboard');
-            //    });
+        //TODO Enable User functionality, disable dummy data
+        //$http.post("/Home/User", $scope.userID)
+        //    .then(function (response) {
+        //        $scope.user response.data;
+        //    }, function () {
+        //        toastr["error"]("Failed to get user.");
+        //        $location.path('/dashboard');
+        //    });
 
-            return {
-                _id: '5ad54b26fb49e95bf06a1c92',
-                username: "logan",
-                firstName: "Logan",
-                lastName: "Brown",
-                isActive: true,
-                isInstructor: false
-            };
-        }
-
-        $scope.user = $scope.getUser();
+        $scope.user = {
+            userID: '1',
+            username: "test",
+            firstName: "Test",
+            lastName: "User",
+            isActive: true,
+            isInstructor: true
+        };
+        
         $scope.user.currentPassword = '';
         $scope.user.newPassword = '';
         $scope.user.repeatPassword = '';
@@ -38,7 +35,7 @@
             //    }, function () {
             //        toastr["error"]("Failed to save user.");
             //    });
-            toastr["info"]("Attempted to save user.");
+            toastr["info"]("Attempted to save user - enable REST endpoint");
         }
 
         $scope.changePassword = function () {
@@ -68,23 +65,32 @@
             //        toastr["error"]("Failed to change password.");
             //    });
 
-            toastr["info"]("Attempted to change password.");
+            toastr["info"]("Attempted to change password - enable REST endpoint");
         }
         $scope.loaded = true;
     }
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                $scope.$parent.user = response.data;
-                $scope.$parent.loaded = true;
-                $scope.load();
-            }, function () {
-                toastr["error"]("Not logged in.");
-                $location.path('/login');
-            });
-    } else if (!$scope.$parent.user.isInstructor && $scope.$parent.user._id !== $scope._id) {
+        //TODO Enable CheckSession, remove dummy data
+        //$http.get("/Home/CheckSession")
+        //    .then(function (response) {
+        //        $scope.$parent.user = response.data;
+        //        if (!$scope.$parent.user.isInstructor && $scope.$parent.user.userID !== $scope.userID) {
+        //            toastr["error"]("Not Instructor or the specified user.");
+        //            $location.path('/dashboard');
+        //        }
+        //        $scope.$parent.loaded = true;
+        //        $scope.load();
+        //    }, function () {
+        //        toastr["error"]("Not logged in.");
+        //        $location.path('/login');
+        //    });
+
+        //Dummy data
+        toastr["error"]("Not logged in - enable REST endpoint");
+        $location.path('/login');
+    } else if (!$scope.$parent.user.isInstructor && $scope.$parent.user.userID !== $scope.userID) {
         toastr["error"]("Not Instructor or the specified user.");
         $location.path('/dashboard');
     } else {
