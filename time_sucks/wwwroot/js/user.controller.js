@@ -4,7 +4,7 @@
 
     if (!$scope.userID) $location.path('/users');
 
-    $scope.load = function() {
+    $scope.load = function () {
         //TODO Enable User functionality, disable dummy data
         //$http.post("/Home/User", $scope.userID)
         //    .then(function (response) {
@@ -14,14 +14,20 @@
         //        $location.path('/dashboard');
         //    });
 
-        $scope.user = {
-            userID: '1',
-            username: "test",
-            firstName: "Test",
-            lastName: "User",
-            isActive: true,
-            isInstructor: true
-        };
+
+        if ($scope.userID === '1') {
+            $scope.user = {
+                userID: '1',
+                username: "test",
+                firstName: "Test",
+                lastName: "User",
+                isActive: true,
+                isInstructor: true
+            };
+        } else {
+            toastr["info"]("No dummy data for this user.");
+            window.history.back();
+        }
         
         $scope.user.currentPassword = '';
         $scope.user.newPassword = '';

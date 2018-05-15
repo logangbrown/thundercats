@@ -114,3 +114,38 @@
 .instructor-name{
     font-size: 0.8em;
 }
+
+.navbar-icon {
+    color: #18BC9C;
+    font-size: 25px;
+    vertical-align: middle;
+}
+
+.notification-menu {
+    display: inline-block
+}
+
+.notification-menu-button {
+    background: none;
+}
+
+.notification-text {
+    text-align: center;
+    height: 30px;
+}
+
+.notification-badge {
+    position: absolute !important;
+    right: 0px;
+    top: 25px !important;
+}
+
+.dropdown-menu-right {
+    right: 0;
+    left: auto;
+    min-width: 300px;
+}
+
+.clickable {
+    cursor: pointer;
+}

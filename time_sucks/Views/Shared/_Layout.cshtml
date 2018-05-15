@@ -41,7 +41,22 @@
                 </div>
             </div>
             <!---->
-            <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}"><i class="fa fa-user" aria-hidden="true"></i> {{user.firstName}} {{user.lastName}}</a></span>
+
+            <!-- TODO: Fix notifications-->
+            <div class="dropdown notification-menu mr-2">
+                <button class="btn notification-menu-button" data-toggle="dropdown">
+                    <i class="fa fa-bell navbar-icon" aria-hidden="true"></i>
+                    <span class="badge badge-pill badge-light notification-badge">2</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-item-text notification-text">You have a new evaluation to do <a href="">here</a> <i class="fa fa-times-circle ml-2 clickable" style="color: red"></i></div>
+                    <div class="dropdown-item-text notification-text">You have a new evaluation to do <a href="">here</a> <i class="fa fa-times-circle ml-2 clickable" style="color: red"></i></div>
+                    <div class="dropdown-divider"></div>
+                    <a href="" class="dropdown-item text-center">View all notifications</a>
+                </div>
+            </div>
+                
+            <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}">{{user.firstName}} {{user.lastName}}</a></span>
             <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
         </div>
     </nav>
