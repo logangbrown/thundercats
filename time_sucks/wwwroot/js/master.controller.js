@@ -19,6 +19,10 @@
         "hideMethod": "fadeOut"
     };
 
+    $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, {
+        format: 'MM/DD/YY HH:MM'
+    });
+
     $scope.userExists = function () {
         if ($scope.user !== null) {
             $('#navbarSupportedContent').removeClass('invisible');

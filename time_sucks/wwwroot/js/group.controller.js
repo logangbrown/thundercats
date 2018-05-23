@@ -4,11 +4,14 @@
     $scope.group.users = {};
     $scope.newNumber = 10; //TODO get rid of this
 
+    $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, {
+        format: 'MM/DD/YY HH:MM'
+    });
+
     $scope.load = function() {
         $scope.groupID = $routeParams.ID;
 
         if (!$scope.groupID) $location.path('/courses');
-
         
         //TODO Enable Group functionality, disable dummy data
         //$http.post("/Home/Group", $scope.groupID)
@@ -125,6 +128,26 @@
             $scope.updateChart();
         }
 
+        $scope.saveTime = function (t) {
+            //TODO Enable save group functionality, disable info toast
+            //$http.post("/Home/SaveGroup", $scope.group)
+            //    .then(function (response) {
+            //        toastr["success"]("Group saved.");
+            //    }, function () {
+            //        toastr["error"]("Failed to save group.");
+            //    });
+            toastr["info"]("Attempted to save time " + t.timeID + " - enable REST endpoint");
+            $scope.updateChart();
+        }
+
+        $scope.calcHours = function (timeIn, timeOut) {
+            if (timeIn && timeOut) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
         //Used to check whether the currently logged in user is trying to change their own time, or is an instructor
         $scope.isUser = function (id) {
             return (id === $scope.$parent.user.userID || $scope.$parent.user.isInstructor);
@@ -182,6 +205,9 @@
             }
             return false;
         }
+
+        $('#datetimepicker-1-in').datetimepicker('format', 'MM/DD/YY HH:MM' );
+
         $scope.loaded = true;
     }
 

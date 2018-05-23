@@ -48,12 +48,27 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="t in u.time" class="row no-gutters">
-                                <td class="col-5 pr-1"><input class="full-width" type="text" ng-model="t.timeIn" placeholder="mm/dd/yy 00:00" 
-                                                              ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
-                                <td class="col-5 pr-1"><input class="full-width" type="text" ng-model="t.timeOut" placeholder="mm/dd/yy 00:00" 
-                                                              ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
-                                <td class="col-2 pr-1"><input class="full-width" type="text" ng-model="t.hours" placeholder="0" 
-                                                              ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
+                                <td class="col-5 pr-1">
+                                    <div class="input-group date timeslot" id="datetimepicker-{{t.timeID}}-in" data-target-input="nearest">
+                                        <input class="full-width form-control datetimepicker-input" type="text" data-target="#datetimepicker-{{t.timeID}}-in" ng-model="t.timeIn" placeholder="mm/dd/yy 00:00 AM"
+                                               ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="t.hours = calcHours(t.timeIn, t.timeOut); saveTime(t);" />
+                                        <div class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-in" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-5 pr-1">
+                                    <div class="input-group date timeslot" id="datetimepicker-{{t.timeID}}-out" data-target-input="nearest">
+                                        <input class="full-width form-control datetimepicker-input" type="text" data-target="#datetimepicker-{{t.timeID}}-out" ng-model="t.timeOut" placeholder="mm/dd/yy 00:00 AM"
+                                               ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="t.hours = calcHours(t.timeIn, t.timeOut); saveTime(t);" />
+                                        <div class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-out" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-2 pr-1">
+                                    {{t.hours}}
+                                </td>
                             </tr>
                         </tbody>
                     </table>

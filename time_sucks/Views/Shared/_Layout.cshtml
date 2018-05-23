@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap4/bootswatch-flatly.css">
     <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/css/tempusdominus-bootstrap-4.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -41,7 +42,6 @@
                 </div>
             </div>
             <!---->
-
             <!-- TODO: Fix notifications-->
             <div class="dropdown notification-menu mr-2">
                 <button class="btn notification-menu-button" data-toggle="dropdown">
@@ -55,7 +55,7 @@
                     <a href="" class="dropdown-item text-center">View all notifications</a>
                 </div>
             </div>
-                
+
             <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}">{{user.firstName}} {{user.lastName}}</a></span>
             <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
         </div>
@@ -77,6 +77,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script src="~/js/unsavedChanges.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/js/tempusdominus-bootstrap-4.min.js"></script>
+
 
     <!-- Angular Scripts -->
     <script src="~/js/app.js"></script>
