@@ -4,10 +4,6 @@
     $scope.group.users = {};
     $scope.newNumber = 10; //TODO get rid of this
 
-    $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, {
-        format: 'MM/DD/YY HH:MM'
-    });
-
     $scope.load = function() {
         $scope.groupID = $routeParams.ID;
 
@@ -157,6 +153,7 @@
             datasets: [{
                 data: [],
                 backgroundColor: [ //After 10 groups are included in a project, the color will just be gray, add more colors here if there can be more than 10 groups
+                    '#2C3E50', '#3498DB', '#18BC9C', '#F39C12', '#e83e8c', '#6610f2', '#fd7e14', '#E74C3C', '#6f42c1', '#95a5a6',
                     '#2C3E50', '#3498DB', '#18BC9C', '#F39C12', '#e83e8c', '#6610f2', '#fd7e14', '#E74C3C', '#6f42c1', '#95a5a6'
                 ]
             }],
@@ -206,8 +203,14 @@
             return false;
         }
 
-        $('#datetimepicker-1-in').datetimepicker('format', 'MM/DD/YY HH:MM' );
-
+        $scope.initPickers = function(timeID) {
+            $('#datetimepicker-'+timeID+'-in').datetimepicker({
+                format: 'MM/DD/YY HH:MM'
+            });
+            $('#datetimepicker-' + timeID + '-out').datetimepicker({
+                format: 'MM/DD/YY HH:MM'
+            });
+        }
         $scope.loaded = true;
     }
 
