@@ -28,18 +28,17 @@
     }
 
     $scope.logout = function () {
-        //Enable Logout, disable dummy data and info toast
-        //$http.get("/Home/Logout")
-        //    .then(function (response) {
-        //        $scope.user = null;
-        //        $location.path('/login');
-        //    }, function () {
-        //        toastr["error"]("Failed to logout.");
-        //    });
+        $http.get("/Home/Logout")
+            .then(function (response) {
+                $scope.user = null;
+                $location.path('/login');
+            }, function () {
+                toastr["error"]("Failed to logout.");
+            });
 
         //Dummy Data
-        $scope.user = null;
-        $location.path('/login');
-        toastr["info"]("Simulated logout - enable REST endpoint");
+        //$scope.user = null;
+        //$location.path('/login');
+        //toastr["info"]("Simulated logout - enable REST endpoint");
     }
 });

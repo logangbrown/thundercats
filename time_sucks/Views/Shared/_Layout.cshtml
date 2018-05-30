@@ -26,7 +26,7 @@
                 <li class="nav-item" ng-class="{active: location === '/courses'}">
                     <a class="nav-link" href="/#!/courses">Courses</a>
                 </li>
-                <li class="nav-item" ng-class="{active: location === '/users'}" ng-cloak ng-if="user.isInstructor">
+                <li class="nav-item" ng-class="{active: location === '/users'}" ng-cloak ng-if="user.type === 'A'">
                     <a class="nav-link" href="/#!/users">Users</a>
                 </li>
             </ul>
@@ -34,16 +34,16 @@
         <div class="my-2 my-lg-0" ng-cloak ng-if="user">
 
             <!-- TODO: Remove Instructor Toggle -->
-            <div class="pretty p-switch p-slim navbar-text-color">
+            @*<div class="pretty p-switch p-slim navbar-text-color">
                 <input type="checkbox" ng-model="user.isInstructor" />
                 <div class="mr-3 state">
                     <label>Instructor</label>
                 </div>
-            </div>
+            </div>*@
             <!---->
 
-            <!-- TODO: Fix notifications-->
-            <div class="dropdown notification-menu mr-2">
+            <!-- Unused notifications-->
+            @*<div class="dropdown notification-menu mr-2">
                 <button class="btn notification-menu-button" data-toggle="dropdown">
                     <i class="fa fa-bell navbar-icon" aria-hidden="true"></i>
                     <span class="badge badge-pill badge-light notification-badge">2</span>
@@ -54,7 +54,7 @@
                     <div class="dropdown-divider"></div>
                     <a href="" class="dropdown-item text-center">View all notifications</a>
                 </div>
-            </div>
+            </div>*@
                 
             <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}">{{user.firstName}} {{user.lastName}}</a></span>
             <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>

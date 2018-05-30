@@ -21,24 +21,24 @@
         //Dummy data
         if ($scope.groupID === "1") {
             $scope.group = {
-                groupID: "1",
+                groupID: 1,
                 name: "Group Awesome",
                 isActive: true,
                 users: {
-                    '1': {
-                        userID: '1',
+                    1: {
+                        userID: 1,
                         firstName: "Test",
                         lastName: "User",
                         time: {
                             1: {
-                                timeID: "1",
+                                timeID: 1,
                                 hours: "3",
                                 isEdited: false,
                                 timeIn: "04/05/18 19:30",
                                 timeOut: "04/05/18 21:30"
                             },
                             4: {
-                                timeID: "4",
+                                timeID: 4,
                                 hours: "2",
                                 isEdited: true,
                                 timeIn: "04/05/18 19:30",
@@ -46,13 +46,13 @@
                             }
                         }
                     },
-                    '2': {
-                        userID: '2',
+                    2: {
+                        userID: 2,
                         firstName: "Rizwan",
                         lastName: "Mohammed",
                         time: {
                             2: {
-                                timeID: "2",
+                                timeID: 2,
                                 hours: "4",
                                 isEdited: false,
                                 timeIn: "04/05/18 19:30",
@@ -60,13 +60,13 @@
                             }
                         }
                     },
-                    '3': {
-                        userID: '3',
+                    3: {
+                        userID: 3,
                         firstName: "Skylar",
                         lastName: "Olsen",
                         time: {
                             3: {
-                                timeID: "3",
+                                timeID: 3,
                                 hours: "5",
                                 isEdited: false,
                                 timeIn: "04/05/18 19:30",
@@ -127,13 +127,15 @@
 
         //Used to check whether the currently logged in user is trying to change their own time, or is an instructor
         $scope.isUser = function (id) {
-            return (id === $scope.$parent.user.userID || $scope.$parent.user.isInstructor);
+            return (id === $scope.$parent.user.userID || $scope.$parent.user.type === 'A');
         }
 
         var data = { //Data and labels are set in the setData function
             datasets: [{
                 data: [],
-                backgroundColor: [ //After 10 groups are included in a project, the color will just be gray, add more colors here if there can be more than 10 groups
+                backgroundColor: [ //After 30 groups are included in a project, the color will just be gray, add more colors here if there can be more than 30 groups
+                    '#2C3E50', '#3498DB', '#18BC9C', '#F39C12', '#e83e8c', '#6610f2', '#fd7e14', '#E74C3C', '#6f42c1', '#95a5a6',
+                    '#2C3E50', '#3498DB', '#18BC9C', '#F39C12', '#e83e8c', '#6610f2', '#fd7e14', '#E74C3C', '#6f42c1', '#95a5a6',
                     '#2C3E50', '#3498DB', '#18BC9C', '#F39C12', '#e83e8c', '#6610f2', '#fd7e14', '#E74C3C', '#6f42c1', '#95a5a6'
                 ]
             }],
@@ -187,20 +189,19 @@
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        //TODO Enable CheckSession, remove dummy data
-        //$http.get("/Home/CheckSession")
-        //    .then(function (response) {
-        //        $scope.$parent.user = response.data;
-        //        $scope.$parent.loaded = true;
-        //        $scope.load();
-        //    }, function () {
-        //        toastr["error"]("Not logged in.");
-        //        $location.path('/login');
-        //    });
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                $scope.$parent.user = response.data;
+                $scope.$parent.loaded = true;
+                $scope.load();
+            }, function () {
+                toastr["error"]("Not logged in.");
+                $location.path('/login');
+            });
 
         //Dummy data
-        toastr["error"]("Not logged in - enable REST endpoint");
-        $location.path('/login');
+        //toastr["error"]("Not logged in - enable REST endpoint");
+        //$location.path('/login');
     } else {
         $scope.load();
     }

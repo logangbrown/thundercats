@@ -17,12 +17,12 @@
 
         if ($scope.userID === '1') {
             $scope.user = {
-                userID: '1',
+                userID: 1,
                 username: "test",
                 firstName: "Test",
                 lastName: "User",
                 isActive: true,
-                isInstructor: true
+                type: 'S'
             };
         } else {
             toastr["info"]("No dummy data for this user.");
@@ -48,16 +48,13 @@
             if ($scope.user.username === '') {
                 toastr['error']("Please enter a Username");
                 return;
-            } else if ($scope.user.displayName === '') {
-                toastr['error']("Please enter a Display Name");
-                return;
             } else if ($scope.user.newPassword === '') {
                 toastr["error"]("Please enter a Password");
                 return;
             } else if ($scope.user.repeatPassword !== $scope.password) {
                 toastr["error"]("Your passwords don't match.");
                 return;
-            } else if (!$scope.$parent.user.isInstructor && $scope.user.currentPassword === '')
+            } else if ($scope.$parent.user.type !== 'A' && $scope.user.currentPassword === '') //TODO look at this
 
             $scope.user.currentPassword = CryptoJS.SHA256($scope.user.curretPassword).toString(CryptoJS.enc.Hex);
             $scope.user.newPassword = CryptoJS.SHA256($scope.user.newPassword).toString(CryptoJS.enc.Hex);
@@ -78,26 +75,25 @@
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        //TODO Enable CheckSession, remove dummy data
-        //$http.get("/Home/CheckSession")
-        //    .then(function (response) {
-        //        $scope.$parent.user = response.data;
-        //        if (!$scope.$parent.user.isInstructor && $scope.$parent.user.userID !== $scope.userID) {
-        //            toastr["error"]("Not Instructor or the specified user.");
-        //            $location.path('/dashboard');
-        //        }
-        //        $scope.$parent.loaded = true;
-        //        $scope.load();
-        //    }, function () {
-        //        toastr["error"]("Not logged in.");
-        //        $location.path('/login');
-        //    });
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                $scope.$parent.user = response.data;
+                if ($scope.$parent.user.type !== 'A' && $scope.$parent.user.userID !== $scope.userID) {
+                    toastr["error"]("Not Admin or the specified user.");
+                    $location.path('/dashboard');
+                }
+                $scope.$parent.loaded = true;
+                $scope.load();
+            }, function () {
+                toastr["error"]("Not logged in.");
+                $location.path('/login');
+            });
 
         //Dummy data
-        toastr["error"]("Not logged in - enable REST endpoint");
-        $location.path('/login');
-    } else if (!$scope.$parent.user.isInstructor && $scope.$parent.user.userID !== $scope.userID) {
-        toastr["error"]("Not Instructor or the specified user.");
+        //toastr["error"]("Not logged in - enable REST endpoint");
+        //$location.path('/login');
+    } else if ($scope.$parent.user.type !== 'A' && $scope.$parent.user.userID !== $scope.userID) {
+        toastr["error"]("Not Admin or the specified user.");
         $location.path('/dashboard');
     } else {
         $scope.load();

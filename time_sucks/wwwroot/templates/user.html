@@ -17,19 +17,19 @@
                     <br />
                     <input class="mb-1" type="text" name="lastName" ng-model="user.lastName" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
                 </div>
-                <div class="mx-auto">
-                    <div class="pretty p-default">
-                        <input type="checkbox" ng-model="user.isActive" ng-change="saveUser()" ng-disabled="!$parent.user.isInstructor" />
+                <div class="mx-auto" style="padding-left: 99px;">
+                    <div class="pretty p-default mr-4">
+                        <input type="checkbox" ng-model="user.isActive" ng-change="saveUser()" ng-disabled="$parent.user.type !== 'A'" />
                         <div class="state p-primary">
                             <label>Active</label>
                         </div>
                     </div>
-                    <div class="pretty p-default">
-                        <input type="checkbox" ng-model="user.isInstructor" ng-change="saveUser()" ng-disabled="!$parent.user.isInstructor" />
-                        <div class="state p-primary">
-                            <label>Instructor</label>
-                        </div>
-                    </div>
+                    <label>Type: </label>
+                    <select ng-model="user.type" ng-change="saveUser()" ng-disabled="$parent.user.type !== 'A'">
+                        <option value="S">Student</option>
+                        <option value="I">Instructor</option>
+                        <option value="A">Admin</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
                     <label class="mb-2"  for="repeatPassword">Repeat Password</label>
                 </div>
                 <div class="col-6 pl-0">
-                    <input class="mb-1" type="password" name="currentPassword" ng-disabled="$parent.user.isInstructor" />
+                    <input class="mb-1" type="password" name="currentPassword" ng-disabled="$parent.user.type === 'A'" />
                     <br />
                     <input class="mb-1" type="password" name="newPassword" />
                     <br />

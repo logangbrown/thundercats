@@ -9,7 +9,7 @@
                 <th>Name</th>
                 <th>Username</th>
                 <th class="text-center">Active</th>
-                <th class="text-center">Instructor</th>
+                <th class="text-center">Type</th>
             </tr>
         </thead>
         <tbody ng-repeat="u in users">
@@ -25,12 +25,11 @@
                     </div>
                 </td>
                 <td class="text-center">
-                    <div class="pretty p-default mr-0">
-                        <input type="checkbox" ng-model="u.isInstructor" ng-change="saveUser(u)" />
-                        <div class="state p-primary">
-                            <label></label>
-                        </div>
-                    </div>
+                    <select ng-model="u.type" ng-change="saveUser(u)">
+                        <option value="S">Student</option>
+                        <option value="I">Instructor</option>
+                        <option value="A">Admin</option>
+                    </select>
                 </td>
             </tr>
         </tbody>

@@ -12,45 +12,45 @@
 
         //Dummy Data
         $scope.users = {
-            '1': {
-                userID: '1',
+            1: {
+                userID: 1,
                 username: "test",
                 firstName: "Test",
                 lastName: "User",
                 isActive: true,
-                isInstructor: true
+                type: 'S'
             },
-            '5': {
-                userID: '15',
+            15: {
+                userID: 15,
                 username: "logan",
                 firstName: "Logan",
                 lastName: "Brown",
                 isActive: true,
-                isInstructor: false
+                type: 'I'
             },
-            '2': {
-                    userID: '2',
+            2: {
+                userID: 2,
                 username: "riz",
                 firstName: "Rizwan",
                 lastName: "Mohammed",
                 isActive: true,
-                isInstructor: false
+                type: 'S'
             },
-            '3': {
-                userID: '3',
+            3: {
+                userID: 3,
                 username: "skylar",
                 firstName: "Skylar",
                 lastName: "Olsen",
                 isActive: false,
-                isInstructor: false
+                type: 'S'
             },
-            '4': {
-                userID: '4',
+            4: {
+                userID: 4,
                 username: "brad",
                 firstName: "Brad",
                 lastName: "Peterson",
                 isActive: true,
-                isInstructor: true
+                type: 'A'
             }
         };
 
@@ -69,26 +69,25 @@
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        //TODO Enable CheckSession, remove dummy data
-        //$http.get("/Home/CheckSession")
-        //    .then(function (response) {
-        //        $scope.$parent.user = response.data;
-        //        if (!$scope.$parent.user.isInstructor) {
-        //            toastr["error"]("Not Instructor.");
-        //            $location.path('/dashboard');
-        //        }
-        //        $scope.$parent.loaded = true;
-        //        $scope.load();
-        //    }, function () {
-        //        toastr["error"]("Not logged in.");
-        //        $location.path('/login');
-        //    });
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                $scope.$parent.user = response.data;
+                if ($scope.$parent.user.type !== 'A') {
+                    toastr["error"]("Not Admin.");
+                    $location.path('/dashboard');
+                }
+                $scope.$parent.loaded = true;
+                $scope.load();
+            }, function () {
+                toastr["error"]("Not logged in.");
+                $location.path('/login');
+            });
 
         //Dummy data
-        toastr["error"]("Not logged in - enable REST endpoint");
-        $location.path('/login');
-    } else if (!$scope.$parent.user.isInstructor) {
-        toastr["error"]("Not Instructor.");
+        //toastr["error"]("Not logged in - enable REST endpoint");
+        //$location.path('/login');
+    } else if ($scope.$parent.user.type !== 'A') {
+        toastr["error"]("Not Admin.");
         $location.path('/dashboard');
     } else {
         $scope.load();

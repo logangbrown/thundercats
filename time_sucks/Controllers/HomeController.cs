@@ -19,75 +19,70 @@ namespace time_sucks.Controllers
             return View();
         }
 
-        [HttpGet]
-        public string Hello()
+        public IActionResult Error()
         {
-            MongoGateway dbGateway = new MongoGateway();
-
-            //var collection = dbGateway.Users;
-            //var list = collection.Find(_ => true).ToList();
-            //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
-
-
-
-            //var list = DataAccess.GetUserList();
-            //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
-        
-
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser("asdf"));
-
-
-
-
-            // return "Hello World";
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        //[HttpGet]
+        //public string Hello()
+        //{
+        //    MongoGateway dbGateway = new MongoGateway();
+
+        //    //var collection = dbGateway.Users;
+        //    //var list = collection.Find(_ => true).ToList();
+        //    //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
+
+
+
+        //    //var list = DataAccess.GetUserList();
+        //    //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
+
+
+
+        //    return Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser("asdf"));
+
+
+
+
+        //    // return "Hello World";
+        //}
+
+
+        #region REST Endpoints
         /// <summary>
         /// Returns the session for a given User. Otherwise returns null
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
         [HttpGet]
-        public User CheckSession()
+        public IActionResult CheckSession()
         {
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
             if (user != null)
             {
-                return user;
+                return Ok(user);
             }
             else
             {
-                return null;
+                return Unauthorized(); //Unauthorized (401) if there isn't a user in the session
             }
-
         }
 
         /// <summary>
-        /// Returns if the current user is an instructor. Otherwise returns null
+        /// Returns the currently logged in user's type. Otherwise returns null character
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public bool CheckInstructor()
+        public char getPermission()
         {
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
             
-            if (user.isInstructor == true)
+            if(user != null)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                return user.type;
             }
 
-        }
-
-
-
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return '\0'; //Null character literal
         }
 
         /// <summary>
@@ -102,15 +97,16 @@ namespace time_sucks.Controllers
             User user = JsonConvert.DeserializeObject<User>(JsonString);
 
             //Check if user already exists
-            if (DataAccess.GetUser(user.username) != null)
+            if (DBHelper.getUser(user.username) != null)
             {
-                return null;
+                return NoContent();
             }
 
-            //put the User in the Database
-            DataAccess.AddUser(user);
+            //put the User in the Database, set the userID to be the returned value
+            user.userID = (int)DBHelper.addUser(user);
 
-
+            //If the userID is 0, the query must have failed throw an error to the front end
+            if (user.userID == 0) return Error();
 
             //Store Session information for this user using Username
             HttpContext.Session.SetObjectAsJson("user", user);
@@ -119,7 +115,8 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
-        /// Allows a user to log in. Returns a 200 if successful, null otherwise
+        /// Allows a user to log in. Returns an OK (200) if successful, No Content (204) if the
+        /// username doesn't exist, and Unauthorized (401) if the password is incorrect
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
@@ -131,27 +128,33 @@ namespace time_sucks.Controllers
             User user = JsonConvert.DeserializeObject<User>(JsonString);
 
             //Check database for User and create a session
-            /*
-             * Query the database here
-             */
-            User DBUser = JsonConvert.DeserializeObject<User>(Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser(user.username)));
 
-            //return 404 if we dont have a user
+            //Check if the user exists
+            User DBUser = null;
+            if(DBHelper.getUser(user.username) != null)
+            {
+                DBUser = DBHelper.getUser(user.username, user.password);
+            } else
+            {
+                //return No Content (204) if there isn't a user
+                return NoContent();
+            }
+
+            //return Unauthorized (401) if the password is wrong
             if (DBUser == null)
-                return null; 
+                return Unauthorized();
 
+            //return Forbidden (403) if the user's account isn't active
+            if (!DBUser.isActive)
+                return StatusCode(403);
 
-
-            if (user.username == DBUser.username && user.password == DBUser.password)
+            if (user.username == DBUser.username)
             {
                 // We found a user! Send them to the Dashboard and save their Session
                 HttpContext.Session.SetObjectAsJson("user", DBUser);
                 return Ok();
-
             }
-
             return null;
-
         }
 
         /// <summary>
@@ -162,16 +165,18 @@ namespace time_sucks.Controllers
         [HttpPost]
         public IActionResult AddCourse([FromBody]Object json)
         {
-            String CourseID = null;
+            int CourseID = 0;
             String JsonString = json.ToString();
 
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
 
-            if (user.isInstructor == true)
+            if (user.type == 'I' || user.type == 'A')
             {
-                CourseID = DataAccess.AddCourse(user._id.ToString());
+                //TODO
+                //CourseID = DataAccess.AddCourse(user.userID.ToString());
+                CourseID = 0;
                 return Ok(CourseID);
 
             }
@@ -194,7 +199,8 @@ namespace time_sucks.Controllers
 
 
             //Check database for Course based on ID
-            Course DBCourse = DataAccess.GetDetailedCourse(course._id);
+            //Course DBCourse = DataAccess.GetDetailedCourse(course._id);
+            Course DBCourse = null;
 
             //return null if we dont have a user
             if (DBCourse == null)
@@ -218,7 +224,8 @@ namespace time_sucks.Controllers
 
 
             //Send ID and course name to the DB
-            DataAccess.UpdateCourse(course);
+            //TODO
+            //DataAccess.UpdateCourse(course);
 
 
 
@@ -230,9 +237,11 @@ namespace time_sucks.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Courses()
-        { 
-            List<Course> allCourses = DataAccess.GetCourses();
+        public IActionResult GetCourses()
+        {
+            //TODO
+            //List<Course> allCourses = DataAccess.GetCourses();
+            List<Course> allCourses = null;
 
             return Ok(allCourses);
         }
@@ -249,8 +258,9 @@ namespace time_sucks.Controllers
 
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-
-            String DBProjectID = DataAccess.AddProject(course._id);
+            //TODO
+            //String DBProjectID = DataAccess.AddProject(course._id);
+            int DBProjectID = 0;
 
             return Ok(DBProjectID);
         }
@@ -260,14 +270,16 @@ namespace time_sucks.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Project([FromBody]Object json)
+        public IActionResult GetProject([FromBody]Object json)
         {
             String JsonString = json.ToString();
 
             Project project = JsonConvert.DeserializeObject<Project>(JsonString);
 
             //Check database for Project based on ID
-           Project DBProject = DataAccess.GetProject(project._id);
+            //TODO
+            //Project DBProject = DataAccess.GetProject(project._id);
+            Project DBProject = null;
 
             //return 404 if we dont have a user
             if (DBProject == null)
@@ -291,7 +303,8 @@ namespace time_sucks.Controllers
             Project project = JsonConvert.DeserializeObject<Project>(JsonString);
 
             //Send DB ID and name
-            DataAccess.UpdateProject(project);
+            //TODO
+            //DataAccess.UpdateProject(project);
 
             return Ok();
 
@@ -316,8 +329,8 @@ namespace time_sucks.Controllers
             {
                 return null;
             }
-
         }
+        #endregion
 
     }
 }

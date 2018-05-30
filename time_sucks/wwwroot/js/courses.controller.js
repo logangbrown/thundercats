@@ -15,9 +15,9 @@
 
         //Dummy Data
         $scope.courses = {
-            12: { name: "CS 3750 Spring 2018 MW 7:30", courseID: "12", instructorName: "Brad Peterson", isActive: true },
-            14: { name: "CS 3750 Fall 2018 MW 7:30", courseID: "14", instructorName: "Brad Peterson", isActive: true },
-            15: { name: "CS 3750 Spring 2019 MW 7:30", courseID: "15", instructorName: "Brad Peterson", isActive: false }
+            12: { name: "CS 3750 Spring 2018 MW 7:30", courseID: 12, instructorName: "Brad Peterson", isActive: true },
+            14: { name: "CS 3750 Fall 2018 MW 7:30", courseID: 14, instructorName: "Brad Peterson", isActive: true },
+            15: { name: "CS 3750 Spring 2019 MW 7:30", courseID: 15, instructorName: "Brad Peterson", isActive: false }
         };
 
         $scope.createCourse = function () {
@@ -37,20 +37,19 @@
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        //TODO Enable CheckSession, remove dummy data
-        //$http.get("/Home/CheckSession")
-        //    .then(function (response) {
-        //        $scope.$parent.user = response.data;
-        //        $scope.$parent.loaded = true;
-        //        $scope.load();
-        //    }, function () {
-        //        toastr["error"]("Not logged in.");
-        //        $location.path('/login');
-        //    });
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                $scope.$parent.user = response.data;
+                $scope.$parent.loaded = true;
+                $scope.load();
+            }, function () {
+                toastr["error"]("Not logged in.");
+                $location.path('/login');
+            });
 
         //Dummy data
-        toastr["error"]("Not logged in - enable REST endpoint");
-        $location.path('/login');
+        //toastr["error"]("Not logged in - enable REST endpoint");
+        //$location.path('/login');
     } else {
         $scope.load();
     }

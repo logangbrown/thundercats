@@ -6,7 +6,7 @@
         $scope.user.firstName = '';
         $scope.user.lastName = '';
         $scope.user.password = '';
-        $scope.user.isInstructor = false;
+        $scope.user.type = 'S';
         $scope.password = '';
         $scope.repeatPassword = '';
 
@@ -25,17 +25,22 @@
                 return;
             }
 
-            $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
+            //TODO Reenable hashing
+            //$scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
+            $scope.user.password = $scope.password;
 
-            //TODO Enable RegisterUser, disable info toast
-            //$http.post("/Home/RegisterUser", $scope.user)
-            //    .then(function () { //Success Callback
-            //        toastr["success"]("User created.");
-            //        $location.path('/dashboard');
-            //    }, function () { //Failure Callback
-            //        toastr["error"]("Username already taken.");
-            //    });
-            toastr["info"]("Attempted to register user - enable REST endpoint");
+            $http.post("/Home/RegisterUser", $scope.user)
+                .then(function (response) { //Success Callback
+                    if (response.status === 204) {
+                        toastr["error"]("Username already taken.");
+                    } else {
+                        toastr["success"]("User created.");
+                        $location.path('/dashboard');
+                    }
+                }, function () { //Failure Callback
+                    toastr["error"]("Error creating user.");
+                });
+            //toastr["info"]("Attempted to register user - enable REST endpoint");
         };
 
         $scope.cancel = function () {
@@ -49,25 +54,24 @@
 
     //Check if a user is logged in, if they are, redirect to appropriate page
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        //TODO Enable CheckSession
-        //$http.get("/Home/CheckSession")
-        //    .then(function (response) {
-        //        if (response.data === '') {
-        //            $scope.load();
-        //            return;
-        //        }
-        //        $scope.$parent.user = response.data;
-        //        $scope.$parent.loaded = true;
-        //        if ($scope.$parent.user.isInstructor) $location.path('/courses');
-        //        else $location.path('/dashboard');
-        //    }, function () {
-        //        $scope.load();
-        //    });
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                if (response.data === '') {
+                    $scope.load();
+                    return;
+                }
+                $scope.$parent.user = response.data;
+                $scope.$parent.loaded = true;
+                if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
+                else $location.path('/dashboard');
+            }, function () {
+                $scope.load();
+            });
 
         //Dummy
-        $scope.load();
+        //$scope.load();
     } else {
-        if ($scope.$parent.user.isInstructor) $location.path('/courses');
+        if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
         else $location.path('/dashboard');
     }
 });

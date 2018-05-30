@@ -13,26 +13,35 @@
                 return;
             }
 
-            $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
+            //TODO Reenable hashing
+            //$scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
+            $scope.user.password = $scope.password;
 
-            //TODO Enable Login, disable dummy data
-            //$http.post("/Home/LoginUser", $scope.user)
-            //    .then(function (response) {
-            //        $location.path('/dashboard'); //Changes to the dashboard URL for normal user
-            //    }, function () {
-            //        toastr["error"]("Username or password incorrect.");
-            //    });
+            $http.post("/Home/LoginUser", $scope.user)
+                .then(function (response) {
+                    if (response.status === 204) {
+                        toastr["error"]("Username does not exist.");
+                    } else {
+                        $location.path('/dashboard'); //Changes to the dashboard URL for normal user
+                    }
+                }, function (response) {
+                    if (response.status === 401) {
+                        toastr["error"]("Password incorrect.")
+                    } else if (response.status === 403) {
+                        toastr["error"]("User account has been deactivated.")
+                    }
+                });
 
             //Dummy data
-            $scope.$parent.user = {
-                userID: '1',
-                username: 'test',
-                firstName: 'Test',
-                lastName: 'User',
-                isInstructor: true
-            };
-            toastr["info"]("Simulated login - enable REST endpoint");
-            $location.path('/dashboard');
+            //$scope.$parent.user = {
+            //    userID: '1',
+            //    username: 'test',
+            //    firstName: 'Test',
+            //    lastName: 'User',
+            //    type: 'S'
+            //};
+            //toastr["info"]("Simulated login - enable REST endpoint");
+            //$location.path('/dashboard');
             //End Dummy Data
         };
 
@@ -44,25 +53,21 @@
     };
 
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        //TODO Enable CheckSession
-        //$http.get("/Home/CheckSession")
-        //    .then(function (response) {
-        //        if (response.data === '') {
-        //            $scope.load();
-        //            return;
-        //        }
-        //        $scope.$parent.user = response.data;
-        //        $scope.$parent.loaded = true;
-        //        if ($scope.$parent.user.isInstructor) $location.path('/courses');
-        //        else $location.path('/dashboard');
-        //    }, function () {
-        //        $scope.load();
-        //    });
-
-        //Dummy
-        $scope.load();
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                if (response.data === '') {
+                    $scope.load();
+                    return;
+                }
+                $scope.$parent.user = response.data;
+                $scope.$parent.loaded = true;
+                if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
+                else $location.path('/dashboard');
+            }, function () {
+                $scope.load();
+            });
     } else {
-        if ($scope.$parent.user.isInstructor) $location.path('/courses');
+        if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
         else $location.path('/dashboard');
     }
 });

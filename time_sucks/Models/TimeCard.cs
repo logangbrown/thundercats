@@ -9,13 +9,13 @@ namespace time_sucks.Models
 {
     public class TimeCard
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string timeID { get; set; }
-        public string hours { get; set; }
+        public int timeslotID { get; set; }
+        public double hours { get; set; }
         public DateTime timeIn { get; set; }
         public DateTime timeOut { get; set; }
         public bool isEdited { get; set; }
-        public DateTime CreatedOn { get; set; }
+        public DateTime createdOn { get; set; }
+        public int userID { get; set; }
+        public int groupID { get; set; }
     }
 }

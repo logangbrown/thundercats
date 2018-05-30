@@ -21,11 +21,11 @@
         if ($scope.projectID === "1") {
             $scope.project = {
                 name: "PHP Game",
-                projectID: "1",
+                projectID: 1,
                 isActive: true,
                 groups: {
                     1: {
-                        groupID: "1",
+                        groupID: 1,
                         name: "Group Awesome",
                         isActive: true,
                         users: {
@@ -35,7 +35,7 @@
                                 lastName: "Brown",
                                 time: {
                                     1: {
-                                        timeID: "1",
+                                        timeID: 1,
                                         hours: "3",
                                         isEdited: false
                                     }
@@ -47,7 +47,7 @@
                                 lastName: "Mohammed",
                                 time: {
                                     2: {
-                                        timeID: "2",
+                                        timeID: 2,
                                         hours: "4",
                                         isEdited: false
                                     }
@@ -59,7 +59,7 @@
                                 lastName: "Olsen",
                                 time: {
                                     3: {
-                                        timeID: "3",
+                                        timeID: 3,
                                         hours: "5",
                                         isEdited: false
                                     }
@@ -68,7 +68,7 @@
                         }
                     },
                     2: {
-                        groupID: "2",
+                        groupID: 2,
                         name: "Group One Thing",
                         isActive: true,
                         users: {
@@ -78,7 +78,7 @@
                                 lastName: "Brown",
                                 time: {
                                     4: {
-                                        timeID: "4",
+                                        timeID: 4,
                                         hours: "1",
                                         isEdited: false
                                     }
@@ -90,7 +90,7 @@
                                 lastName: "Mohammed",
                                 time: {
                                     5: {
-                                        timeID: "5",
+                                        timeID: 5,
                                         hours: "1",
                                         isEdited: false
                                     }
@@ -102,7 +102,7 @@
                                 lastName: "Olsen",
                                 time: {
                                     6: {
-                                        timeID: "6",
+                                        timeID: 6,
                                         hours: "1",
                                         isEdited: false
                                     }
@@ -111,7 +111,7 @@
                         }
                     },
                     3: {
-                        groupID: "3",
+                        groupID: 3,
                         name: "Group Other Thing",
                         isActive: true,
                         users: {
@@ -121,7 +121,7 @@
                                 lastName: "Brown",
                                 time: {
                                     7: {
-                                        timeID: "7",
+                                        timeID: 7,
                                         hours: "2",
                                         isEdited: false
                                     }
@@ -133,7 +133,7 @@
                                 lastName: "Mohammed",
                                 time: {
                                     8: {
-                                        timeID: "8",
+                                        timeID: 8,
                                         hours: "2",
                                         isEdited: false
                                     }
@@ -145,7 +145,7 @@
                                 lastName: "Olsen",
                                 time: {
                                     9: {
-                                        timeID: "9",
+                                        timeID: 9,
                                         hours: "2",
                                         isEdited: false
                                     }
@@ -154,7 +154,7 @@
                         }
                     },
                     4: {
-                        groupID: "4",
+                        groupID: 4,
                         name: "Group Four (Inactive)",
                         isActive: false,
                         users: {
@@ -164,7 +164,7 @@
                                 lastName: "Brown",
                                 time: {
                                     10: {
-                                        timeID: "10",
+                                        timeID: 10,
                                         hours: "2",
                                         isEdited: false
                                     }
@@ -176,7 +176,7 @@
                                 lastName: "Mohammed",
                                 time: {
                                     11: {
-                                        timeID: "11",
+                                        timeID: 11,
                                         hours: "2",
                                         isEdited: false
                                     }
@@ -188,7 +188,7 @@
                                 lastName: "Olsen",
                                 time: {
                                     12: {
-                                        timeID: "12",
+                                        timeID: 12,
                                         hours: "2",
                                         isEdited: false
                                     }
@@ -279,20 +279,19 @@
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
     if (!$scope.$parent.user || $scope.$parent.user === '') {
-        //TODO Enable CheckSession, remove dummy data
-        //$http.get("/Home/CheckSession")
-        //    .then(function (response) {
-        //        $scope.$parent.user = response.data;
-        //        $scope.$parent.loaded = true;
-        //        $scope.load();
-        //    }, function () {
-        //        toastr["error"]("Not logged in.");
-        //        $location.path('/login');
-        //    });
+        $http.get("/Home/CheckSession")
+            .then(function (response) {
+                $scope.$parent.user = response.data;
+                $scope.$parent.loaded = true;
+                $scope.load();
+            }, function () {
+                toastr["error"]("Not logged in.");
+                $location.path('/login');
+            });
 
         //Dummy data
-        toastr["error"]("Not logged in - enable REST endpoint");
-        $location.path('/login');
+        //toastr["error"]("Not logged in - enable REST endpoint");
+        //$location.path('/login');
     } else {
         $scope.load();
     }
