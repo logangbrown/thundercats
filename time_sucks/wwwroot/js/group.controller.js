@@ -27,8 +27,8 @@
                 users: {
                     1: {
                         userID: 1,
-                        firstName: "Test",
-                        lastName: "User",
+                        firstName: "Joe",
+                        lastName: "Bob",
                         time: {
                             1: {
                                 timeID: 1,
@@ -48,8 +48,8 @@
                     },
                     2: {
                         userID: 2,
-                        firstName: "Rizwan",
-                        lastName: "Mohammed",
+                        firstName: "Joes",
+                        lastName: "Bobs",
                         time: {
                             2: {
                                 timeID: 2,
@@ -73,6 +73,76 @@
                                 timeOut: "04/05/18 21:30"
                             }
                         }
+                    },
+                    4: {
+                        userID: 3,
+                        firstName: "Skylar",
+                        lastName: "Olsen",
+                        time: {
+                            3: {
+                                timeID: 3,
+                                hours: "5",
+                                isEdited: false,
+                                timeIn: "04/05/18 19:30",
+                                timeOut: "04/05/18 21:30"
+                            }
+                        }
+                    },
+                    5: {
+                        userID: 3,
+                        firstName: "Skylar",
+                        lastName: "Olsen",
+                        time: {
+                            3: {
+                                timeID: 3,
+                                hours: "5",
+                                isEdited: false,
+                                timeIn: "04/05/18 19:30",
+                                timeOut: "04/05/18 21:30"
+                            }
+                        }
+                    },
+                    6: {
+                        userID: 3,
+                        firstName: "Skylar",
+                        lastName: "Olsen",
+                        time: {
+                            3: {
+                                timeID: 3,
+                                hours: "5",
+                                isEdited: false,
+                                timeIn: "04/05/18 19:30",
+                                timeOut: "04/05/18 21:30"
+                            }
+                        }
+                    },
+                    7: {
+                        userID: 3,
+                        firstName: "Skylar",
+                        lastName: "Olsen",
+                        time: {
+                            3: {
+                                timeID: 3,
+                                hours: "5",
+                                isEdited: false,
+                                timeIn: "04/05/18 19:30",
+                                timeOut: "04/05/18 21:30"
+                            }
+                        }
+                    },
+                    8: {
+                        userID: 3,
+                        firstName: "Skylar",
+                        lastName: "Olsen",
+                        time: {
+                            3: {
+                                timeID: 3,
+                                hours: "5",
+                                isEdited: false,
+                                timeIn: "04/05/18 19:30",
+                                timeOut: "04/05/18 21:30"
+                            }
+                        }
                     }
                 }
             };
@@ -81,7 +151,7 @@
             window.history.back();
         }
 
-        $scope.createTime = function (id) {
+        $scope.createTime = function (id, startTime = '') {
             var data = {
                 userID: id,
                 groupID: $scope.groupID
@@ -106,7 +176,7 @@
                 timeID: $scope.newNumber, 
                 hours: "",
                 isEdited: false,
-                timeIn: "",
+                timeIn: startTime,
                 timeOut: ""
             }
             $scope.newNumber++;
@@ -123,6 +193,63 @@
             //    });
             toastr["info"]("Attempted to save group - enable REST endpoint");
             $scope.updateChart();
+        }
+
+        $scope.userInGroup = function () {
+            //Checks that the current user is listed in the current group.
+            var inGroup = false;
+            if (!$scope.group) return false;
+            $.each($scope.group.users, function (index, user) {
+                if (Number(user.userID) === Number($scope.$parent.user.userID)) {
+                    inGroup = true;
+                }
+            });
+            return inGroup;
+        }
+
+        $scope.hasUnfinishedBusiness = function () {
+            var hasUnfinishedBusiness = false;
+            if ($scope.userInGroup()) {
+                $.each($scope.group.users[$scope.$parent.user.userID].time, function (index, time) {
+                    if (time.timeIn !== '' && time.timeOut === '') hasUnfinishedBusiness = true;
+                });
+            }
+            return hasUnfinishedBusiness;
+        }
+
+        $scope.startTime = function () {
+            if ($scope.userInGroup()) {
+                $scope.createTime($scope.$parent.user.userID, moment().format('MM/DD/YY HH:mm'));
+            } else {
+                toastr["error"]("The logged in user isn't a member of the group.");
+            }
+        }
+
+        $scope.endTime = function () {
+            if ($scope.userInGroup()) {
+                $.each($scope.group.users[$scope.$parent.user.userID].time, function (index, time) {
+                    if (time.timeIn !== '' && time.timeOut === '') {
+                        $scope.group.users[$scope.$parent.user.userID].time[time.timeID].timeOut = moment().format('MM/DD/YY HH:mm');
+                        $scope.group.users[$scope.$parent.user.userID].time[time.timeID].hours = moment.duration(
+                            moment($scope.group.users[$scope.$parent.user.userID].time[time.timeID].timeOut).diff(
+                                $scope.group.users[$scope.$parent.user.userID].time[time.timeID].timeIn)).asHours().toFixed(2);
+                        return false;
+                    }
+                });
+            } else {
+                toastr["error"]("The logged in user isn't a member of the group.");
+            }
+        }
+
+        $scope.saveTime = function (userID, timeID) {
+            if ($scope.group.users[userID].time[timeID].timeIn === '' || $scope.group.users[userID].time[timeID].timeOut === ''){
+                $scope.group.users[userID].time[timeID].hours = 0;
+            } else {
+                $scope.group.users[userID].time[timeID].hours = moment.duration(
+                    moment($scope.group.users[userID].time[timeID].timeOut).diff(
+                        $scope.group.users[userID].time[timeID].timeIn)).asHours().toFixed(2);
+            }
+            //TODO Make a new call to save the time entry alone
         }
 
         //Used to check whether the currently logged in user is trying to change their own time, or is an instructor
@@ -174,16 +301,6 @@
             myChart.update();
         }
 
-        $scope.userInGroup = function () {
-            //Checks that the current user is listed in the current group.
-            //Should be used to hide the Join button if it's true
-            for (var u in $scope.group.users) {
-                if (u === $scope.$parent.user.userID) {
-                    return true;
-                }
-            }
-            return false;
-        }
         $scope.loaded = true;
     }
 

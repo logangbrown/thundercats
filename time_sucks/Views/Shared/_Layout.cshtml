@@ -20,13 +20,13 @@
         </button>
         <div class="collapse navbar-collapse invisible" id="navbarSupportedContent" ng-cloak ng-if="userExists()">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item" ng-class="{active: location === '/dashboard'}">
+                <li class="nav-item" ng-class="{active: location.path === '/dashboard'}">
                     <a class="nav-link" href="/#!/dashboard">Dashboard</a>
                 </li>
-                <li class="nav-item" ng-class="{active: location === '/courses'}">
+                <li class="nav-item" ng-class="{active: location.path === '/courses'}">
                     <a class="nav-link" href="/#!/courses">Courses</a>
                 </li>
-                <li class="nav-item" ng-class="{active: location === '/users'}" ng-cloak ng-if="user.type === 'A'">
+                <li class="nav-item" ng-class="{active: location.path === '/users'}" ng-cloak ng-if="user.type === 'A'">
                     <a class="nav-link" href="/#!/users">Users</a>
                 </li>
             </ul>
@@ -35,27 +35,26 @@
 
             <!-- TODO: Remove Instructor Toggle -->
             @*<div class="pretty p-switch p-slim navbar-text-color">
-                <input type="checkbox" ng-model="user.isInstructor" />
-                <div class="mr-3 state">
-                    <label>Instructor</label>
-                </div>
-            </div>*@
+                    <input type="checkbox" ng-model="user.isInstructor" />
+                    <div class="mr-3 state">
+                        <label>Instructor</label>
+                    </div>
+                </div>*@
             <!---->
-
             <!-- Unused notifications-->
             @*<div class="dropdown notification-menu mr-2">
-                <button class="btn notification-menu-button" data-toggle="dropdown">
-                    <i class="fa fa-bell navbar-icon" aria-hidden="true"></i>
-                    <span class="badge badge-pill badge-light notification-badge">2</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <div class="dropdown-item-text notification-text">You have a new evaluation to do <a href="">here</a> <i class="fa fa-times-circle ml-2 clickable" style="color: red"></i></div>
-                    <div class="dropdown-item-text notification-text">You have a new evaluation to do <a href="">here</a> <i class="fa fa-times-circle ml-2 clickable" style="color: red"></i></div>
-                    <div class="dropdown-divider"></div>
-                    <a href="" class="dropdown-item text-center">View all notifications</a>
-                </div>
-            </div>*@
-                
+                    <button class="btn notification-menu-button" data-toggle="dropdown">
+                        <i class="fa fa-bell navbar-icon" aria-hidden="true"></i>
+                        <span class="badge badge-pill badge-light notification-badge">2</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <div class="dropdown-item-text notification-text">You have a new evaluation to do <a href="">here</a> <i class="fa fa-times-circle ml-2 clickable" style="color: red"></i></div>
+                        <div class="dropdown-item-text notification-text">You have a new evaluation to do <a href="">here</a> <i class="fa fa-times-circle ml-2 clickable" style="color: red"></i></div>
+                        <div class="dropdown-divider"></div>
+                        <a href="" class="dropdown-item text-center">View all notifications</a>
+                    </div>
+                </div>*@
+
             <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}">{{user.firstName}} {{user.lastName}}</a></span>
             <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
         </div>
@@ -76,6 +75,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
     <script src="~/js/unsavedChanges.min.js"></script>
 
     <!-- Angular Scripts -->

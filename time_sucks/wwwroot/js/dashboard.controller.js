@@ -4,7 +4,7 @@
         $scope.groups = {};
 
         //TODO Enable Dashboard, disable dummy data
-        //$http.get("/Home/Dashboard")
+        //$http.get("/Home/GetDashboard")
         //    .then(function (response) {
         //        $scope.groups = response.data;
         //    }, function () {

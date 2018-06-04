@@ -149,3 +149,7 @@
 .clickable {
     cursor: pointer;
 }
+
+.inactive-user {
+    background-color: whitesmoke;
+}

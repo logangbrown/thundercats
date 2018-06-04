@@ -47,15 +47,15 @@
                     users: {
                         1: {
                             userID: 1,
-                            firstName: "Logan",
-                            lastName: "Brown",
-                            isActive: false
+                            firstName: "Joe",
+                            lastName: "Bob",
+                            isActive: true
                         },
                         2: {
                             userID: 2,
                             firstName: "Rizwan",
                             lastName: "Mohammed",
-                            isActive: true
+                            isActive: false
                         },
                         3: {
                             userID: 3,
@@ -182,7 +182,7 @@
             //TODO Enable join course functionality, disable info toast
             //$http.post("/Home/JoinCourse", $scope.courseID)
             //    .then(function (response) {
-            //        $scope.courses.users[$scope.$parent.user.userID] = {
+            //        $scope.course.users[$scope.$parent.user.userID] = {
             //            userID: $scope.$parent.user.userID,
             //            firstName: $scope.$parent.user.firstName,
             //            lastName: $scope.$parent.user.lastName,
@@ -195,16 +195,52 @@
             toastr["info"]("Attempted to join course - enable REST endpoint.");
         }
 
+        $scope.leaveCourse = function () {
+            if (confirm('Are you sure you want to leave this course? If you would like to rejoin the course later, you must contact the instructor to be added back into it.')) {
+                //TODO Enable leave course functionality, disable info toast
+                //$http.post("/Home/LeaveCourse", $scope.courseID)
+                //    .then(function (response) {
+                //        $scope.course.users[$scope.$parent.user.userID] = {
+                //            userID: $scope.$parent.user.userID,
+                //            firstName: $scope.$parent.user.firstName,
+                //            lastName: $scope.$parent.user.lastName,
+                //            isActive: false
+                //        };
+                //        toastr["info"]("You've requested to join the course. The instructor must accept your request before you can join any groups.");
+                //    }, function () {
+                //        toastr["error"]("Failed to join course.");
+                //    });
+                $scope.course.users[$scope.$parent.user.userID].isActive = false;
+                toastr["info"]("Attempted to leave course - enable REST endpoint.");
+            } else {
+                // Do nothing!
+            }
+        }
+
         $scope.userInCourse = function () {
             //Checks that the current user is listed in the current course.
             //Should be used to hide the Join button if it's true
+            var inCourse = false;
             if (!$scope.course) return false;
-            for (var u in $scope.course.users) {
-                if (u === $scope.$parent.user.userID) {
-                    return true;
+            $.each($scope.course.users, function (index, user) {
+                if (user.userID === $scope.$parent.user.userID) {
+                    inCourse = true;
                 }
-            }
-            return false;
+            });
+            return inCourse;
+        }
+
+        $scope.userActiveInCourse = function () {
+            //Checks that the current user is listed in the current course.
+            //Should be used to hide the Join button if it's true
+            var inCourse = false;
+            if (!$scope.course) return false;
+            $.each($scope.course.users, function (index, user) {
+                if (user.userID === $scope.$parent.user.userID) {
+                    if (user.isActive) inCourse = true;
+                }
+            });
+            return inCourse;
         }
 
         $scope.hasProjects = function () {

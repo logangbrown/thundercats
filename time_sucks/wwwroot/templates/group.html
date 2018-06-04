@@ -21,19 +21,26 @@
                 <h5>Users</h5>
                 <div class="float-right top-right-buttons">
                     <button class="btn btn-primary" ng-click="joinGroup()" ng-if="!userInGroup()">Join</button>
+                    <button class="btn btn-danger" ng-click="leaveGroup()" ng-if="userInGroup()">Leave</button>
                 </div>
             </div>
 
             <div class="card">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item" ng-repeat="u in group.users">{{u.firstName}} {{u.lastName}}</li>
+                    <li class="list-group-item" ng-repeat="u in group.users" ng-if="userInGroup() && u.userID === $parent.user.userID">{{u.firstName}} {{u.lastName}}</li>
+                    <li class="list-group-item" ng-repeat="u in group.users" ng-if="u.userID !== $parent.user.userID || !userInGroup()">{{u.firstName}} {{u.lastName}}</li>
                 </ul>
             </div>
         </div>
     </div>
 
     <div class="row mt-4">
-        <div class="col-md-6 col-12 mb-4" ng-repeat="u in group.users">
+        <div class="col-12 mb-2">
+            <button class="btn btn-success" ng-click="startTime()" ng-if="userInGroup() && !hasUnfinishedBusiness()">Start Time</button>
+            <button class="btn btn-warning" ng-click="endTime()" ng-if="userInGroup() && hasUnfinishedBusiness()">End Time</button>
+        </div>
+        <!-- put the current user on top if they are in the group -->
+        <div class="col-md-6 col-12 mb-4" ng-if="userInGroup() && u.userID === $parent.user.userID" ng-repeat="u in group.users">
             <div class="card position-relative">
                 <div class="card-header">{{u.firstName}} {{u.lastName}}</div>
                 <i class="fa fa-plus mt-2 mr-2 my-auto card-button" ng-click="createTime(u.userID)" ng-if="isUser(u.userID)"></i>
@@ -48,12 +55,50 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="t in u.time" class="row no-gutters">
-                                <td class="col-5 pr-1"><input class="full-width" type="text" ng-model="t.timeIn" placeholder="mm/dd/yy 00:00" 
-                                                              ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
-                                <td class="col-5 pr-1"><input class="full-width" type="text" ng-model="t.timeOut" placeholder="mm/dd/yy 00:00" 
-                                                              ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
-                                <td class="col-2 pr-1"><input class="full-width" type="text" ng-model="t.hours" placeholder="0" 
-                                                              ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveGroup()"/></td>
+                                <td class="col-5 pr-1">
+                                    <input class="full-width" type="text" ng-model="t.timeIn" placeholder="mm/dd/yy 00:00"
+                                           ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
+                                </td>
+                                <td class="col-5 pr-1">
+                                    <input class="full-width" type="text" ng-model="t.timeOut" placeholder="mm/dd/yy 00:00"
+                                           ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
+                                </td>
+                                <td class="col-2 pr-1">
+                                    {{t.hours}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-12 mb-4" ng-repeat="u in group.users" ng-if="u.userID !== $parent.user.userID || !userInGroup()">
+            <div class="card position-relative">
+                <div class="card-header">{{u.firstName}} {{u.lastName}}</div>
+                <i class="fa fa-plus mt-2 mr-2 my-auto card-button" ng-click="createTime(u.userID)" ng-if="isUser(u.userID)"></i>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr class="row no-gutters">
+                                <th scope="col" class="col-5">Time In</th>
+                                <th scope="col" class="col-5">Time Out</th>
+                                <th scope="col" class="col-2">Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="t in u.time" class="row no-gutters">
+                                <td class="col-5 pr-1">
+                                    <input class="full-width" type="text" ng-model="t.timeIn" placeholder="mm/dd/yy 00:00"
+                                           ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
+                                </td>
+                                <td class="col-5 pr-1">
+                                    <input class="full-width" type="text" ng-model="t.timeOut" placeholder="mm/dd/yy 00:00"
+                                           ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
+                                </td>
+                                <td class="col-2 pr-1">
+                                    {{t.hours}}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
