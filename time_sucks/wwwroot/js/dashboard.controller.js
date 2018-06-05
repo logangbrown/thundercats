@@ -15,27 +15,27 @@
         $scope.groups = {
             1: {
                 groupID: 1,
-                name: "Group Awesome",
+                groupName: "Group Awesome",
                 isActive: true,
-                project: "PHP Game",
-                course: "CS 3750 Spring 2018 MW 7:30",
-                instructor: "Brad Peterson"
+                projectName: "PHP Game",
+                courseName: "CS 3750 Spring 2018 MW 7:30",
+                instructorName: "Brad Peterson"
             },
             2: {
                 groupID: 2,
-                name: "Group One Thing",
+                groupName: "Group One Thing",
                 isActive: true,
-                project: "Multiplayer Conway's Game of Life",
-                course: "CS 3750 Fall 2018 MW 7:30",
-                instructor: "Brad Peterson"
+                projectName: "Multiplayer Conway's Game of Life",
+                courseName: "CS 3750 Fall 2018 MW 7:30",
+                instructorName: "Brad Peterson"
             },
             3: {
                 groupID: 3,
-                name: "Group Other Thing",
+                groupName: "Group Other Thing",
                 isActive: true,
-                project: "Student Time Tracker",
-                course: "CS 3750 Spring 2019 MW 7:30",
-                instructor: "Brad Peterson"
+                projectName: "Student Time Tracker",
+                courseName: "CS 3750 Spring 2019 MW 7:30",
+                instructorName: "Brad Peterson"
             }
         };
 

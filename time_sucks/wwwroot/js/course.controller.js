@@ -22,7 +22,7 @@
         {
             if ($scope.courseID === "12") {
                 $scope.course = {
-                    name: "CS 3750 Spring 2018 MW 7:30",
+                    courseName: "CS 3750 Spring 2018 MW 7:30",
                     courseID: 12,
                     instructorName: "Brad Peterson",
                     instructorID: 68,
@@ -30,17 +30,17 @@
                     projects: {
                         1: {
                             projectID: 1,
-                            name: "PHP Game",
+                            projectName: "PHP Game",
                             isActive: true
                         },
                         2: {
                             projectID: 2,
-                            name: "Multiplayer Conway's Game of Life",
+                            projectName: "Multiplayer Conway's Game of Life",
                             isActive: true
                         },
                         3: {
                             projectID: 3,
-                            name: "Student Time Tracker",
+                            projectName: "Student Time Tracker",
                             isActive: false
                         }
                     },
@@ -67,24 +67,24 @@
                 };
             } else if ($scope.courseID === "14") {
                 $scope.course = {
-                    name: "CS 3750 Fall 2018 MW 7:30",
+                    courseName: "CS 3750 Fall 2018 MW 7:30",
                     id: 14,
                     instructorName: "Brad Peterson",
-                    isActive: 1,
+                    isActive: true,
                     projects: {
                         3: {
                             projectID: 4,
-                            name: "PHP Game",
+                            projectName: "PHP Game",
                             isActive: true
                         },
                         4: {
                             projectID: 5,
-                            name: "Multiplayer Conway's Game of Life",
+                            projectName: "Multiplayer Conway's Game of Life",
                             isActive: true
                         },
                         5: {
                             projectID: 6,
-                            name: "Student Time Tracker",
+                            projectName: "Student Time Tracker",
                             isActive: true
                         }
                     },
@@ -105,24 +105,24 @@
                 };
             } else if ($scope.courseID === "15") {
                 $scope.course = {
-                    name: "CS 3750 Spring 2019 MW 7:30",
+                    courseName: "CS 3750 Spring 2019 MW 7:30",
                     courseID: 15,
                     instructorName: "Brad Peterson",
                     isActive: 0,
                     projects: {
                         1: {
                             projectID: 7,
-                            name: "PHP Game",
+                            projectName: "PHP Game",
                             isActive: true
                         },
                         2: {
                             projectID: 8,
-                            name: "Multiplayer Conway's Game of Life",
+                            projectName: "Multiplayer Conway's Game of Life",
                             isActive: true
                         },
                         3: {
                             projectID: 1,
-                            name: "Student Time Tracker",
+                            projectName: "Student Time Tracker",
                             isActive: true
                         }
                     },

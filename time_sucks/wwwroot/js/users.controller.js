@@ -1,4 +1,5 @@
 ﻿angular.module('time').controller('UsersCtrl', function ($scope, $http, $routeParams, $location) {
+    $scope.search = '';
     $scope.loaded = false;
     $scope.load = function() {
         //TODO Enable Users functionality, disable dummy data

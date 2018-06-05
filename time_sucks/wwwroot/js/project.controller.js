@@ -20,13 +20,13 @@
         //Dummy Data
         if ($scope.projectID === "1") {
             $scope.project = {
-                name: "PHP Game",
+                projectName: "PHP Game",
                 projectID: 1,
                 isActive: true,
                 groups: {
                     1: {
                         groupID: 1,
-                        name: "Group Awesome",
+                        groupName: "Group Awesome",
                         isActive: true,
                         users: {
                             1: {
@@ -69,7 +69,7 @@
                     },
                     2: {
                         groupID: 2,
-                        name: "Group One Thing",
+                        groupName: "Group One Thing",
                         isActive: true,
                         users: {
                             1: {
@@ -112,7 +112,7 @@
                     },
                     3: {
                         groupID: 3,
-                        name: "Group Other Thing",
+                        groupName: "Group Other Thing",
                         isActive: true,
                         users: {
                             1: {
@@ -155,7 +155,7 @@
                     },
                     4: {
                         groupID: 4,
-                        name: "Group Four (Inactive)",
+                        groupName: "Group Four (Inactive)",
                         isActive: false,
                         users: {
                             1: {
@@ -257,7 +257,7 @@
                     }
                 }
                 data.datasets[0].data.push(hours);
-                data.labels.push(g.name);
+                data.labels.push(g.groupName);
             }
         }
 

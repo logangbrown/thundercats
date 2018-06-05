@@ -4,17 +4,17 @@
         <h4>You are not a member of any groups. Find a group through the <a href="/#!/courses">courses</a> page.</h4>
     </div>
     <div class="row">
-        <div class="col-12 col-sm-6 col-md-4 mb-4" ng-repeat="g in groups">
+        <div class="col-12 col-sm-6 col-md-4 mb-4" ng-repeat="g in groups | orderObjectBy :'groupName'">
             <div class="card">
                 <div class="card-header group-name">
-                    <a href="/#!/group/{{g.groupID}}">{{g.name}}</a>
+                    <a href="/#!/group/{{g.groupID}}">{{g.groupName}}</a>
                 </div>
                 <div class="card-body">
-                    <span class="project-name">{{g.project}}</span>
+                    <span class="project-name">{{g.projectName}}</span>
                     <br />
-                    <span class="course-name">{{g.course}}</span>
+                    <span class="course-name">{{g.courseName}}</span>
                     <br />
-                    <span class="instructor-name">{{g.instructor}}</span>
+                    <span class="instructor-name">{{g.instructorName}}</span>
                 </div>
             </div>
         </div>

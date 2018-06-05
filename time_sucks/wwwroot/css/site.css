@@ -44,12 +44,9 @@
 }
 
 .big-button {
-    font-size: 35px;
+    font-size: 30px;
     cursor: pointer;
     color: #2d3d50;
-    position: absolute;
-    right: -8px;
-    top: 25px;
 }
 
 .small-button {
@@ -100,7 +97,7 @@
 }
 
 .is-edited {
-    color: #fd7e14;
+    color: #fd7e14 !important;
 }
 .group-name {
     font-size: 1.2em;
@@ -152,4 +149,18 @@
 
 .inactive-user {
     background-color: whitesmoke;
+}
+
+.date-text {
+    font-size: .9em;
+}
+
+.bottom-right-search {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.form-control {
+    color: black;
 }

@@ -1,5 +1,6 @@
 ﻿angular.module('time').controller('CoursesCtrl', function ($scope, $http, $routeParams, $location) {
     $scope.loaded = false;
+    $scope.search = '';
     $scope.config = {};
     $scope.config.showInactiveCourses = false;
 
@@ -15,9 +16,9 @@
 
         //Dummy Data
         $scope.courses = {
-            12: { name: "CS 3750 Spring 2018 MW 7:30", courseID: 12, instructorName: "Brad Peterson", isActive: true },
-            14: { name: "CS 3750 Fall 2018 MW 7:30", courseID: 14, instructorName: "Brad Peterson", isActive: true },
-            15: { name: "CS 3750 Spring 2019 MW 7:30", courseID: 15, instructorName: "Brad Peterson", isActive: false }
+            12: { courseName: "CS 3750 Spring 2018 MW 7:30", courseID: 12, instructorName: "Brad Peterson", isActive: true },
+            14: { courseName: "CS 3750 Fall 2018 MW 7:30", courseID: 14, instructorName: "Brad Peterson", isActive: true },
+            15: { courseName: "CS 3750 Spring 2019 MW 7:30", courseID: 15, instructorName: "Brad Peterson", isActive: false }
         };
 
         $scope.createCourse = function () {

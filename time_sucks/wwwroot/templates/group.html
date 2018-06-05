@@ -1,6 +1,6 @@
 ﻿<div id="group"  ng-cloak>
     <div class="row position-relative">
-        <h4 class="mt-3 col-sm-9 col-12 float-left"><input class="input-header" type="text" name="groupName" ng-model-options="{debounce: 750}" ng-change="saveGroup()" ng-model="group.name" /></h4>
+        <h4 class="mt-3 col-sm-9 col-12 float-left"><input class="input-header" type="text" name="groupName" ng-model-options="{debounce: 750}" ng-change="saveGroup()" ng-model="group.groupName" /></h4>
         <div class="mt-3 pretty p-switch p-slim col-sm-2 col-12 header-checkbox" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">
             <input type="checkbox" ng-model="group.isActive" ng-change="saveGroup()" />
             <div class="mt-2 state float-right">
@@ -20,15 +20,15 @@
             <div class="position-relative">
                 <h5>Users</h5>
                 <div class="float-right top-right-buttons">
-                    <button class="btn btn-primary" ng-click="joinGroup()" ng-if="!userInGroup()">Join</button>
-                    <button class="btn btn-danger" ng-click="leaveGroup()" ng-if="userInGroup()">Leave</button>
+                    <button class="btn btn-primary" ng-click="joinGroup()" ng-if="!userInGroup() || !group.users[$parent.user.userID].isActive">Join</button>
+                    <button class="btn btn-danger" ng-click="leaveGroup()" ng-if="userInGroup() && group.users[$parent.user.userID].isActive">Leave</button>
                 </div>
             </div>
 
             <div class="card">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item" ng-repeat="u in group.users" ng-if="userInGroup() && u.userID === $parent.user.userID">{{u.firstName}} {{u.lastName}}</li>
-                    <li class="list-group-item" ng-repeat="u in group.users" ng-if="u.userID !== $parent.user.userID || !userInGroup()">{{u.firstName}} {{u.lastName}}</li>
+                    <li class="list-group-item" ng-repeat="u in group.users | orderObjectBy :'firstName'" ng-if="u.userID !== $parent.user.userID || !userInGroup()">{{u.firstName}} {{u.lastName}} <span ng-if="!u.isActive" class="text-danger">(Left Group)</span></li>
                 </ul>
             </div>
         </div>
@@ -39,32 +39,42 @@
             <button class="btn btn-success" ng-click="startTime()" ng-if="userInGroup() && !hasUnfinishedBusiness()">Start Time</button>
             <button class="btn btn-warning" ng-click="endTime()" ng-if="userInGroup() && hasUnfinishedBusiness()">End Time</button>
         </div>
-        <!-- put the current user on top if they are in the group -->
-        <div class="col-md-6 col-12 mb-4" ng-if="userInGroup() && u.userID === $parent.user.userID" ng-repeat="u in group.users">
+        <!-- The current user on top if they are in the group -->
+        <div class="col-lg-6 col-12 mb-4" ng-if="userInGroup() && u.userID === $parent.user.userID" ng-repeat="u in group.users">
             <div class="card position-relative">
                 <div class="card-header">{{u.firstName}} {{u.lastName}}</div>
                 <i class="fa fa-plus mt-2 mr-2 my-auto card-button" ng-click="createTime(u.userID)" ng-if="isUser(u.userID)"></i>
                 <div class="card-body">
-                    <table>
+                    <table class="full-width">
                         <thead>
                             <tr class="row no-gutters">
-                                <th scope="col" class="col-5">Time In</th>
-                                <th scope="col" class="col-5">Time Out</th>
-                                <th scope="col" class="col-2">Hours</th>
+                                <th scope="col" class="col">Time In</th>
+                                <th scope="col" class="col">Time Out</th>
+                                <th scope="col" style="width: 44px;">Hours</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="t in u.time" class="row no-gutters">
-                                <td class="col-5 pr-1">
-                                    <input class="full-width" type="text" ng-model="t.timeIn" placeholder="mm/dd/yy 00:00"
-                                           ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
+                            <tr ng-repeat="t in u.time | orderObjectBy :'timeID':true" class="row no-gutters">
+                                <td class="col pr-1">
+                                    <div class="input-group date timeslot" id="datetimepicker-{{t.timeID}}-in" data-target-input="nearest">
+                                        <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeID}}-in" ng-model="t.timeIn"
+                                               ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)"/>
+                                        <div class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-in" data-toggle="datetimepicker">
+                                            <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="col-5 pr-1">
-                                    <input class="full-width" type="text" ng-model="t.timeOut" placeholder="mm/dd/yy 00:00"
-                                           ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
+                                <td class="col pr-1">
+                                    <div class="input-group date timeslot" id="datetimepicker-{{t.timeID}}-out" data-target-input="nearest">
+                                        <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeID}}-out" ng-model="t.timeOut"
+                                               ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)"/>
+                                        <div class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-out" data-toggle="datetimepicker">
+                                            <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="col-2 pr-1">
-                                    {{t.hours}}
+                                <td class="pr-1" style="width: 44px; position:relative;">
+                                    <span style="position: absolute;">{{t.hours = diffHours(t.timeIn, t.timeOut)}}</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -73,31 +83,42 @@
             </div>
         </div>
 
-        <div class="col-md-6 col-12 mb-4" ng-repeat="u in group.users" ng-if="u.userID !== $parent.user.userID || !userInGroup()">
+        <!-- The rest of the users if the current user is in the group, or all the users if they aren't -->
+        <div class="col-lg-6 col-12 mb-4" ng-repeat="u in group.users | orderObjectBy :'firstName'" ng-if="u.userID !== $parent.user.userID || !userInGroup()">
             <div class="card position-relative">
-                <div class="card-header">{{u.firstName}} {{u.lastName}}</div>
+                <div class="card-header">{{u.firstName}} {{u.lastName}} <span ng-if="!u.isActive" class="text-danger">(Left Group)</span></div>
                 <i class="fa fa-plus mt-2 mr-2 my-auto card-button" ng-click="createTime(u.userID)" ng-if="isUser(u.userID)"></i>
                 <div class="card-body">
-                    <table>
+                    <table class="full-width">
                         <thead>
                             <tr class="row no-gutters">
-                                <th scope="col" class="col-5">Time In</th>
-                                <th scope="col" class="col-5">Time Out</th>
-                                <th scope="col" class="col-2">Hours</th>
+                                <th scope="col" class="col">Time In</th>
+                                <th scope="col" class="col">Time Out</th>
+                                <th scope="col" style="width: 44px;">Hours</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="t in u.time" class="row no-gutters">
-                                <td class="col-5 pr-1">
-                                    <input class="full-width" type="text" ng-model="t.timeIn" placeholder="mm/dd/yy 00:00"
-                                           ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
+                            <tr ng-repeat="t in u.time | orderObjectBy :'timeID':true" class="row no-gutters">
+                                <td class="col pr-1">
+                                    <div class="input-group date timeslot" id="datetimepicker-{{t.timeID}}-in" data-target-input="nearest">
+                                        <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeID}}-in" ng-model="t.timeIn"
+                                               ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)"/>
+                                        <div ng-if="isUser(u.userID)" class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-in" data-toggle="datetimepicker">
+                                            <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="col-5 pr-1">
-                                    <input class="full-width" type="text" ng-model="t.timeOut" placeholder="mm/dd/yy 00:00"
-                                           ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
+                                <td class="col pr-1">
+                                    <div class="input-group date timeslot" id="datetimepicker-{{t.timeID}}-out" data-target-input="nearest">
+                                        <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeID}}-out" ng-model="t.timeOut"
+                                               ng-readonly="!isUser(u.userID)" ng-class="{'is-edited': t.isEdited}" ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)"/>
+                                        <div ng-if="isUser(u.userID)" class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-out" data-toggle="datetimepicker">
+                                            <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="col-2 pr-1">
-                                    {{t.hours}}
+                                <td class="pr-1" style="width: 44px; position:relative;">
+                                    <span style="position: absolute;">{{t.hours = diffHours(t.timeIn, t.timeOut)}}</span>
                                 </td>
                             </tr>
                         </tbody>
