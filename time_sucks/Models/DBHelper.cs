@@ -131,5 +131,76 @@ namespace time_sucks.Models
                 }
             }
         }
+
+        public static List<User> getUsers()
+        {
+            List<User> user = new List<User>();
+
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT * FROM users";
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+
+                            user.Add(new User()
+                            {
+                                userID = reader.GetInt32("userID"),
+                                username = reader.GetString("username"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                                type = reader.GetChar("type"),
+                                isActive = reader.GetBoolean("isActive"),
+                            });
+                        }
+                    }
+                }
+            }
+            return user;
+        }
+
+        public static void deleteUserCourse(int userID, int courseID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM uCourse WHERE userID = @userID AND courseID = @courseID";
+                    cmd.Parameters.AddWithValue("@userID", userID);
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void changeUser(User user)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "UPDATE users SET username = @username, firstName = @firstName, lastName = @lastName, type = @type, isActive = @isActive WHERE userID = @userID";
+                    cmd.Parameters.AddWithValue("@username", user.username);
+                    cmd.Parameters.AddWithValue("@firstName", user.firstName);
+                    cmd.Parameters.AddWithValue("@lastName", user.lastName);
+                    cmd.Parameters.AddWithValue("@type", user.type);
+                    cmd.Parameters.AddWithValue("@isActive", user.isActive);
+                    cmd.Parameters.AddWithValue("@userID", user.userID);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

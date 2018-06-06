@@ -2,6 +2,7 @@
     $scope.loaded = false;
     $scope.user = {};
     $scope.password = '';
+    var hashedPass = '';
 
     $scope.load = function () {
         $scope.login = function () {
@@ -15,8 +16,9 @@
 
             //TODO Reenable hashing
             //$scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
-            $scope.user.password = $scope.password;
 
+            $scope.user.password = $scope.password;
+            
             $http.post("/Home/LoginUser", $scope.user)
                 .then(function (response) {
                     if (response.status === 204) {
@@ -26,9 +28,9 @@
                     }
                 }, function (response) {
                     if (response.status === 401) {
-                        toastr["error"]("Password incorrect.")
+                        toastr["error"]("Password incorrect.");
                     } else if (response.status === 403) {
-                        toastr["error"]("User account has been deactivated.")
+                        toastr["error"]("User account has been deactivated.");
                     }
                 });
 
