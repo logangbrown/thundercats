@@ -101,6 +101,21 @@ namespace time_sucks.Models
             }
         }
         
+        public static void deleteUser(User user, Course course)
+        {   using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM uCourse WHERE userID = @userID AND courseID = @courseID";
+                    cmd.Parameters.AddWithValue("@userID", user.userID);
+                    cmd.Parameters.AddWithValue("@courseID", course.courseID);
+                    
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        
         public static void changeUser(User user)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
