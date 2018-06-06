@@ -1,7 +1,10 @@
-﻿angular.module('time').controller('LoginCtrl', function ($scope, $http, $routeParams, $location) {
+﻿import sjcl from 'sjcl';
+
+angular.module('time').controller('LoginCtrl', function ($scope, $http, $routeParams, $location) {
     $scope.loaded = false;
     $scope.user = {};
     $scope.password = '';
+    var hashedPass = '';
 
     $scope.load = function () {
         $scope.login = function () {
@@ -15,8 +18,10 @@
 
             //TODO Reenable hashing
             //$scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
-            $scope.user.password = $scope.password;
 
+            $scope.user.password = $scope.password;
+            hashedPass = sjcl.hash.sha256.hash($scope.user.password);
+            
             $http.post("/Home/LoginUser", $scope.user)
                 .then(function (response) {
                     if (response.status === 204) {
