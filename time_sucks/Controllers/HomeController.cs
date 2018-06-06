@@ -195,7 +195,7 @@ namespace time_sucks.Controllers
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
             if (user.type == 'A')
             {
-                DataAccess.ChangeUser(user);
+                DataAccess.changeUser(user);
                 return Ok();
             }
         }
