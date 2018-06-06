@@ -15,3 +15,4 @@ time_sucks/obj/project.assets.json
 time_sucks/obj/time_sucks.csproj.nuget.cache
 time_sucks/obj/time_sucks.csproj.nuget.g.props
 time_sucks/obj/time_sucks.csproj.nuget.g.targets
+*.ide
