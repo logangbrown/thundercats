@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using time_sucks.Models;
 using time_sucks.Session;
 
+
 namespace time_sucks.Controllers
 {
     public class HomeController : Controller
@@ -76,7 +77,7 @@ namespace time_sucks.Controllers
         public char getPermission()
         {
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            
+
             if(user != null)
             {
                 return user.type;
@@ -112,6 +113,25 @@ namespace time_sucks.Controllers
             HttpContext.Session.SetObjectAsJson("user", user);
 
             return Ok();
+        }
+        
+        
+
+        [HttpGet]
+        public IActionResult GetUsers()
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            //checks if user is admin
+            if(getPermission() == 'A')
+            {
+                List<User> users = DBHelper.getUsers();
+                return Ok(users);
+            }
+
+            return NoContent();
+
+       
         }
 
         /// <summary>
@@ -185,6 +205,18 @@ namespace time_sucks.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult ChangeUser([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            User user = JsonConvert.DeserializeObject<User>(JsonString);
+            if (getPermission() == 'A')
+            {
+                DBHelper.changeUser(user);
+                return Ok();
+            }
+            return NoContent();
+        }
 
         /// <summary>
         /// Return a course based on the ID. Returns a course if successful null otherwise
@@ -230,6 +262,20 @@ namespace time_sucks.Controllers
 
 
             return Ok();
+        }
+        
+        [HttpPost]
+        public IActionResult DeleteUserCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            uCourse uCourse = JsonConvert.DeserializeObject<uCourse>(JsonString);
+            if (getPermission() == 'A')
+            {
+                DBHelper.deleteUserCourse(uCourse.userID, uCourse.courseID);
+                return Ok();
+            }
+
+            return NoContent();
         }
 
         /// <summary>
@@ -288,7 +334,7 @@ namespace time_sucks.Controllers
             return Ok(DBProject);
 
         }
-        
+
 
         /// <summary>
         /// Update a Project name.
@@ -328,6 +374,27 @@ namespace time_sucks.Controllers
             else
             {
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns OK if admmin or ID's match
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult GetUser(String userID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            int result = int.Parse(userID);
+            if (user.type == 'A' || user.userID == result)
+            {
+                User dbUser = DBHelper.getUserByID(result);
+                return Ok(dbUser);
+            }
+            else
+            {
+                return NoContent();
             }
         }
         #endregion
