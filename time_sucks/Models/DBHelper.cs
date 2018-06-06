@@ -101,8 +101,9 @@ namespace time_sucks.Models
             }
         }
         
-        public static void deleteUser(User user, Course course)
-        {   using (var conn = new MySqlConnection(connstring.ToString()))
+        public static void deleteUserCourse(User user, Course course)
+        {   
+            using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
