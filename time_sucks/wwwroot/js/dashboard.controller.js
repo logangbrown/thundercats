@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('DashboardCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('DashboardCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.load = function () {
         $scope.groups = {};

@@ -1,10 +1,7 @@
-﻿<div id="users" ng-cloak>
+﻿<div id="users" ng-cloak ng-if="loaded">
     <div class="position-relative">
         <h3 class="mt-3">Users</h3>
         <input class="bottom-right-search" type="text" name="search" placeholder="Search..." ng-model="search" />
-    </div>
-    <div ng-if="!users">
-        <h4>There are not any users... IT'S BROKEN!</h4>
     </div>
     <table class="table table-hover">
         <thead>

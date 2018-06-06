@@ -383,13 +383,14 @@ namespace time_sucks.Controllers
         /// <param name="userID"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult GetUser(String userID)
+        public IActionResult GetUser([FromBody]Object json)
         {
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            int result = int.Parse(userID);
-            if (user.type == 'A' || user.userID == result)
+            String JsonString = json.ToString();
+            User sentUser = JsonConvert.DeserializeObject<User>(JsonString);
+            User currentUser = HttpContext.Session.GetObjectFromJson<User>("user");
+            if (currentUser.type == 'A' || currentUser.userID == sentUser.userID)
             {
-                User dbUser = DBHelper.getUserByID(result);
+                User dbUser = DBHelper.getUserByID(sentUser.userID);
                 return Ok(dbUser);
             }
             else

@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('MasterCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('MasterCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.user = null;
     $scope.loaded = false;
     toastr.options = {
@@ -28,9 +28,11 @@
     }
 
     $scope.logout = function () {
+        usSpinnerService.spin('spinner');
         $http.get("/Home/Logout")
             .then(function (response) {
                 $scope.user = null;
+                usSpinnerService.stop('spinner');
                 $location.path('/login');
             }, function () {
                 toastr["error"]("Failed to logout.");

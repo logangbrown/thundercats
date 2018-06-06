@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('ProjectCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('ProjectCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.config = {};
     $scope.config.showInactiveGroups = false;

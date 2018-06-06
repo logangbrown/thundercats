@@ -10,11 +10,12 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/css/tempusdominus-bootstrap-4.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="~/lib/angular-spinner/spin.css"/>
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
 <body ng-app="time" ng-controller="MasterCtrl">
-    <nav class="navbar navbar-expand bg-primary">
+    <nav class="navbar navbar-expand bg-primary py-0" style="height: 50px;">
         <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Time</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"><i class="fa fa-bars navbar-text-color" style="font-size:30px;"></i></span>
@@ -33,29 +34,6 @@
             </ul>
         </div>
         <div class="my-2 my-lg-0" ng-cloak ng-if="user">
-
-            <!-- TODO: Remove Instructor Toggle -->
-            @*<div class="pretty p-switch p-slim navbar-text-color">
-                    <input type="checkbox" ng-model="user.isInstructor" />
-                    <div class="mr-3 state">
-                        <label>Instructor</label>
-                    </div>
-                </div>*@
-            <!---->
-            <!-- Unused notifications-->
-            @*<div class="dropdown notification-menu mr-2">
-                    <button class="btn notification-menu-button" data-toggle="dropdown">
-                        <i class="fa fa-bell navbar-icon" aria-hidden="true"></i>
-                        <span class="badge badge-pill badge-light notification-badge">2</span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <div class="dropdown-item-text notification-text">You have a new evaluation to do <a href="">here</a> <i class="fa fa-times-circle ml-2 clickable" style="color: red"></i></div>
-                        <div class="dropdown-item-text notification-text">You have a new evaluation to do <a href="">here</a> <i class="fa fa-times-circle ml-2 clickable" style="color: red"></i></div>
-                        <div class="dropdown-divider"></div>
-                        <a href="" class="dropdown-item text-center">View all notifications</a>
-                    </div>
-                </div>*@
-
             <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}">{{user.firstName}} {{user.lastName}}</a></span>
             <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
         </div>
@@ -63,7 +41,7 @@
     <div class="container body-content">
         @*@RenderBody*@
         @{ IgnoreBody(); }
-
+        <span us-spinner spinner-key="spinner"></span> <!-- Global spinner -->
         <div ng-view></div> <!-- Viewport for Angular -->
     </div>
 
@@ -78,7 +56,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/js/tempusdominus-bootstrap-4.min.js"></script>
-    <script src="~/js/unsavedChanges.min.js"></script>
+    <script src="~/lib/unsaved-changes/unsavedChanges.min.js"></script>
+    <script src="~/lib/angular-spinner/spin.js"></script>
+    <script src="~/lib/angular-spinner/angular-spinner.min.js"></script>
 
     <!-- Angular Scripts -->
     <script src="~/js/app.js"></script>

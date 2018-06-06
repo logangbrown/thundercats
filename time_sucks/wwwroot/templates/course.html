@@ -13,7 +13,7 @@
         <div class="col-sm-6 col-12">
             <div class="position-relative">
                 <h5>Projects</h5>
-                <i class="fa fa-plus mt-2 mr-2 my-auto small-button" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID" ng-click="createProject()"></i>
+                <i class="fa fa-plus mt-2 mr-2 my-auto small-button" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID" ng-click="createProject()" title="Create a new project."></i>
                 <div class="float-right mt-4 mr-5 pretty p-switch p-slim top-right-checkbox" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">
                     <input type="checkbox" ng-model="config.showInactiveProjects"/>
                     <div class="float-left mr-3 mt-2 state">
@@ -24,7 +24,7 @@
             
             <div class="card" ng-if="hasProjects()">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item" ng-repeat="p in course.projects | orderObjectBy :'projectName'" ng-if="p.isActive || config.showInactiveProjects"><a href="/#!/project/{{p.projectID}}">{{p.projectName}}</a></li>
+                    <li class="list-group-item p-2" ng-repeat="p in course.projects | orderObjectBy :'projectName'" ng-if="p.isActive || config.showInactiveProjects"><a href="/#!/project/{{p.projectID}}">{{p.projectName}}</a></li>
                 </ul>
             </div>
         </div>
@@ -41,7 +41,7 @@
 
             <div class="card" ng-if="hasUsers()">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item" ng-if="u.isActive || ($parent.user.type === 'A' || $parent.user.userID === course.instructorID)" ng-repeat="u in course.users | orderObjectBy :'firstName'" ng-class="{'inactive-user': !u.isActive}">{{u.firstName}} {{u.lastName}} 
+                    <li class="list-group-item p-2" ng-if="u.isActive || ($parent.user.type === 'A' || $parent.user.userID === course.instructorID)" ng-repeat="u in course.users | orderObjectBy :'firstName'" ng-class="{'inactive-user': !u.isActive}">{{u.firstName}} {{u.lastName}} 
                         <div class="pretty p-default float-right" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">
                             <input type="checkbox" ng-model="u.isActive" ng-change="saveCourse()"/>
                             <div class="state p-primary">

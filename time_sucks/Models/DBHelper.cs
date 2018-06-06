@@ -87,7 +87,7 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "SELECT * FROM users WHERE ID = @ID";
+                    cmd.CommandText = "SELECT * FROM users WHERE userID = @ID";
                     cmd.Parameters.AddWithValue("@ID", ID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
