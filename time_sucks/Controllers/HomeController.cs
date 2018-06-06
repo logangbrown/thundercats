@@ -268,12 +268,10 @@ namespace time_sucks.Controllers
         public IActionResult DeleteUserCourse([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            
-            if (user.type == 'A')
+            uCourse uCourse = JsonConvert.DeserializeObject<uCourse>(JsonString);
+            if (getPermission() == 'A')
             {
-                DBHelper.deleteUserCourse(user, course);
+                DBHelper.deleteUserCourse(uCourse.userID, uCourse.courseID);
                 return Ok();
             }
 

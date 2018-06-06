@@ -135,7 +135,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static void deleteUserCourse(User user, Course course)
+        public static void deleteUserCourse(int userID, int courseID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -143,8 +143,8 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "DELETE FROM uCourse WHERE userID = @userID AND courseID = @courseID";
-                    cmd.Parameters.AddWithValue("@userID", user.userID);
-                    cmd.Parameters.AddWithValue("@courseID", course.courseID);
+                    cmd.Parameters.AddWithValue("@userID", userID);
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
 
                     cmd.ExecuteNonQuery();
                 }
