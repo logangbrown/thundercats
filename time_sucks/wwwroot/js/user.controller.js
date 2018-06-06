@@ -6,28 +6,33 @@
 
     $scope.load = function () {
         //TODO Enable User functionality, disable dummy data
-        //$http.post("/Home/User", $scope.userID)
-        //    .then(function (response) {
-        //        $scope.user response.data;
-        //    }, function () {
-        //        toastr["error"]("Failed to get user.");
-        //        $location.path('/dashboard');
-        //    });
+        var tempUser = { userID: $scope.userID };
+        $http.post("/Home/GetUser", tempUser)
+            .then(function (response) {
+                $scope.user = response.data;
+                if (response.status === 204) {
+                    toastr["error"]("Unauthorized to view user.");
+                    window.history.back();
+                }
+            }, function () {
+                toastr["error"]("Failed to get user.");
+                $location.path('/dashboard');
+            });
 
 
-        if ($scope.userID === '1') {
-            $scope.user = {
-                userID: 1,
-                username: "test",
-                firstName: "Test",
-                lastName: "User",
-                isActive: true,
-                type: 'S'
-            };
-        } else {
-            toastr["info"]("No dummy data for this user.");
-            window.history.back();
-        }
+        //if ($scope.userID === '1') {
+        //    $scope.user = {
+        //        userID: 1,
+        //        username: "test",
+        //        firstName: "Test",
+        //        lastName: "User",
+        //        isActive: true,
+        //        type: 'S'
+        //    };
+        //} else {
+        //    toastr["info"]("No dummy data for this user.");
+        //    window.history.back();
+        //}
         
         $scope.user.currentPassword = '';
         $scope.user.newPassword = '';
