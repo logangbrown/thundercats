@@ -100,5 +100,28 @@ namespace time_sucks.Models
                 }
             }
         }
+        
+        public static void changeUser(User user)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "UPDATE users SET username = @username, firstName = @firstName, lastName = @lastName, type = @type, isActive = @isActive WHERE username = @userID";
+                    cmd.Parameters.AddWithValue("@username", user.username);
+                    cmd.Parameters.AddWithValue("@firstName", user.firstName);
+                    cmd.Parameters.AddWithValue("@lastName", user.lastName);
+                    cmd.Parameters.AddWithValue("@type", user.type);
+                    cmd.Parameters.AddWithValue("@isActive", user.isActive);
+                    cmd.Parameters.AddWithValue("@userID", user.userID;
+                    
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            
+        }
     }
 }
