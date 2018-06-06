@@ -115,6 +115,23 @@ namespace time_sucks.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        public IActionResult GetUsers()
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            //checks if user is admin
+            if(getPermission() == 'A')
+            {
+                List<User> users = DBHelper.getUsers();
+                return Ok(users);
+            }
+
+            return NoContent();
+
+       
+        }
+
         /// <summary>
         /// Allows a user to log in. Returns an OK (200) if successful, No Content (204) if the
         /// username doesn't exist, and Unauthorized (401) if the password is incorrect

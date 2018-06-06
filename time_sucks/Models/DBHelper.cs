@@ -100,5 +100,39 @@ namespace time_sucks.Models
                 }
             }
         }
+
+
+        public static List<User> getUsers()
+        {
+            List<User> user = new List<User>();
+
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT * FROM users";
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            
+                            user.Add(new User() { userID = reader.GetInt32("userID"),
+                                                  username = reader.GetString("username"),
+                                                  firstName = reader.GetString("firstName"),
+                                                  lastName = reader.GetString("lastName"),
+                                                  type = reader.GetChar("type"),
+                                                  isActive = reader.GetBoolean("isActive"),
+                            });
+                        }
+                    }
+                }
+            }
+            return user;
+        }
+
     }
 }
