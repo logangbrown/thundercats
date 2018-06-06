@@ -61,13 +61,13 @@
 
         $scope.saveUser = function (user) {
             //TODO Enable save user functionality, disable info toast
-            //$http.post("/Home/SaveUser", user)
-            //    .then(function (response) {
-            //        toastr["success"]("User saved.");
-            //    }, function () {
-            //        toastr["error"]("Failed to save user.");
-            //    });
-            toastr["info"]("Attempted to save user: " + user.userID + " - enable REST endpoint");
+            $http.post("/Home/ChangeUser", user)
+                .then(function (response) {
+                    toastr["success"]("User saved.");
+                }, function () {
+                    toastr["error"]("Failed to save user.");
+                });
+            //toastr["info"]("Attempted to save user: " + user.userID + " - enable REST endpoint");
         }
         $scope.loaded = true;
     }
