@@ -114,6 +114,8 @@ namespace time_sucks.Controllers
 
             return Ok();
         }
+        
+        
 
         /// <summary>
         /// Allows a user to log in. Returns an OK (200) if successful, No Content (204) if the
@@ -186,6 +188,17 @@ namespace time_sucks.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult ChangeUser([FromBody]Object json)
+        {
+            
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            if (user.type == 'A')
+            {
+                DataAccess.ChangeUser(user);
+                return Ok();
+            }
+        }
 
         /// <summary>
         /// Return a course based on the ID. Returns a course if successful null otherwise
