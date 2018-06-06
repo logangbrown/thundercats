@@ -263,6 +263,22 @@ namespace time_sucks.Controllers
 
             return Ok();
         }
+        
+        [HttpPost]
+        public IActionResult DeleteUserCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            
+            if (user.type == 'A')
+            {
+                DBHelper.deleteUserCourse(user, course);
+                return Ok();
+            }
+
+            return NoContent();
+        }
 
         /// <summary>
         /// Get a list of all the courses

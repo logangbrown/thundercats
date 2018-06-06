@@ -101,7 +101,6 @@ namespace time_sucks.Models
             }
         }
 
-
         public static List<User> getUsers()
         {
             List<User> user = new List<User>();
