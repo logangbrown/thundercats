@@ -13174,23 +13174,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\netasha\\.nuget\\packages\\": {},
+    "C:\\Users\\loganb\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
+    "restoreSettings": {
+      "hideWarningsAndErrors": true
+    },
     "restore": {
-      "projectUniqueName": "C:\\Users\\netasha\\Documents\\GitHub\\timecats\\time_sucks\\time_sucks.csproj",
+      "projectUniqueName": "C:\\Users\\loganb\\Documents\\GitHub\\timecats\\time_sucks\\time_sucks.csproj",
       "projectName": "time_sucks",
-      "projectPath": "C:\\Users\\netasha\\Documents\\GitHub\\timecats\\time_sucks\\time_sucks.csproj",
-      "packagesPath": "C:\\Users\\netasha\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\netasha\\Documents\\GitHub\\timecats\\time_sucks\\obj\\",
+      "projectPath": "C:\\Users\\loganb\\Documents\\GitHub\\timecats\\time_sucks\\time_sucks.csproj",
+      "packagesPath": "C:\\Users\\loganb\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\loganb\\Documents\\GitHub\\timecats\\time_sucks\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\netasha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\loganb\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
