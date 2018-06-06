@@ -24,3 +24,5 @@ time_sucks/bin/Debug/netcoreapp2.0/time_sucks.deps.json
 *.pdb
 time_sucks/obj/Debug/
 time_sucks/bin/Debug/
+time_sucks/obj/Debug/netcoreapp2.0/time_sucks.csproj.FileListAbsolute.txt
+time_sucks/obj/Debug/netcoreapp2.0/time_sucks.csprojResolveAssemblyReference.cache

@@ -1,7 +1,7 @@
 ﻿angular.module('time').controller('UserCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.userID = $routeParams.ID;
-    $scope.user = {};
+    $scope.viewUser = {};
 
     if (!$scope.userID) $location.path('/users');
 
@@ -9,7 +9,7 @@
         usSpinnerService.spin('spinner');
         $http.post("/Home/GetUser", { userID: $scope.userID })
             .then(function (response) {
-                $scope.user = response.data;
+                $scope.viewUser = response.data;
                 usSpinnerService.stop('spinner');
                 $scope.loaded = true;
                 if (response.status === 204) {
@@ -22,12 +22,12 @@
                 $location.path('/dashboard');
             });
 
-        $scope.user.currentPassword = '';
-        $scope.user.newPassword = '';
-        $scope.user.repeatPassword = '';
+        $scope.viewUser.currentPassword = '';
+        $scope.viewUser.newPassword = '';
+        $scope.viewUser.repeatPassword = '';
 
         $scope.saveUser = function () {
-            $http.post("/Home/ChangeUser", $scope.user)
+            $http.post("/Home/ChangeUser", $scope.viewUser)
                 .then(function (response) {
                     toastr["success"]("User saved.");
                 }, function () {
@@ -36,23 +36,23 @@
         }
 
         $scope.changePassword = function () {
-            if ($scope.user.username === '') {
+            if ($scope.viewUser.username === '') {
                 toastr['error']("Please enter a Username");
                 return;
-            } else if ($scope.user.newPassword === '') {
+            } else if ($scope.viewUser.newPassword === '') {
                 toastr["error"]("Please enter a Password");
                 return;
-            } else if ($scope.user.repeatPassword !== $scope.password) {
+            } else if ($scope.viewUser.repeatPassword !== $scope.password) {
                 toastr["error"]("Your passwords don't match.");
                 return;
-            } else if ($scope.$parent.user.type !== 'A' && $scope.user.currentPassword === '') //TODO look at this
+            } else if ($scope.$parent.user.type !== 'A' && $scope.viewUser.currentPassword === '') { }; //TODO look at this
 
-            $scope.user.currentPassword = CryptoJS.SHA256($scope.user.curretPassword).toString(CryptoJS.enc.Hex);
-            $scope.user.newPassword = CryptoJS.SHA256($scope.user.newPassword).toString(CryptoJS.enc.Hex);
-            $scope.user.repeatPassword = CryptoJS.SHA256($scope.user.repeatPassword).toString(CryptoJS.enc.Hex);
+            $scope.viewUser.currentPassword = CryptoJS.SHA256($scope.user.curretPassword).toString(CryptoJS.enc.Hex);
+            $scope.viewUser.newPassword = CryptoJS.SHA256($scope.user.newPassword).toString(CryptoJS.enc.Hex);
+            $scope.viewUser.repeatPassword = CryptoJS.SHA256($scope.user.repeatPassword).toString(CryptoJS.enc.Hex);
 
             //TODO Enable Change Password functionality, disable info toast
-            //$http.post("/Home/ChangePassword", $scope.user)
+            //$http.post("/Home/ChangePassword", $scope.viewUser)
             //    .then(function (response) {
             //        toastr["success"]("Password changed.");
             //    }, function () {

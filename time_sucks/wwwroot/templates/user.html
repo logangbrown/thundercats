@@ -1,5 +1,5 @@
 ﻿<div id="user" ng-cloak ng-if="loaded">
-    <h3 class="mt-2">{{user.firstName}} {{user.lastName}}</h3>
+    <h3 class="mt-2">{{viewUser.firstName}} {{viewUser.lastName}}</h3>
     <div class="row">
         <div class="col-12 col-md-6 mt-4">
             <div class="row">
@@ -11,21 +11,21 @@
                     <label class="mb-2" for="lastName">Last Name</label>
                 </div>
                 <div class="col-6 pl-0">
-                    <input class="mb-1" type="text" name="username" ng-model="user.username" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
+                    <input class="mb-1" type="text" name="username" ng-model="viewUser.username" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
                     <br />
-                    <input class="mb-1" type="text" name="firstName" ng-model="user.firstName" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
+                    <input class="mb-1" type="text" name="firstName" ng-model="viewUser.firstName" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
                     <br />
-                    <input class="mb-1" type="text" name="lastName" ng-model="user.lastName" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
+                    <input class="mb-1" type="text" name="lastName" ng-model="viewUser.lastName" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
                 </div>
                 <div class="mx-auto" style="padding-left: 99px;">
                     <div class="pretty p-default mr-4">
-                        <input type="checkbox" ng-model="user.isActive" ng-change="saveUser()" ng-disabled="$parent.user.type !== 'A'" />
+                        <input type="checkbox" ng-model="viewUser.isActive" ng-change="saveUser()" ng-disabled="$parent.user.type !== 'A'" />
                         <div class="state p-primary">
                             <label>Active</label>
                         </div>
                     </div>
                     <label>Type: </label>
-                    <select ng-model="user.type" ng-change="saveUser()" ng-disabled="$parent.user.type !== 'A'">
+                    <select ng-model="viewUser.type" ng-change="saveUser()" ng-disabled="$parent.user.type !== 'A'">
                         <option value="S">Student</option>
                         <option value="I">Instructor</option>
                         <option value="A">Admin</option>
