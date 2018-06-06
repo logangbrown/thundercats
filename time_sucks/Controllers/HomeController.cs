@@ -209,7 +209,7 @@ namespace time_sucks.Controllers
         public IActionResult ChangeUser([FromBody]Object json)
         {
             
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            User user = JsonConvert.DeserializeObject<User>(JsonString);
             if (user.type == 'A')
             {
                 DBHelper.changeUser(user);
