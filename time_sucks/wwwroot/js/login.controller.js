@@ -28,9 +28,9 @@
                     }
                 }, function (response) {
                     if (response.status === 401) {
-                        toastr["error"]("Password incorrect.")
+                        toastr["error"]("Password incorrect.");
                     } else if (response.status === 403) {
-                        toastr["error"]("User account has been deactivated.")
+                        toastr["error"]("User account has been deactivated.");
                     }
                 });
 

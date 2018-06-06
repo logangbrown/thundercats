@@ -114,6 +114,8 @@ namespace time_sucks.Controllers
 
             return Ok();
         }
+        
+        
 
         [HttpGet]
         public IActionResult GetUsers()
@@ -203,6 +205,18 @@ namespace time_sucks.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult ChangeUser([FromBody]Object json)
+        {
+            
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            if (user.type == 'A')
+            {
+                DBHelper.changeUser(user);
+                return Ok();
+            }
+            return NoContent();
+        }
 
         /// <summary>
         /// Return a course based on the ID. Returns a course if successful null otherwise
