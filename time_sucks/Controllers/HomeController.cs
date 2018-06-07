@@ -9,6 +9,8 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using time_sucks.Models;
 using time_sucks.Session;
+using System.Text;
+using System.Security.Cryptography;
 
 
 namespace time_sucks.Controllers
@@ -103,6 +105,8 @@ namespace time_sucks.Controllers
                 return NoContent();
             }
 
+            user.password = GenerateHash(user.password);
+            
             //put the User in the Database, set the userID to be the returned value
             user.userID = (int)DBHelper.addUser(user);
 
@@ -114,8 +118,25 @@ namespace time_sucks.Controllers
 
             return Ok();
         }
+
+
+        public static string GenerateHash(string password)
+        {
+            SHA256 sha256 = SHA256Managed.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(password);
+            byte[] hash = sha256.ComputeHash(bytes);
+            return GetStringFromHash(hash);
+        }
         
-        
+        public static string GetStringFromHash(byte [] hash)
+        {
+            StringBuilder result = new StringBuilder();
+            for(int i = 0; i < hash.Length; i++)
+            {
+                result.Append(hash[i].ToString("X2"));
+            }
+            return result.ToString();
+        }
 
         [HttpGet]
         public IActionResult GetUsers()
