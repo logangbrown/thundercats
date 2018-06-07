@@ -1,8 +1,8 @@
-﻿angular.module('time').controller('GroupCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('GroupCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.group = {};
     $scope.group.users = {};
-    $scope.newNumber = 10; //TODO get rid of this
+    $scope.newNumber = 13; //TODO get rid of this
 
     $scope.load = function() {
         $scope.groupID = $routeParams.ID;
@@ -36,14 +36,40 @@
                                 hours: "",
                                 isEdited: false,
                                 timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM"
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
                             },
                             9: {
                                 timeID: 9,
                                 hours: "",
                                 isEdited: true,
                                 timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM"
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
+                            },
+                            10: {
+                                timeID: 10,
+                                hours: "",
+                                isEdited: true,
+                                timeIn: "04/05/2018 7:30 PM",
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
+                            },
+                            11: {
+                                timeID: 11,
+                                hours: "",
+                                isEdited: false,
+                                timeIn: "04/05/2018 7:30 PM",
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
+                            },
+                            12: {
+                                timeID: 12,
+                                hours: "",
+                                isEdited: false,
+                                timeIn: "04/05/2018 7:30 PM",
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
                             }
                         }
                     },
@@ -58,7 +84,8 @@
                                 hours: "",
                                 isEdited: false,
                                 timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM"
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
                             }
                         }
                     },
@@ -73,7 +100,8 @@
                                 hours: "",
                                 isEdited: false,
                                 timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM"
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
                             }
                         }
                     },
@@ -88,7 +116,8 @@
                                 hours: "",
                                 isEdited: false,
                                 timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM"
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
                             }
                         }
                     },
@@ -103,7 +132,8 @@
                                 hours: "",
                                 isEdited: false,
                                 timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM"
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
                             }
                         }
                     },
@@ -118,7 +148,8 @@
                                 hours: "",
                                 isEdited: false,
                                 timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM"
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
                             }
                         }
                     },
@@ -133,7 +164,8 @@
                                 hours: "",
                                 isEdited: false,
                                 timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM"
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
                             }
                         }
                     },
@@ -148,7 +180,8 @@
                                 hours: "",
                                 isEdited: false,
                                 timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM"
+                                timeOut: "04/05/2018 9:30 PM",
+                                desc: "Description of things I did."
                             }
                         }
                     }
@@ -271,7 +304,7 @@
 
         $scope.startTime = function () {
             if ($scope.userInGroup()) {
-                $scope.createTime($scope.$parent.user.userID, moment().format('MM/DD/YYYY hh:mm A'));
+                $scope.createTime($scope.$parent.user.userID, moment().format('MM/DD/YYYY h:mm A'));
             } else {
                 toastr["error"]("The logged in user isn't a member of the group.");
             }
@@ -281,7 +314,7 @@
             if ($scope.userInGroup()) {
                 $.each($scope.group.users[$scope.$parent.user.userID].time, function (index, time) {
                     if (time.timeIn !== '' && time.timeOut === '') {
-                        $scope.group.users[$scope.$parent.user.userID].time[time.timeID].timeOut = moment().format('MM/DD/YYYY hh:mm A');
+                        $scope.group.users[$scope.$parent.user.userID].time[time.timeID].timeOut = moment().format('MM/DD/YYYY h:mm A');
                         $scope.group.users[$scope.$parent.user.userID].time[time.timeID].hours = moment.duration(
                             moment($scope.group.users[$scope.$parent.user.userID].time[time.timeID].timeOut).diff(
                                 $scope.group.users[$scope.$parent.user.userID].time[time.timeID].timeIn)).asHours().toFixed(2);

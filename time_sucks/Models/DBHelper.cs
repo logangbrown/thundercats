@@ -78,6 +78,37 @@ namespace time_sucks.Models
             return user;
         }
 
+        public static User getUserByID(int ID)
+        {
+            User user = null;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT * FROM users WHERE userID = @ID";
+                    cmd.Parameters.AddWithValue("@ID", ID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            user = new User();
+                            user.userID = reader.GetInt32("userID");
+                            user.username = reader.GetString("username");
+                            user.firstName = reader.GetString("firstName");
+                            user.lastName = reader.GetString("lastName");
+                            user.type = reader.GetChar("type");
+                            user.isActive = reader.GetBoolean("isActive");
+                        }
+                    }
+                }
+            }
+            return user;
+        }
+
         public static long addUser(User user)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))

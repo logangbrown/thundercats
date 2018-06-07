@@ -77,7 +77,7 @@ namespace time_sucks.Controllers
         public char getPermission()
         {
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            
+
             if(user != null)
             {
                 return user.type;
@@ -334,7 +334,7 @@ namespace time_sucks.Controllers
             return Ok(DBProject);
 
         }
-        
+
 
         /// <summary>
         /// Update a Project name.
@@ -374,6 +374,28 @@ namespace time_sucks.Controllers
             else
             {
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns OK if admmin or ID's match
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult GetUser([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            User sentUser = JsonConvert.DeserializeObject<User>(JsonString);
+            User currentUser = HttpContext.Session.GetObjectFromJson<User>("user");
+            if (currentUser.type == 'A' || currentUser.userID == sentUser.userID)
+            {
+                User dbUser = DBHelper.getUserByID(sentUser.userID);
+                return Ok(dbUser);
+            }
+            else
+            {
+                return NoContent();
             }
         }
         #endregion

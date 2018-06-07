@@ -19,7 +19,7 @@
         <div class="col-sm-6 col-12">
             <div class="position-relative">
                 <h5>Groups</h5>
-                <i class="fa fa-plus mt-2 mr-2 my-auto small-button" ng-click="createGroup()"></i>
+                <i class="fa fa-plus mt-2 mr-2 my-auto small-button" ng-click="createGroup()" title="Create a new group."></i>
                 <div class="float-right mt-4 mr-5 pretty p-switch p-slim top-right-checkbox" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">
                     <input type="checkbox" ng-model="config.showInactiveGroups" ng-change="updateChart()" />
                     <div class="float-left mr-3 mt-2 state">
@@ -30,7 +30,7 @@
 
             <div class="card">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item" ng-repeat="g in project.groups | orderObjectBy :'groupName'" ng-if="g.isActive || config.showInactiveGroups"><a href="/#!/group/{{g.groupID}}">{{g.groupName}}</a></li>
+                    <li class="list-group-item p-2" ng-repeat="g in project.groups | orderObjectBy :'groupName'" ng-if="g.isActive || config.showInactiveGroups"><a href="/#!/group/{{g.groupID}}">{{g.groupName}}</a></li>
                 </ul>
             </div>
         </div>

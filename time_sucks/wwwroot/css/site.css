@@ -64,7 +64,7 @@
     color: #2d3d50;
     position: absolute;
     right: 3px;
-    top: 8px;
+    top: 1px;
 }
 
 .input-header {
@@ -163,4 +163,26 @@
 
 .form-control {
     color: black;
+}
+
+.description-textarea {
+    padding: 0px 3px;
+    line-height: 1.2;
+    height: 53px;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: #e8e8e8;
+    opacity: 1;
+}
+
+.edited-icon {
+    position: absolute;
+    top: 33px;
+    left: 10px;
+    color: gray;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f8f8;
 }

@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('LoginCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('LoginCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.user = {};
     $scope.password = '';
@@ -18,15 +18,18 @@
             //$scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
 
             $scope.user.password = $scope.password;
-            
+
+            usSpinnerService.spin('spinner');
             $http.post("/Home/LoginUser", $scope.user)
                 .then(function (response) {
+                    usSpinnerService.stop('spinner');
                     if (response.status === 204) {
                         toastr["error"]("Username does not exist.");
                     } else {
                         $location.path('/dashboard'); //Changes to the dashboard URL for normal user
                     }
                 }, function (response) {
+                    usSpinnerService.stop('spinner');
                     if (response.status === 401) {
                         toastr["error"]("Password incorrect.");
                     } else if (response.status === 403) {

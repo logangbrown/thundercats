@@ -1,4 +1,4 @@
-﻿var app = angular.module('time', ['ngRoute', 'unsavedChanges']); //Sets up the Angular app, and includes the ngRoute module
+﻿var app = angular.module('time', ['ngRoute', 'unsavedChanges', 'angularSpinner']); //Sets up the Angular app, and includes the ngRoute module
 
 app.config(function ($routeProvider) {
     $routeProvider //Assigns the template file and controller for the routes
@@ -44,6 +44,10 @@ app.config(function ($routeProvider) {
         })
         .otherwise("/");
 });
+
+app.config(['usSpinnerConfigProvider', function (usSpinnerConfigProvider) {
+    usSpinnerConfigProvider.setDefaults({ color: '#18BC9C', radius: 15 });
+}]);
 
 app.filter('orderObjectBy', function () {
     return function (items, field, reverse) {

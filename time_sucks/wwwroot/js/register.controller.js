@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('RegisterCtrl', function ($scope, $http, $routeParams, $location) {
+﻿angular.module('time').controller('RegisterCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
 
     $scope.load = function () {
@@ -28,9 +28,10 @@
             //TODO Reenable hashing
             //$scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
             $scope.user.password = $scope.password;
-
+            usSpinnerService.spin('spinner');
             $http.post("/Home/RegisterUser", $scope.user)
                 .then(function (response) { //Success Callback
+                    usSpinnerService.stop('spinner');
                     if (response.status === 204) {
                         toastr["error"]("Username already taken.");
                     } else {
@@ -38,6 +39,7 @@
                         $location.path('/dashboard');
                     }
                 }, function () { //Failure Callback
+                    usSpinnerService.stop('spinner');
                     toastr["error"]("Error creating user.");
                 });
             //toastr["info"]("Attempted to register user - enable REST endpoint");
