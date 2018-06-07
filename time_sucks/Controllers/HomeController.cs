@@ -27,34 +27,75 @@ namespace time_sucks.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        //[HttpGet]
-        //public string Hello()
-        //{
-        //    MongoGateway dbGateway = new MongoGateway();
-
-        //    //var collection = dbGateway.Users;
-        //    //var list = collection.Find(_ => true).ToList();
-        //    //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
-
-
-
-        //    //var list = DataAccess.GetUserList();
-        //    //return Newtonsoft.Json.JsonConvert.SerializeObject(list);
-
-
-
-        //    return Newtonsoft.Json.JsonConvert.SerializeObject(DataAccess.GetUser("asdf"));
-
-
-
-
-        //    // return "Hello World";
-        //}
-
-
-        #region REST Endpoints
+        #region Helper Functions
         /// <summary>
-        /// Returns the session for a given User. Otherwise returns null
+        /// Returns the currently logged in user's type. Otherwise returns null character.
+        /// </summary>
+        /// <returns></returns>
+        public char GetUserType()
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if(user != null)
+            {
+                return user.type;
+            }
+
+            return '\0'; //Null character literal
+        }
+
+        /// <summary>
+        /// Returns the currently logged in user's userID.
+        /// </summary>
+        /// <returns></returns>
+        public int GetUserID()
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return user.userID;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Returns true if the logged in user is the instructor for the passed courseID
+        /// </summary>
+        /// <returns></returns>
+        public bool IsInstructorForCourse(int courseID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return user.userID == DBHelper.getInstructorForCourse(courseID);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the currently logged in user is an Admin
+        /// </summary>
+        /// <returns></returns>
+        public bool IsAdmin()
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return user.type == 'A';
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region Endpoints
+        /// <summary>
+        /// Returns the logged in user if there is one.
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
@@ -70,22 +111,6 @@ namespace time_sucks.Controllers
             {
                 return Unauthorized(); //Unauthorized (401) if there isn't a user in the session
             }
-        }
-
-        /// <summary>
-        /// Returns the currently logged in user's type. Otherwise returns null character
-        /// </summary>
-        /// <returns></returns>
-        public char getPermission()
-        {
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
-
-            if(user != null)
-            {
-                return user.type;
-            }
-
-            return '\0'; //Null character literal
         }
 
         /// <summary>
@@ -119,31 +144,12 @@ namespace time_sucks.Controllers
             return Ok();
         }
 
-
         public static string GenerateHash(string password)
         {
             SHA256 sha256 = SHA256Managed.Create();
             byte[] bytes = Encoding.UTF8.GetBytes(password);
             byte[] hash = sha256.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
-        }
-        
-
-        [HttpGet]
-        public IActionResult GetUsers()
-        {
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
-
-            //checks if user is admin
-            if(getPermission() == 'A')
-            {
-                List<User> users = DBHelper.getUsers();
-                return Ok(users);
-            }
-
-            return NoContent();
-
-       
         }
 
         /// <summary>
@@ -191,6 +197,27 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Returns all users in the system after verifying access.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetUsers()
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            //checks if user is admin
+            if (IsAdmin())
+            {
+                List<User> users = DBHelper.getUsers();
+                return Ok(users);
+            }
+
+            return NoContent();
+
+
+        }
+
+        /// <summary>
         /// Add a course. Returns the course ID
         /// </summary>
         /// <param name="json"></param>
@@ -203,9 +230,7 @@ namespace time_sucks.Controllers
 
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
-
-            if (user.type == 'I' || user.type == 'A')
+            if (GetUserType() == 'I' || IsAdmin())
             {
                 //TODO
                 //CourseID = DataAccess.AddCourse(user.userID.ToString());
@@ -218,17 +243,21 @@ namespace time_sucks.Controllers
 
         }
 
+        /// <summary>
+        /// Updates the passed user in the database
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult ChangeUser([FromBody]Object json)
         {
             String JsonString = json.ToString();
             User user = JsonConvert.DeserializeObject<User>(JsonString);
-            if (getPermission() == 'A')
+            if (IsAdmin() || user.userID == GetUserID())
             {
-                DBHelper.changeUser(user);
-                return Ok();
+                if (DBHelper.changeUser(user)) return Ok();
+                return StatusCode(500); //Query failed
             }
-            return NoContent();
+            return Unauthorized(); //Not an Admin or the current user, Unathorized (401)
         }
 
         /// <summary>
@@ -276,19 +305,23 @@ namespace time_sucks.Controllers
 
             return Ok();
         }
-        
+
+        /// <summary>
+        /// Deletes the passed user and course association
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult DeleteUserCourse([FromBody]Object json)
         {
             String JsonString = json.ToString();
             uCourse uCourse = JsonConvert.DeserializeObject<uCourse>(JsonString);
-            if (getPermission() == 'A')
+            if (IsAdmin() || IsInstructorForCourse(uCourse.courseID))
             {
-                DBHelper.deleteUserCourse(uCourse.userID, uCourse.courseID);
-                return Ok();
+                if (DBHelper.deleteUserCourse(uCourse.userID, uCourse.courseID)) return Ok();
+                return StatusCode(500); //Query failed
             }
 
-            return NoContent();
+            return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
         }
 
         /// <summary>

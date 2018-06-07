@@ -30,8 +30,14 @@
             $http.post("/Home/ChangeUser", $scope.viewUser)
                 .then(function (response) {
                     toastr["success"]("User saved.");
-                }, function () {
-                    toastr["error"]("Failed to save user.");
+                }, function (response) {
+                    if (response.status === 500) {
+                        toastr["error"]("Failed to save user, query error.");
+                    } else if (response.status === 401) {
+                        toastr["error"]("Unauthorized to make changes to this user.");
+                    } else {
+                        toastr["error"]("Failed to save user, unknown error.");
+                    }
                 });
         }
 
