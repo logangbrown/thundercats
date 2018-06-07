@@ -17,5 +17,6 @@ namespace time_sucks.Models
         public DateTime createdOn { get; set; }
         public int userID { get; set; }
         public int groupID { get; set; }
+        public string desc { get; set; }
     }
 }

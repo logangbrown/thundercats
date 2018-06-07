@@ -186,3 +186,11 @@
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #f8f8f8;
 }
+
+.delete-user-button {
+    font-size: 20px;
+    position: absolute;
+    right: 50px;
+    top: 5px;
+    color: #E74C3C;
+}

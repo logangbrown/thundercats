@@ -217,6 +217,25 @@
             }
         }
 
+        $scope.deleteUserFromCourse = function (userID) {
+            if (confirm('Are you sure you want to delete this user from the course? They must request ')) {
+                $http.post("/Home/DeleteUserCourse", { userID: userID, courseID: $scope.courseID })
+                    .then(function (response) {
+                        delete $scope.course.users[userID];
+                    }, function () {
+                        if (response.status === 500) {
+                            toastr["error"]("Failed to delete user from course, query error.");
+                        } else if (response.status === 401) {
+                            toastr["error"]("Unauthorized to delete this user from the course.");
+                        } else {
+                            toastr["error"]("Failed to delete user from course, unknown error.");
+                        }
+                        });
+            } else {
+                // Do nothing!
+            }
+        }
+
         $scope.userInCourse = function () {
             //Checks that the current user is listed in the current course.
             //Should be used to hide the Join button if it's true

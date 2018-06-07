@@ -5,7 +5,11 @@
         usSpinnerService.spin('spinner');
         $http.get("/Home/GetUsers")
             .then(function (response) {
-                $scope.users = response.data;
+                $scope.users = {};
+                //Setting users to be in the index of their userID
+                $.each(response.data, function (index, user) {
+                    $scope.users[user.userID] = user;
+                });
                 usSpinnerService.stop('spinner');
                 $scope.loaded = true;
                 if (response.status == 204) {
@@ -22,8 +26,14 @@
             $http.post("/Home/ChangeUser", user)
                 .then(function (response) {
                     toastr["success"]("User saved.");
-                }, function () {
-                    toastr["error"]("Failed to save user.");
+                }, function (response) {
+                    if (response.status === 500) {
+                        toastr["error"]("Failed to save user, query error.");
+                    } else if (response.status === 401) {
+                        toastr["error"]("Unauthorized to make changes to this user.");
+                    } else {
+                        toastr["error"]("Failed to save user, unknown error.");
+                    }
                 });
         }
     }

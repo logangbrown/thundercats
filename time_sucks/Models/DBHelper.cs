@@ -46,6 +46,31 @@ namespace time_sucks.Models
             return user;
         }
 
+        public static int getInstructorForCourse(int courseID)
+        {
+            int instructorID = 0;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT instructorID FROM courses WHERE courseID = @courseID";
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            instructorID = reader.GetInt32("instructorID");
+                        }
+                    }
+                }
+            }
+            return instructorID;
+        }
+
         public static User getUser(string username, string password)
         {
             User user = null;
@@ -166,7 +191,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static void deleteUserCourse(int userID, int courseID)
+        public static bool deleteUserCourse(int userID, int courseID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -177,12 +202,13 @@ namespace time_sucks.Models
                     cmd.Parameters.AddWithValue("@userID", userID);
                     cmd.Parameters.AddWithValue("@courseID", courseID);
 
-                    cmd.ExecuteNonQuery();
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
                 }
             }
         }
 
-        public static void changeUser(User user)
+        public static bool changeUser(User user)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -198,7 +224,8 @@ namespace time_sucks.Models
                     cmd.Parameters.AddWithValue("@isActive", user.isActive);
                     cmd.Parameters.AddWithValue("@userID", user.userID);
 
-                    cmd.ExecuteNonQuery();
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
                 }
             }
         }
