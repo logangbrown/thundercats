@@ -243,6 +243,40 @@ namespace time_sucks.Models
             return user;
         }
 
+        public static List<Course> getCourses()
+        {
+            List<Course> course = new List<Course>();
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "Select c.*, CONCAT(u.firstName, ' ',u.lastName) as instructorName " +
+                        "FROM courses c " +
+                        "LEFT JOIN users u ON (c.instructorID = u.userID)";
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+
+                            course.Add(new Course()
+                            {
+                                courseID = reader.GetInt32("courseID"),
+                                courseName = reader.GetString("courseName"),
+                                instructorID = reader.GetInt32("instructorID"),
+                                isActive = reader.GetBoolean("isActive"),
+                                desc = reader.GetString("desc"),
+                                instructorName = reader.GetString("instructorName")
+                            });
+                        }
+                    }
+                }
+            }
+            return course;
+        }
+
         public static bool deleteUserCourse(int userID, int courseID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -281,5 +315,13 @@ namespace time_sucks.Models
                 }
             }
         }
+
+
+
+
+
+
+
+
     }
 }
