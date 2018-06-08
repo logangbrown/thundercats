@@ -81,7 +81,7 @@ namespace time_sucks.Models
                 {
                     //SQL and Parameters
                     
-                    if (user.type == "A")
+                    if (user.type == 'A')
                     {
                         cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
                         cmd.Parameters.AddWithValue("@password", user.password);
