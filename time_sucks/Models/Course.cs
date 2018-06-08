@@ -14,11 +14,13 @@ namespace time_sucks.Models
 
         public string courseName { get; set;}
 
-        public string instructorID { get; set; }
+        public int instructorID { get; set; }
 
         public bool isActive { get; set; }
 
         public string desc { get; set; }
+
+        public string instructorName { get; set; }
 
         //public Course()
         //{

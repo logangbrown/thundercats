@@ -6,20 +6,20 @@
 
     $scope.load = function() {
 
-        //TODO enable Courses (rename GetCourses), remove dummy data
-        //$http.get("/Home/Courses")
-        //    .then(function (response) {
-        //        $scope.courses = response.data;
-        //    }, function () {
-        //        toastr["error"]("Error retrieving courses.");
-        //    });
+       // TODO enable Courses (rename GetCourses), remove dummy data
+        $http.get("/Home/GetCourses")
+            .then(function (response) {
+                $scope.courses = response.data;
+            }, function () {
+                toastr["error"]("Error retrieving courses.");
+            });
 
         //Dummy Data
-        $scope.courses = {
-            12: { courseName: "CS 3750 Spring 2018 MW 7:30", courseID: 12, instructorName: "Brad Peterson", isActive: true },
-            14: { courseName: "CS 3750 Fall 2018 MW 7:30", courseID: 14, instructorName: "Brad Peterson", isActive: true },
-            15: { courseName: "CS 3750 Spring 2019 MW 7:30", courseID: 15, instructorName: "Brad Peterson", isActive: false }
-        };
+        //$scope.courses = {
+        //    12: { courseName: "CS 3750 Spring 2018 MW 7:30", courseID: 12, instructorName: "Brad Peterson", isActive: true },
+        //    14: { courseName: "CS 3750 Fall 2018 MW 7:30", courseID: 14, instructorName: "Brad Peterson", isActive: true },
+        //    15: { courseName: "CS 3750 Spring 2019 MW 7:30", courseID: 15, instructorName: "Brad Peterson", isActive: false }
+        //};
 
         $scope.createCourse = function () {
             //TODO Enable AddCourse (Rename CreateCourse?), disable info toast

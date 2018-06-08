@@ -333,7 +333,7 @@ namespace time_sucks.Controllers
         {
             //TODO
             //List<Course> allCourses = DataAccess.GetCourses();
-            List<Course> allCourses = null;
+            List<Course> allCourses = DBHelper.getCourses();
 
             return Ok(allCourses);
         }
