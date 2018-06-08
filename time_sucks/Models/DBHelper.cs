@@ -96,26 +96,27 @@ namespace time_sucks.Models
                     {
                         
                         
-                    cmd.CommandText = "SELECT password FROM users WHERE userID = @userID";
-                    cmd.Parameters.AddWithValue("@userID", user.userID);
-                        
-                    using(MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        //Runs once per record retrieved
-                        while (reader.Read())
-                        {
-                            password = reader.GetString("password");
-                        }
-                    }
-                     
-                    if (password == user.password)
-                    {
-                        cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
-                        cmd.Parameters.AddWithValue("@password", user.password);
+                        cmd.CommandText = "SELECT password FROM users WHERE userID = @userID";
                         cmd.Parameters.AddWithValue("@userID", user.userID);
-                        
-                        if (cmd.ExecuteNonQuery() > 0) return true;
-                        return false;
+
+                        using(MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            //Runs once per record retrieved
+                            while (reader.Read())
+                            {
+                                password = reader.GetString("password");
+                            }
+                        }
+
+                        if (password == user.password)
+                        {
+                            cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
+                            cmd.Parameters.AddWithValue("@password", user.password);
+                            cmd.Parameters.AddWithValue("@userID", user.userID);
+
+                            if (cmd.ExecuteNonQuery() > 0) return true;
+                            return false;
+                        }
                     }
                 }
             }
