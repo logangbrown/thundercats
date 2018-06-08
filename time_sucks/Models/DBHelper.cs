@@ -71,6 +71,57 @@ namespace time_sucks.Models
             return instructorID;
         }
 
+        public static bool changePassword(User user)
+        {
+            string password = "";
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    
+                    if (user.type == "A")
+                    {
+                        cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
+                        cmd.Parameters.AddWithValue("@password", user.password);
+                        cmd.Parameters.AddWithValue("@userID", user.userID);
+                        
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                        return false;
+                        
+                    }
+                    
+                    else 
+                    {
+                        
+                        
+                    cmd.CommandText = "SELECT password FROM users WHERE userID = @userID";
+                    cmd.Parameters.AddWithValue("@userID", user.userID);
+                        
+                    using(MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            password = reader.GetString("password");
+                        }
+                    }
+                     
+                    if (password == user.password)
+                    {
+                        cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
+                        cmd.Parameters.AddWithValue("@password", user.password);
+                        cmd.Parameters.AddWithValue("@userID", user.userID);
+                        
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                        return false;
+                    }
+                }
+            }
+                return false;
+        }
+        
         public static User getUser(string username, string password)
         {
             User user = null;
