@@ -81,7 +81,7 @@ namespace time_sucks.Models
                 {
                     //SQL and Parameters
                     
-                    if (user.type == "A")
+                    if (user.type == 'A')
                     {
                         cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
                         cmd.Parameters.AddWithValue("@password", user.password);
@@ -209,6 +209,29 @@ namespace time_sucks.Models
             }
         }
 
+        public static long createCourse(Course course)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO courses (courseID, courseName, instructorID, isActive, desc)" +
+                        "VALUES (@courseID, New Course, @instructorID, 1, @desc)";
+                    cmd.Parameters.AddWithValue("@courseID", course.courseID);
+                    cmd.Parameters.AddWithValue("@courseName", course.courseName);
+                    cmd.Parameters.AddWithValue("@instructorID", course.instructorID);
+                    cmd.Parameters.AddWithValue("@desc", course.desc);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+
+                    return 0;
+                }
+            }
+        }
+
         public static List<User> getUsers()
         {
             List<User> user = new List<User>();
@@ -276,6 +299,7 @@ namespace time_sucks.Models
             }
             return course;
         }
+
 
         public static bool deleteUserCourse(int userID, int courseID)
         {
