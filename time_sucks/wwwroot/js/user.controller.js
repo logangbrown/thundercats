@@ -53,9 +53,11 @@
                 return;
             } else if ($scope.$parent.user.type !== 'A' && $scope.viewUser.currentPassword === '') { }; //TODO look at this
 
-            $scope.viewUser.currentPassword = CryptoJS.SHA256($scope.user.curretPassword).toString(CryptoJS.enc.Hex);
+            $scope.viewUser.password = CryptoJS.SHA256($scope.user.curretPassword).toString(CryptoJS.enc.Hex);
             $scope.viewUser.newPassword = CryptoJS.SHA256($scope.user.newPassword).toString(CryptoJS.enc.Hex);
-            $scope.viewUser.repeatPassword = CryptoJS.SHA256($scope.user.repeatPassword).toString(CryptoJS.enc.Hex);
+            $scope.viewUser.newPassword = '';
+            $scope.viewUser.repeatPassword = '';
+            $scope.viewUser.currentPassword = '';
 
             //TODO Enable Change Password functionality, disable info toast
             //$http.post("/Home/ChangePassword", $scope.viewUser)
