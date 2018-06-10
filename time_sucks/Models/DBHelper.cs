@@ -71,6 +71,58 @@ namespace time_sucks.Models
             return instructorID;
         }
 
+        public static bool changePassword(User user)
+        {
+            string password = "";
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    
+                    if (user.type == 'A')
+                    {
+                        cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
+                        cmd.Parameters.AddWithValue("@password", user.password);
+                        cmd.Parameters.AddWithValue("@userID", user.userID);
+                        
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                        return false;
+                        
+                    }
+                    
+                    else 
+                    {
+                        
+                        
+                        cmd.CommandText = "SELECT password FROM users WHERE userID = @userID";
+                        cmd.Parameters.AddWithValue("@userID", user.userID);
+
+                        using(MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            //Runs once per record retrieved
+                            while (reader.Read())
+                            {
+                                password = reader.GetString("password");
+                            }
+                        }
+
+                        if (password == user.password)
+                        {
+                            cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
+                            cmd.Parameters.AddWithValue("@password", user.password);
+                            cmd.Parameters.AddWithValue("@userID", user.userID);
+
+                            if (cmd.ExecuteNonQuery() > 0) return true;
+                            return false;
+                        }
+                    }
+                }
+            }
+                return false;
+        }
+        
         public static User getUser(string username, string password)
         {
             User user = null;
@@ -157,6 +209,29 @@ namespace time_sucks.Models
             }
         }
 
+        public static long createCourse(Course course)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO courses (courseID, courseName, instructorID, isActive, desc)" +
+                        "VALUES (@courseID, New Course, @instructorID, 1, @desc)";
+                    cmd.Parameters.AddWithValue("@courseID", course.courseID);
+                    cmd.Parameters.AddWithValue("@courseName", course.courseName);
+                    cmd.Parameters.AddWithValue("@instructorID", course.instructorID);
+                    cmd.Parameters.AddWithValue("@desc", course.desc);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+
+                    return 0;
+                }
+            }
+        }
+
         public static List<User> getUsers()
         {
             List<User> user = new List<User>();
@@ -190,6 +265,41 @@ namespace time_sucks.Models
             }
             return user;
         }
+
+        public static List<Course> getCourses()
+        {
+            List<Course> course = new List<Course>();
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "Select c.*, CONCAT(u.firstName, ' ',u.lastName) as instructorName " +
+                        "FROM courses c " +
+                        "LEFT JOIN users u ON (c.instructorID = u.userID)";
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+
+                            course.Add(new Course()
+                            {
+                                courseID = reader.GetInt32("courseID"),
+                                courseName = reader.GetString("courseName"),
+                                instructorID = reader.GetInt32("instructorID"),
+                                isActive = reader.GetBoolean("isActive"),
+                                desc = reader.GetString("desc"),
+                                instructorName = reader.GetString("instructorName")
+                            });
+                        }
+                    }
+                }
+            }
+            return course;
+        }
+
 
         public static bool deleteUserCourse(int userID, int courseID)
         {
@@ -229,5 +339,13 @@ namespace time_sucks.Models
                 }
             }
         }
+
+
+
+
+
+
+
+
     }
 }

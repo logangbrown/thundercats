@@ -131,7 +131,7 @@ namespace time_sucks.Controllers
             }
 
             user.password = GenerateHash(user.password);
-            
+
             //put the User in the Database, set the userID to be the returned value
             user.userID = (int)DBHelper.addUser(user);
 
@@ -225,7 +225,7 @@ namespace time_sucks.Controllers
         [HttpPost]
         public IActionResult AddCourse([FromBody]Object json)
         {
-            int CourseID = 0;
+            //int CourseID = 0;
             String JsonString = json.ToString();
 
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
@@ -233,14 +233,12 @@ namespace time_sucks.Controllers
             if (GetUserType() == 'I' || IsAdmin())
             {
                 //TODO
-                //CourseID = DataAccess.AddCourse(user.userID.ToString());
-                CourseID = 0;
-                return Ok(CourseID);
-
+                // CourseID = DataAccess.AddCourse(user.userID.ToString());
+                course.courseID = (int)DBHelper.createCourse(course);
+                //CourseID = 0;
+                return Ok(course.courseID);
             }
-
             return null;
-
         }
 
         /// <summary>
@@ -333,7 +331,7 @@ namespace time_sucks.Controllers
         {
             //TODO
             //List<Course> allCourses = DataAccess.GetCourses();
-            List<Course> allCourses = null;
+            List<Course> allCourses = DBHelper.getCourses();
 
             return Ok(allCourses);
         }

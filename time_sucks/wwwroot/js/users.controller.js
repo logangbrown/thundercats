@@ -12,7 +12,7 @@
                 });
                 usSpinnerService.stop('spinner');
                 $scope.loaded = true;
-                if (response.status == 204) {
+                if (response.status === 204) {
                     toastr["error"]("Not an Admin.");
                     window.history.back();
                 }
