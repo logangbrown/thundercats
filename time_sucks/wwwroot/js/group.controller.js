@@ -192,6 +192,17 @@
             window.history.back();
         }
 
+        $.each($scope.group.users, function (userID, user) {
+            $scope.group.users[userID].blank = {
+                timeID: userID+'-blank',
+                hours: '',
+                isEdited: false,
+                timeIn: '',
+                timeOut: '',
+                desc: ''
+            }
+        });
+
         $scope.createTime = function (id, startTime = '') {
             var data = {
                 userID: id,
@@ -218,9 +229,49 @@
                 hours: "",
                 isEdited: false,
                 timeIn: startTime,
-                timeOut: ""
+                timeOut: "",
+                desc: ""
             }
             $scope.newNumber++;
+            toastr["info"]("Create time for user: " + id);
+        }
+
+        $scope.createTimeFromBlank = function (id) {
+            var data = {
+                userID: id,
+                groupID: $scope.groupID
+            };
+
+            if ($scope.group.users[id].blank.timeIn === '' && $scope.group.users[id].blank.timeOut === '' && $scope.group.users[id].blank.desc === '')
+                return;
+
+            //TODO Enable create time functionality, disable extra stuff below
+            //$http.post("/Home/CreateTime", data)
+            //    .then(function (response) {
+            //        $scope.group.users[id].time[response.data] = {
+            //            timeID: response.data,
+            //            hours: "",
+            //            isEdited: false,
+            //            timeIn: "",
+            //            timeOut: ""
+            //        }
+            //    }, function () {
+            //        toastr["error"]("Failed to create time.");
+            //    });
+
+            $scope.group.users[id].time[$scope.newNumber] = {
+                timeID: $scope.newNumber,
+                hours: '',
+                isEdited: false,
+                timeIn: $scope.group.users[id].blank.timeIn,
+                timeOut: $scope.group.users[id].blank.timeOut,
+                desc: $scope.group.users[id].blank.desc
+            };
+            $scope.newNumber++;
+            $scope.group.users[id].blank.timeIn = '';
+            $scope.group.users[id].blank.timeOut = '';
+            $scope.group.users[id].blank.desc = '';
+
             toastr["info"]("Create time for user: " + id);
         }
 
@@ -282,6 +333,8 @@
 
         $scope.userInGroup = function () {
             //Checks that the current user is listed in the current group.
+            if (!$scope.$parent.user) return false;
+
             var inGroup = false;
             if (!$scope.group) return false;
             $.each($scope.group.users, function (index, user) {
@@ -351,6 +404,7 @@
 
         //Used to check whether the currently logged in user is trying to change their own time, or is an instructor
         $scope.isUser = function (id) {
+            if (!$scope.$parent.user) return false;
             return (id === $scope.$parent.user.userID || $scope.$parent.user.type === 'A');
         }
 
