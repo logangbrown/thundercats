@@ -22,6 +22,10 @@ namespace time_sucks.Models
 
         public string instructorName { get; set; }
 
+        public List<Project> projects { get; set; }
+
+        public List<User> users { get; set; }
+
         //public Course()
         //{
         //    isActive = true;

@@ -176,6 +176,10 @@
     opacity: 1;
 }
 
+.form-control:focus {
+    color: black;
+}
+
 .edited-icon {
     position: absolute;
     top: 33px;

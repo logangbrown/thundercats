@@ -91,6 +91,18 @@ namespace time_sucks.Controllers
 
             return false;
         }
+
+        /// <summary>
+        /// Returns a hashed version of the passed password
+        /// </summary>
+        /// <returns></returns>
+        public static string GenerateHash(string password)
+        {
+            SHA256 sha256 = SHA256Managed.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(password);
+            byte[] hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
         #endregion
 
         #region Endpoints
@@ -143,14 +155,26 @@ namespace time_sucks.Controllers
 
             return Ok();
         }
-
-        public static string GenerateHash(string password)
+        
+        [HttpPost]
+        public IActionResult changePassword([FromBody]Object json)
         {
-            SHA256 sha256 = SHA256Managed.Create();
-            byte[] bytes = Encoding.UTF8.GetBytes(password);
-            byte[] hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
-        }
+            String JsonString = json.ToString();
+            User user = JsonConvert.DeserializeObject<User>(JsonString);
+
+            if (IsAdmin())
+            {
+                if (DBHelper.changePasswordA(user)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            else if (user.userID == GetUserID())
+            {
+                if (DBHelper.changePassword(user)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            return Unauthorized(); //Not an Admin or the current user, Unathorized (401)
+        }      
+        
 
         /// <summary>
         /// Allows a user to log in. Returns an OK (200) if successful, No Content (204) if the
