@@ -152,6 +152,37 @@ namespace time_sucks.Controllers
             return Convert.ToBase64String(hash);
         }
 
+
+        [HttpPost]
+        public IActionResult changePassword([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            User user = JsonConvert.DeserializeObject<User>(JsonString);
+            
+            if (IsAdmin() || user.userID == GetUserID())
+            {
+                if (DBHelper.changePassword(user)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            return Unauthorized(); //Not an Admin or the current user, Unathorized (401)
+        }
+            
+        [HttpPost]
+        public IActionResult changePasswordA([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            User user = JsonConvert.DeserializeObject<User>(JsonString);
+            
+            if (IsAdmin())
+            {
+                if (DBHelper.changePasswordA(user)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            return Unauthorized(); //Not an Admin or the current user, Unathorized (401)
+        }
+        
+        
+
         /// <summary>
         /// Allows a user to log in. Returns an OK (200) if successful, No Content (204) if the
         /// username doesn't exist, and Unauthorized (401) if the password is incorrect
