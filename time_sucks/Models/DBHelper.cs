@@ -55,9 +55,10 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "SELECT instructorID FROM courses WHERE courseID = @courseID";
-                    cmd.Parameters.AddWithValue("@courseID", courseID);
+                    //cmd.CommandText = "SELECT instructorID FROM courses WHERE courseID = @courseID";
+                    //cmd.Parameters.AddWithValue("@courseID", courseID);
 
+                   // cmd.CommandText = "SELECT firstName, lastName FROM courses WHERE "
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         //Runs once per record retrieved
@@ -217,12 +218,11 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "INSERT INTO courses (courseID, courseName, instructorID, isActive, desc)" +
-                        "VALUES (@courseID, New Course, @instructorID, 1, @desc)";
-                    cmd.Parameters.AddWithValue("@courseID", course.courseID);
+                    cmd.CommandText = "INSERT INTO courses (courseName, instructorID, isActive, description)" +
+                        "VALUES ('New Course', @instructorID, 1, 'No description')";
                     cmd.Parameters.AddWithValue("@courseName", course.courseName);
                     cmd.Parameters.AddWithValue("@instructorID", course.instructorID);
-                    cmd.Parameters.AddWithValue("@desc", course.desc);
+                    cmd.Parameters.AddWithValue("@description", course.description);
 
                     //Return the last inserted ID if successful
                     if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
@@ -290,7 +290,7 @@ namespace time_sucks.Models
                                 courseName = reader.GetString("courseName"),
                                 instructorID = reader.GetInt32("instructorID"),
                                 isActive = reader.GetBoolean("isActive"),
-                                desc = reader.GetString("desc"),
+                                description = reader.GetString("description"),
                                 instructorName = reader.GetString("instructorName")
                             });
                         }
