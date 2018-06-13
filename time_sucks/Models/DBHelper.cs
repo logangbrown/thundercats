@@ -110,13 +110,20 @@ namespace time_sucks.Models
         
         public static bool changePasswordA(User user)
         {
-            cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
-            cmd.Parameters.AddWithValue("@password", user.newPassword);
-            cmd.Parameters.AddWithValue("@userID", user.userID);
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID";
+                    cmd.Parameters.AddWithValue("@password", user.newPassword);
+                    cmd.Parameters.AddWithValue("@userID", user.userID);
 
-            if (cmd.ExecuteNonQuery() > 0) return true;
-            return false;
-            
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+
+                }
+            }
         }
         
         public static User getUser(string username, string password)
