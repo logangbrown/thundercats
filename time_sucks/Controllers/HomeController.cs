@@ -251,17 +251,15 @@ namespace time_sucks.Controllers
         [HttpPost]
         public IActionResult AddCourse([FromBody]Object json)
         {
-            //int CourseID = 0;
             String JsonString = json.ToString();
-
-            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+            Course course = new Course();
+            User user = JsonConvert.DeserializeObject<User>(JsonString);
 
             if (GetUserType() == 'I' || IsAdmin())
             {
-                //TODO
-                // CourseID = DataAccess.AddCourse(user.userID.ToString());
+                course.instructorName = user.firstName + " " + user.lastName;
+                course.instructorID = user.userID;
                 course.courseID = (int)DBHelper.createCourse(course);
-                //CourseID = 0;
                 return Ok(course.courseID);
             }
             return null;
