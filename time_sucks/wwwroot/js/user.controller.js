@@ -64,7 +64,6 @@
             tempuser.password = CryptoJS.SHA256($scope.viewUser.currentPassword).toString(CryptoJS.enc.Hex);
             tempuser.newPassword = CryptoJS.SHA256($scope.viewUser.newPassword).toString(CryptoJS.enc.Hex);
 
-            //TODO Enable Change Password functionality, disable info toast
             $http.post("/Home/ChangePassword", tempuser)
                 .then(function (response) {
                     toastr["success"]("Password changed.");
@@ -76,8 +75,6 @@
                     }
                     
                 });
-
-            //toastr["info"]("Attempted to change password - enable REST endpoint");
         }
     }
 

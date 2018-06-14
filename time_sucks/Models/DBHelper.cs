@@ -15,7 +15,7 @@ namespace time_sucks.Models
             "password=password;" +
             "database=cs4450");
 
-        public static User getUser(string username)
+        public static User GetUser(string username)
         {
             User user = null;
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -46,7 +46,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static int getInstructorForCourse(int courseID)
+        public static int GetInstructorForCourse(int courseID)
         {
             int instructorID = 0;
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -72,7 +72,7 @@ namespace time_sucks.Models
             return instructorID;
         }
 
-        public static bool changePassword(User user)
+        public static bool ChangePassword(User user)
         {
             string password = "";
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -108,7 +108,7 @@ namespace time_sucks.Models
                 return false;
         }
         
-        public static bool changePasswordA(User user)
+        public static bool ChangePasswordA(User user)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -126,7 +126,7 @@ namespace time_sucks.Models
             }
         }
         
-        public static User getUser(string username, string password)
+        public static User GetUser(string username, string password)
         {
             User user = null;
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -158,7 +158,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static User getUserByID(int ID)
+        public static User GetUserByID(int ID)
         {
             User user = null;
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -189,7 +189,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static long addUser(User user)
+        public static long AddUser(User user)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -212,7 +212,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static long createCourse(Course course)
+        public static long CreateCourse(Course course)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -234,7 +234,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static List<User> getUsers()
+        public static List<User> GetUsers()
         {
             List<User> user = new List<User>();
 
@@ -268,7 +268,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static List<Course> getCourses()
+        public static List<Course> GetCourses()
         {
             List<Course> course = new List<Course>();
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -303,7 +303,7 @@ namespace time_sucks.Models
         }
 
 
-        public static bool deleteUserCourse(int userID, int courseID)
+        public static bool DeleteUserCourse(int userID, int courseID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -320,7 +320,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static bool changeUser(User user)
+        public static bool ChangeUser(User user)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
