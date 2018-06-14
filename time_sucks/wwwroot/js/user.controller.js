@@ -34,6 +34,10 @@
                         toastr["error"]("Failed to save user, query error.");
                     } else if (response.status === 401) {
                         toastr["error"]("Unauthorized to make changes to this user.");
+                    } else if (response.status === 403) {
+                        toastr["error"]("Username already exists, choose a new username. No changes saved!");
+                    } else if (response.status === 400) {
+                        toastr["error"]("Must enter a username. No changes saved!");
                     } else {
                         toastr["error"]("Failed to save user, unknown error.");
                     }

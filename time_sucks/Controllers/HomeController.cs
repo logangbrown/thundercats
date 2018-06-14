@@ -210,7 +210,7 @@ namespace time_sucks.Controllers
             if (!DBUser.isActive)
                 return StatusCode(403);
 
-            if (user.username == DBUser.username)
+            if (user.username.ToLower() == DBUser.username)
             {
                 // We found a user! Send them to the Dashboard and save their Session
                 HttpContext.Session.SetObjectAsJson("user", DBUser);
@@ -271,12 +271,27 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
             User user = JsonConvert.DeserializeObject<User>(JsonString);
-            if (IsAdmin() || user.userID == GetUserID())
+            if(user.username == null || user.username.Length < 1)
+            {
+                return StatusCode(400); //Didn't pass a valid username, Bad Request (400) 
+            }
+            user.username = user.username.ToLower();
+            User checkUser = DBHelper.GetUser(user.username);
+            if(checkUser != null && checkUser.userID != user.userID)
+            {
+                return StatusCode(403); //Username already exists, Forbidden (403)
+            }
+
+            if (IsAdmin())
+            {
+                if (DBHelper.ChangeUserA(user)) return Ok();
+                return StatusCode(500); //Query failed
+            } else if (user.userID == GetUserID())
             {
                 if (DBHelper.ChangeUser(user)) return Ok();
                 return StatusCode(500); //Query failed
             }
-            return Unauthorized(); //Not an Admin or the current user, Unathorized (401)
+            return Unauthorized(); //Not an Admin or the current user, Unauthorized (401)
         }
 
         /// <summary>

@@ -14,6 +14,7 @@ namespace time_sucks.Models
 
         public static User GetUser(string username)
         {
+            username = username.ToLower();
             User user = null;
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -69,6 +70,7 @@ namespace time_sucks.Models
             return instructorID;
         }
 
+        //Normal version requires current password to be passed
         public static bool ChangePassword(User user)
         {
             string password = "";
@@ -105,6 +107,7 @@ namespace time_sucks.Models
                 return false;
         }
         
+        //Admin version doesn't require the current password to be passed
         public static bool ChangePasswordA(User user)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -125,6 +128,7 @@ namespace time_sucks.Models
         
         public static User GetUser(string username, string password)
         {
+            username = username.ToLower();
             User user = null;
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -188,6 +192,7 @@ namespace time_sucks.Models
 
         public static long AddUser(User user)
         {
+            if(user.username != null) user.username = user.username.ToLower();
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -317,8 +322,10 @@ namespace time_sucks.Models
             }
         }
 
-        public static bool ChangeUser(User user)
+        //Admin version also saves type and isActive
+        public static bool ChangeUserA(User user)
         {
+            if(user.username != null) user.username = user.username.ToLower();
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -331,6 +338,28 @@ namespace time_sucks.Models
                     cmd.Parameters.AddWithValue("@lastName", user.lastName);
                     cmd.Parameters.AddWithValue("@type", user.type);
                     cmd.Parameters.AddWithValue("@isActive", user.isActive);
+                    cmd.Parameters.AddWithValue("@userID", user.userID);
+
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+
+        //Normal version doesn't save type or isActive
+        public static bool ChangeUser(User user)
+        {
+            if (user.username != null) user.username = user.username.ToLower();
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "UPDATE users SET username = @username, firstName = @firstName, lastName = @lastName WHERE userID = @userID";
+                    cmd.Parameters.AddWithValue("@username", user.username);
+                    cmd.Parameters.AddWithValue("@firstName", user.firstName);
+                    cmd.Parameters.AddWithValue("@lastName", user.lastName);
                     cmd.Parameters.AddWithValue("@userID", user.userID);
 
                     if (cmd.ExecuteNonQuery() > 0) return true;
