@@ -95,9 +95,8 @@ namespace time_sucks.Models
 
                     if (password == user.password)
                     {
-                        cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
+                        cmd.CommandText = "UPDATE users SET password = @password WHERE userID = @userID"; 
                         cmd.Parameters.AddWithValue("@password", user.newPassword);
-                        cmd.Parameters.AddWithValue("@userID", user.userID);
 
                         if (cmd.ExecuteNonQuery() > 0) return true;
                         return false;
@@ -115,7 +114,7 @@ namespace time_sucks.Models
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID";
+                    cmd.CommandText = "UPDATE users SET password = @password WHERE userID = @userID";
                     cmd.Parameters.AddWithValue("@password", user.newPassword);
                     cmd.Parameters.AddWithValue("@userID", user.userID);
 
@@ -293,7 +292,7 @@ namespace time_sucks.Models
                                 courseName = reader.GetString("courseName"),
                                 instructorID = reader.GetInt32("instructorID"),
                                 isActive = reader.GetBoolean("isActive"),
-                                desc = reader.GetString("desc"),
+                                desc = reader.GetString("description"),
                                 instructorName = reader.GetString("instructorName")
                             });
                         }

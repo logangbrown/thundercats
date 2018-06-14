@@ -161,6 +161,8 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
             User user = JsonConvert.DeserializeObject<User>(JsonString);
+            user.password = GenerateHash(user.password);
+            user.newPassword = GenerateHash(user.newPassword);
 
             if (IsAdmin())
             {

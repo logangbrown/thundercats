@@ -43,11 +43,11 @@
                     <label class="mb-2"  for="repeatPassword">Repeat Password</label>
                 </div>
                 <div class="col-6 pl-0">
-                    <input class="mb-1" type="password" name="currentPassword" ng-disabled="$parent.user.type === 'A'" />
+                    <input class="mb-1" type="password" name="currentPassword" ng-model="viewUser.currentPassword" ng-disabled="$parent.user.type === 'A'" />
                     <br />
-                    <input class="mb-1" type="password" name="newPassword" />
+                    <input class="mb-1" type="password" name="newPassword"  ng-model="viewUser.newPassword"/>
                     <br />
-                    <input class="mb-1" type="password" name="repeatPassword" />
+                    <input class="mb-1" type="password" name="repeatPassword"  ng-model="viewUser.repeatPassword"/>
                 </div>
                 <div class="row mt-2 mx-auto">
                     <button type="button" class="btn btn-primary col mr-1" ng-click="changePassword()">Change Password</button>

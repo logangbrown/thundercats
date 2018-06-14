@@ -2,6 +2,9 @@
     $scope.loaded = false;
     $scope.userID = $routeParams.ID;
     $scope.viewUser = {};
+    $scope.viewUser.currentPassword = '';
+    $scope.viewUser.newPassword = '';
+    $scope.viewUser.repeatPassword = '';
 
     if (!$scope.userID) $location.path('/users');
 
@@ -22,10 +25,6 @@
                 $location.path('/dashboard');
             });
 
-        $scope.viewUser.currentPassword = '';
-        $scope.viewUser.newPassword = '';
-        $scope.viewUser.repeatPassword = '';
-
         $scope.saveUser = function () {
             $http.post("/Home/ChangeUser", $scope.viewUser)
                 .then(function (response) {
@@ -42,32 +41,43 @@
         }
 
         $scope.changePassword = function () {
-            if ($scope.viewUser.username === '') {
+            if (!$scope.viewUser.username) {
                 toastr['error']("Please enter a Username");
                 return;
             } else if ($scope.viewUser.newPassword === '') {
                 toastr["error"]("Please enter a Password");
                 return;
-            } else if ($scope.viewUser.repeatPassword !== $scope.password) {
+            } else if ($scope.viewUser.repeatPassword !== $scope.viewUser.newPassword) {
                 toastr["error"]("Your passwords don't match.");
                 return;
-            } else if ($scope.$parent.user.type !== 'A' && $scope.viewUser.currentPassword === '') { }; //TODO look at this
+            }
 
-            $scope.viewUser.password = CryptoJS.SHA256($scope.user.curretPassword).toString(CryptoJS.enc.Hex);
-            $scope.viewUser.newPassword = CryptoJS.SHA256($scope.user.newPassword).toString(CryptoJS.enc.Hex);
-            $scope.viewUser.newPassword = '';
-            $scope.viewUser.repeatPassword = '';
-            $scope.viewUser.currentPassword = '';
+            if ($scope.$parent.user.type !== 'A' && !$scope.viewUser.currentPassword) {
+                toastr["error"]("You must enter your current password.");
+                return;
+            }
+
+            var tempuser = {
+                userID: $scope.viewUser.userID
+            }
+
+            tempuser.password = CryptoJS.SHA256($scope.viewUser.currentPassword).toString(CryptoJS.enc.Hex);
+            tempuser.newPassword = CryptoJS.SHA256($scope.viewUser.newPassword).toString(CryptoJS.enc.Hex);
 
             //TODO Enable Change Password functionality, disable info toast
-            //$http.post("/Home/ChangePassword", $scope.viewUser)
-            //    .then(function (response) {
-            //        toastr["success"]("Password changed.");
-            //    }, function () {
-            //        toastr["error"]("Failed to change password.");
-            //    });
+            $http.post("/Home/ChangePassword", tempuser)
+                .then(function (response) {
+                    toastr["success"]("Password changed.");
+                }, function (response) {
+                    if (response.status === 500) {
+                        toastr["error"]("Password incorrect.");
+                    } else {
+                        toastr["error"]("Failed to change password.");
+                    }
+                    
+                });
 
-            toastr["info"]("Attempted to change password - enable REST endpoint");
+            //toastr["info"]("Attempted to change password - enable REST endpoint");
         }
     }
 
@@ -76,7 +86,7 @@
         $http.get("/Home/CheckSession")
             .then(function (response) {
                 $scope.$parent.user = response.data;
-                if ($scope.$parent.user.type !== 'A' && $scope.$parent.user.userID !== $scope.userID) {
+                if ($scope.$parent.user.type !== 'A' && $scope.$parent.user.userID !== Number($scope.userID)) {
                     toastr["error"]("Not Admin or the specified user.");
                     $location.path('/dashboard');
                 }
@@ -86,7 +96,7 @@
                 toastr["error"]("Not logged in.");
                 $location.path('/login');
             });
-    } else if ($scope.$parent.user.type !== 'A' && $scope.$parent.user.userID !== $scope.userID) {
+    } else if ($scope.$parent.user.type !== 'A' && $scope.$parent.user.userID !== Number($scope.userID)) {
         toastr["error"]("Not Admin or the specified user.");
         $location.path('/dashboard');
     } else {
