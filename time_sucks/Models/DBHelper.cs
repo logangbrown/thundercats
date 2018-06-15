@@ -70,6 +70,60 @@ namespace time_sucks.Models
             return instructorID;
         }
 
+        public static int GetCourseForGroup(int groupID)
+        {
+            int courseID = 0;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT c.courseID FROM courses c LEFT JOIN projects p ON (c.courseID = p.courseID) " +
+                        "LEFT JOIN groups g ON (p.projectID = g.projectID) WHERE g.groupID = @groupID";
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
+
+                    // cmd.CommandText = "SELECT firstName, lastName FROM courses WHERE "
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            courseID = reader.GetInt32("courseID");
+                        }
+                    }
+                }
+            }
+            return courseID;
+        }
+
+        public static bool UserIsInCourse(int courseID, int userID)
+        {
+            bool isInCourse = false;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT userID FROM uCourse WHERE courseID = @courseID AND userID = @userID";
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
+                    cmd.Parameters.AddWithValue("@userID", userID);
+
+                    // cmd.CommandText = "SELECT firstName, lastName FROM courses WHERE "
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            if (!isInCourse) isInCourse = true;
+                        }
+                    }
+                }
+            }
+            return isInCourse;
+        }
+
         //Normal version requires current password to be passed
         public static bool ChangePassword(User user)
         {

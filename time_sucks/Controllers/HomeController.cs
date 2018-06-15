@@ -74,6 +74,31 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Returns true if the logged in user is a student for the passed courseID
+        /// </summary>
+        /// <returns></returns>
+        public bool IsStudentInCourse(int courseID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return DBHelper.UserIsInCourse(courseID,user.userID);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the courseID for the passed groupID
+        /// </summary>
+        /// <returns></returns>
+        public int GetCourseForGroup(int groupID)
+        {
+            return DBHelper.GetCourseForGroup(groupID);
+        }
+
+        /// <summary>
         /// Returns true if the currently logged in user is an Admin
         /// </summary>
         /// <returns></returns>
