@@ -464,6 +464,26 @@ namespace time_sucks.Controllers
                 return NoContent();
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult GetGroup([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Group requestedGroup = JsonConvert.DeserializeObject<Group>(JsonString);
+
+            //Make sure that the user is part of the groups course
+            //if (IsStudentInCourse(GetCourseForGroup(requestedGroup.groupID)) || IsAdmin())
+            //{
+            //    return Ok(DBHelper.getGroup(requestedGroup.groupID));
+            //}
+
+            return NoContent();
+        }
         #endregion
 
     }

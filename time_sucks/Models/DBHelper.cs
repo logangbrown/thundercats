@@ -342,8 +342,64 @@ namespace time_sucks.Models
                 }
             }
         }
+    
+        public static Group getGroup(int groupID)
+        {
+            Group group = new Group();
 
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.timeIn, t.timeOut, t.description  " +
+                                      "From groups g Inner Join uGroups ug On " +
+                                      "ug.groupID = g.groupID " +
+                                      "Inner Join users u On " +
+                                      "u.userID = ug.userID " +
+                                      "Inner Join timeCards t On " +
+                                      "u.userID = t.userID " +
+                                      "Where groupID = @groupID";
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
 
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            //if groupID isn't set yet
+                            if(group.groupID == 0)
+                            {
+                                group.groupID = reader.GetInt32("groupID");
+                                group.groupName = reader.GetString("groupName");
+                                group.isActive = reader.GetBoolean("isActive");
+                                group.projectID = reader.GetInt32("projectID");
+                            }
+
+                            bool foundUser = false;
+                            foreach(User user in group.users)
+                            {
+                                if(user.userID == reader.GetInt32("groupID"))
+                                {
+                                    foundUser = true;
+                                    //Add time slot
+                                    TimeCard timeCard = new TimeCard();
+                                    timeCard.userID = user.userID;
+                                   
+                                }
+                            }
+
+                            if (!foundUser)
+                            {
+                                //Add the user and then the time slot
+                            }
+                        }
+                    }
+                }
+            }
+            return group;
+        }
 
 
 

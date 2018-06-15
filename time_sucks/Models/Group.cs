@@ -9,13 +9,13 @@ namespace time_sucks.Models
 {
     public class Group
     {
-        public int groupdID { get; set; }
+        public int groupID { get; set; }
 
         public string groupName { get; set; }
 
         public bool isActive { get; set; }
 
-        //public List<User> users { get; set; }
+        public List<User> users { get; set; }
 
         public int projectID { get; set; }
     }
