@@ -1,8 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace time_sucks.Models
 {
@@ -15,8 +12,9 @@ namespace time_sucks.Models
             "password=password;" +
             "database=cs4450");
 
-        public static User getUser(string username)
+        public static User GetUser(string username)
         {
+            username = username.ToLower();
             User user = null;
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -46,7 +44,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static int getInstructorForCourse(int courseID)
+        public static int GetInstructorForCourse(int courseID)
         {
             int instructorID = 0;
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -55,10 +53,10 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    //cmd.CommandText = "SELECT instructorID FROM courses WHERE courseID = @courseID";
-                    //cmd.Parameters.AddWithValue("@courseID", courseID);
+                    cmd.CommandText = "SELECT instructorID FROM courses WHERE courseID = @courseID";
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
 
-                   // cmd.CommandText = "SELECT firstName, lastName FROM courses WHERE "
+                    // cmd.CommandText = "SELECT firstName, lastName FROM courses WHERE "
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         //Runs once per record retrieved
@@ -72,7 +70,62 @@ namespace time_sucks.Models
             return instructorID;
         }
 
-        public static bool changePassword(User user)
+        public static int GetCourseForGroup(int groupID)
+        {
+            int courseID = 0;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT c.courseID FROM courses c LEFT JOIN projects p ON (c.courseID = p.courseID) " +
+                        "LEFT JOIN groups g ON (p.projectID = g.projectID) WHERE g.groupID = @groupID";
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
+
+                    // cmd.CommandText = "SELECT firstName, lastName FROM courses WHERE "
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            courseID = reader.GetInt32("courseID");
+                        }
+                    }
+                }
+            }
+            return courseID;
+        }
+
+        public static bool UserIsInCourse(int courseID, int userID)
+        {
+            bool isInCourse = false;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT userID FROM uCourse WHERE courseID = @courseID AND userID = @userID";
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
+                    cmd.Parameters.AddWithValue("@userID", userID);
+
+                    // cmd.CommandText = "SELECT firstName, lastName FROM courses WHERE "
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            if (!isInCourse) isInCourse = true;
+                        }
+                    }
+                }
+            }
+            return isInCourse;
+        }
+
+        //Normal version requires current password to be passed
+        public static bool ChangePassword(User user)
         {
             string password = "";
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -96,9 +149,8 @@ namespace time_sucks.Models
 
                     if (password == user.password)
                     {
-                        cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID"; 
+                        cmd.CommandText = "UPDATE users SET password = @password WHERE userID = @userID"; 
                         cmd.Parameters.AddWithValue("@password", user.newPassword);
-                        cmd.Parameters.AddWithValue("@userID", user.userID);
 
                         if (cmd.ExecuteNonQuery() > 0) return true;
                         return false;
@@ -109,14 +161,15 @@ namespace time_sucks.Models
                 return false;
         }
         
-        public static bool changePasswordA(User user)
+        //Admin version doesn't require the current password to be passed
+        public static bool ChangePasswordA(User user)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "UPDATE user SET (password = @password) WHERE userID = @userID";
+                    cmd.CommandText = "UPDATE users SET password = @password WHERE userID = @userID";
                     cmd.Parameters.AddWithValue("@password", user.newPassword);
                     cmd.Parameters.AddWithValue("@userID", user.userID);
 
@@ -127,8 +180,9 @@ namespace time_sucks.Models
             }
         }
         
-        public static User getUser(string username, string password)
+        public static User GetUser(string username, string password)
         {
+            username = username.ToLower();
             User user = null;
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -159,7 +213,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static User getUserByID(int ID)
+        public static User GetUserByID(int ID)
         {
             User user = null;
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -190,8 +244,9 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static long addUser(User user)
+        public static long AddUser(User user)
         {
+            if(user.username != null) user.username = user.username.ToLower();
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -213,7 +268,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static long createCourse(Course course)
+        public static long CreateCourse(Course course)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -235,7 +290,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static List<User> getUsers()
+        public static List<User> GetUsers()
         {
             List<User> user = new List<User>();
 
@@ -269,7 +324,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static List<Course> getCourses()
+        public static List<Course> GetCourses()
         {
             List<Course> course = new List<Course>();
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -304,7 +359,7 @@ namespace time_sucks.Models
         }
 
 
-        public static bool deleteUserCourse(int userID, int courseID)
+        public static bool DeleteUserCourse(int userID, int courseID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -321,8 +376,10 @@ namespace time_sucks.Models
             }
         }
 
-        public static bool changeUser(User user)
+        //Admin version also saves type and isActive
+        public static bool ChangeUserA(User user)
         {
+            if(user.username != null) user.username = user.username.ToLower();
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -347,12 +404,20 @@ namespace time_sucks.Models
         {
             Group group = new Group();
 
+<<<<<<< HEAD
+=======
+        //Normal version doesn't save type or isActive
+        public static bool ChangeUser(User user)
+        {
+            if (user.username != null) user.username = user.username.ToLower();
+>>>>>>> master
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
+<<<<<<< HEAD
                     cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.timeIn, t.timeOut, t.description  " +
                                       "From groups g Inner Join uGroups ug On " +
                                       "ug.groupID = g.groupID " +
@@ -406,5 +471,18 @@ namespace time_sucks.Models
 
 
 
+=======
+                    cmd.CommandText = "UPDATE users SET username = @username, firstName = @firstName, lastName = @lastName WHERE userID = @userID";
+                    cmd.Parameters.AddWithValue("@username", user.username);
+                    cmd.Parameters.AddWithValue("@firstName", user.firstName);
+                    cmd.Parameters.AddWithValue("@lastName", user.lastName);
+                    cmd.Parameters.AddWithValue("@userID", user.userID);
+
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+>>>>>>> master
     }
 }

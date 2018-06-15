@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 using Newtonsoft.Json;
 using time_sucks.Models;
 using time_sucks.Session;
@@ -70,10 +67,35 @@ namespace time_sucks.Controllers
 
             if (user != null)
             {
-                return user.userID == DBHelper.getInstructorForCourse(courseID);
+                return user.userID == DBHelper.GetInstructorForCourse(courseID);
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Returns true if the logged in user is a student for the passed courseID
+        /// </summary>
+        /// <returns></returns>
+        public bool IsStudentInCourse(int courseID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return DBHelper.UserIsInCourse(courseID,user.userID);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the courseID for the passed groupID
+        /// </summary>
+        /// <returns></returns>
+        public int GetCourseForGroup(int groupID)
+        {
+            return DBHelper.GetCourseForGroup(groupID);
         }
 
         /// <summary>
@@ -137,7 +159,7 @@ namespace time_sucks.Controllers
             User user = JsonConvert.DeserializeObject<User>(JsonString);
 
             //Check if user already exists
-            if (DBHelper.getUser(user.username) != null)
+            if (DBHelper.GetUser(user.username) != null)
             {
                 return NoContent();
             }
@@ -145,7 +167,7 @@ namespace time_sucks.Controllers
             user.password = GenerateHash(user.password);
 
             //put the User in the Database, set the userID to be the returned value
-            user.userID = (int)DBHelper.addUser(user);
+            user.userID = (int)DBHelper.AddUser(user);
 
             //If the userID is 0, the query must have failed throw an error to the front end
             if (user.userID == 0) return Error();
@@ -157,19 +179,21 @@ namespace time_sucks.Controllers
         }
         
         [HttpPost]
-        public IActionResult changePassword([FromBody]Object json)
+        public IActionResult ChangePassword([FromBody]Object json)
         {
             String JsonString = json.ToString();
             User user = JsonConvert.DeserializeObject<User>(JsonString);
+            user.password = GenerateHash(user.password);
+            user.newPassword = GenerateHash(user.newPassword);
 
             if (IsAdmin())
             {
-                if (DBHelper.changePasswordA(user)) return Ok();
+                if (DBHelper.ChangePasswordA(user)) return Ok();
                 return StatusCode(500); //Query failed
             }
             else if (user.userID == GetUserID())
             {
-                if (DBHelper.changePassword(user)) return Ok();
+                if (DBHelper.ChangePassword(user)) return Ok();
                 return StatusCode(500); //Query failed
             }
             return Unauthorized(); //Not an Admin or the current user, Unathorized (401)
@@ -193,10 +217,10 @@ namespace time_sucks.Controllers
 
             //Check if the user exists
             User DBUser = null;
-            if(DBHelper.getUser(user.username) != null)
+            if(DBHelper.GetUser(user.username) != null)
             {
                 user.password = GenerateHash(user.password);
-                DBUser = DBHelper.getUser(user.username, user.password);
+                DBUser = DBHelper.GetUser(user.username, user.password);
             } else
             {
                 //return No Content (204) if there isn't a user
@@ -211,7 +235,7 @@ namespace time_sucks.Controllers
             if (!DBUser.isActive)
                 return StatusCode(403);
 
-            if (user.username == DBUser.username)
+            if (user.username.ToLower() == DBUser.username)
             {
                 // We found a user! Send them to the Dashboard and save their Session
                 HttpContext.Session.SetObjectAsJson("user", DBUser);
@@ -232,7 +256,7 @@ namespace time_sucks.Controllers
             //checks if user is admin
             if (IsAdmin())
             {
-                List<User> users = DBHelper.getUsers();
+                List<User> users = DBHelper.GetUsers();
                 return Ok(users);
             }
 
@@ -257,7 +281,7 @@ namespace time_sucks.Controllers
             {
                 course.instructorName = user.firstName + " " + user.lastName;
                 course.instructorID = user.userID;
-                course.courseID = (int)DBHelper.createCourse(course);
+                course.courseID = (int)DBHelper.CreateCourse(course);
                 return Ok(course.courseID);
             }
             return null;
@@ -272,12 +296,27 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
             User user = JsonConvert.DeserializeObject<User>(JsonString);
-            if (IsAdmin() || user.userID == GetUserID())
+            if(user.username == null || user.username.Length < 1)
             {
-                if (DBHelper.changeUser(user)) return Ok();
+                return StatusCode(400); //Didn't pass a valid username, Bad Request (400) 
+            }
+            user.username = user.username.ToLower();
+            User checkUser = DBHelper.GetUser(user.username);
+            if(checkUser != null && checkUser.userID != user.userID)
+            {
+                return StatusCode(403); //Username already exists, Forbidden (403)
+            }
+
+            if (IsAdmin())
+            {
+                if (DBHelper.ChangeUserA(user)) return Ok();
+                return StatusCode(500); //Query failed
+            } else if (user.userID == GetUserID())
+            {
+                if (DBHelper.ChangeUser(user)) return Ok();
                 return StatusCode(500); //Query failed
             }
-            return Unauthorized(); //Not an Admin or the current user, Unathorized (401)
+            return Unauthorized(); //Not an Admin or the current user, Unauthorized (401)
         }
 
         /// <summary>
@@ -337,7 +376,7 @@ namespace time_sucks.Controllers
             uCourse uCourse = JsonConvert.DeserializeObject<uCourse>(JsonString);
             if (IsAdmin() || IsInstructorForCourse(uCourse.courseID))
             {
-                if (DBHelper.deleteUserCourse(uCourse.userID, uCourse.courseID)) return Ok();
+                if (DBHelper.DeleteUserCourse(uCourse.userID, uCourse.courseID)) return Ok();
                 return StatusCode(500); //Query failed
             }
 
@@ -353,7 +392,7 @@ namespace time_sucks.Controllers
         {
             //TODO
             //List<Course> allCourses = DataAccess.GetCourses();
-            List<Course> allCourses = DBHelper.getCourses();
+            List<Course> allCourses = DBHelper.GetCourses();
 
             return Ok(allCourses);
         }
@@ -456,7 +495,7 @@ namespace time_sucks.Controllers
             User currentUser = HttpContext.Session.GetObjectFromJson<User>("user");
             if (currentUser.type == 'A' || currentUser.userID == sentUser.userID)
             {
-                User dbUser = DBHelper.getUserByID(sentUser.userID);
+                User dbUser = DBHelper.GetUserByID(sentUser.userID);
                 return Ok(dbUser);
             }
             else
