@@ -15,7 +15,13 @@
         <tbody ng-repeat="u in users | orderObjectBy : 'firstName' | filter : search">
             <tr class="position-relative">
                 <td><a href="/#!/user/{{u.userID}}">{{u.firstName}} {{u.lastName}}</a></td>
-                <td>{{u.username}}</td>
+                <td><div class="full-width">{{u.username}}</div>
+                    <select ng-model="u.type" ng-change="saveUser(u)" class="text-center d-sm-none mt-2">
+                        <option value="S">Student</option>
+                        <option value="I">Instructor</option>
+                        <option value="A">Admin</option>
+                    </select>
+                </td>
                 <td class="text-center">
                     <div class="pretty p-default mr-0">
                         <input type="checkbox" ng-model="u.isActive" ng-change="saveUser(u)" />
@@ -23,11 +29,6 @@
                             <label></label>
                         </div>
                     </div>
-                    <select ng-model="u.type" ng-change="saveUser(u)" class="text-center d-sm-none mt-2">
-                        <option value="S">Student</option>
-                        <option value="I">Instructor</option>
-                        <option value="A">Admin</option>
-                    </select>
                 </td>
                 <td class="text-center d-none d-sm-table-cell">
                     <select ng-model="u.type" ng-change="saveUser(u)">
