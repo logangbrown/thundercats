@@ -218,11 +218,11 @@
         }
 
         $scope.deleteUserFromCourse = function (userID) {
-            if (confirm('Are you sure you want to delete this user from the course? They must request ')) {
+            if (confirm('Are you sure you want to delete this user from the course?')) {
                 $http.post("/Home/DeleteUserCourse", { userID: userID, courseID: $scope.courseID })
                     .then(function (response) {
                         delete $scope.course.users[userID];
-                    }, function () {
+                    }, function (response) {
                         if (response.status === 500) {
                             toastr["error"]("Failed to delete user from course, query error.");
                         } else if (response.status === 401) {

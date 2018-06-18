@@ -15,27 +15,27 @@
 </head>
 
 <body ng-app="time" ng-controller="MasterCtrl">
-    <nav class="navbar navbar-expand bg-primary py-0" style="height: 50px;">
-        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Time</a>
+    <nav class="navbar navbar-expand-sm bg-primary py-0">
+        <a href="/#!/" class="navbar-brand" style="height: 50px; padding-top: 10px;">Time</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"><i class="fa fa-bars navbar-text-color" style="font-size:30px;"></i></span>
         </button>
         <div class="collapse navbar-collapse invisible" id="navbarSupportedContent" ng-cloak ng-if="userExists()">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item" ng-class="{active: location.path === '/dashboard'}">
-                    <a class="nav-link" href="/#!/dashboard">Dashboard</a>
+                    <a class="nav-link" href="/#!/dashboard" data-toggle="collapse" data-target="#navbarSupportedContent">Dashboard</a>
                 </li>
                 <li class="nav-item" ng-class="{active: location.path === '/courses'}">
-                    <a class="nav-link" href="/#!/courses">Courses</a>
+                    <a class="nav-link" href="/#!/courses" data-toggle="collapse" data-target="#navbarSupportedContent">Courses</a>
                 </li>
                 <li class="nav-item" ng-class="{active: location.path === '/users'}" ng-cloak ng-if="user.type === 'A'">
-                    <a class="nav-link" href="/#!/users">Users</a>
+                    <a class="nav-link" href="/#!/users" data-toggle="collapse" data-target="#navbarSupportedContent">Users</a>
                 </li>
             </ul>
-        </div>
-        <div class="my-2 my-lg-0" ng-cloak ng-if="user">
-            <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}">{{user.firstName}} {{user.lastName}}</a></span>
-            <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
+            <div class="my-2 my-lg-0" ng-cloak ng-if="user">
+                <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}">{{user.firstName}} {{user.lastName}}</a></span>
+                <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
+            </div>
         </div>
     </nav>
     <div class="container body-content">

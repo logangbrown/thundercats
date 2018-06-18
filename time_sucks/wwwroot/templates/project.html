@@ -1,6 +1,7 @@
 ﻿<div id="project" ng-cloak>
     <div class="row position-relative">
-        <h4 class="mt-3 col-sm-9 col-12 float-left"><input class="input-header" type="text" name="projectName" ng-model-options="{debounce: 750}" ng-change="saveProject()" ng-model="project.projectName" ng-readonly="!$parent.user.type !== 'A' || $parent.user.userID !== course.instructorID" /></h4>
+        <h4 class="mt-3 col-sm-9 col-12 float-left"><input class="input-header" type="text" name="projectName" ng-model-options="{debounce: 750}" ng-change="saveProject()" ng-model="project.projectName" ng-readonly="$parent.user.type !== 'A' && $parent.user.type !== 'I'" /></h4>
+        <div></div>
         <div class="mt-3 pretty p-switch p-slim col-sm-2 col-12 header-checkbox" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">
             <input type="checkbox" ng-model="project.isActive" ng-change="saveProject()" />
             <div class="mt-2 state float-right">
