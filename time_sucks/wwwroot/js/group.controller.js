@@ -11,186 +11,186 @@
 
         
         //TODO Enable Group functionality, disable dummy data
-        //$http.post("/Home/Group", $scope.groupID)
-        //    .then(function (response) {
-        //        $scope.group = response.data;
-        //    }, function () {
-        //        toastr["error"]("Failed to get group.");
-        //    });
+        $http.post("/Home/GetGroup", $scope.groupID)
+            .then(function (response) {
+                $scope.group = response.data;
+            }, function () {
+                toastr["error"]("Failed to get group.");
+            });
 
         //Dummy data
-        if ($scope.groupID === "1") {
-            $scope.group = {
-                groupID: 1,
-                groupName: "Group Awesome",
-                isActive: true,
-                users: {
-                    1: {
-                        userID: 1,
-                        firstName: "Joe",
-                        lastName: "Bob",
-                        isActive: true,
-                        time: {
-                            1: {
-                                timeID: 1,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            },
-                            9: {
-                                timeID: 9,
-                                hours: "",
-                                isEdited: true,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            },
-                            10: {
-                                timeID: 10,
-                                hours: "",
-                                isEdited: true,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            },
-                            11: {
-                                timeID: 11,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            },
-                            12: {
-                                timeID: 12,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            }
-                        }
-                    },
-                    2: {
-                        userID: 2,
-                        firstName: "Joes",
-                        lastName: "Bobs",
-                        isActive: true,
-                        time: {
-                            2: {
-                                timeID: 2,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            }
-                        }
-                    },
-                    3: {
-                        userID: 3,
-                        firstName: "Skylar",
-                        lastName: "Olsen",
-                        isActive: false,
-                        time: {
-                            3: {
-                                timeID: 3,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            }
-                        }
-                    },
-                    4: {
-                        userID: 4,
-                        firstName: "Test",
-                        lastName: "User",
-                        isActive: true,
-                        time: {
-                            4: {
-                                timeID: 4,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            }
-                        }
-                    },
-                    5: {
-                        userID: 5,
-                        firstName: "Test",
-                        lastName: "User2",
-                        isActive: true,
-                        time: {
-                            5: {
-                                timeID: 5,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            }
-                        }
-                    },
-                    6: {
-                        userID: 6,
-                        firstName: "Test",
-                        lastName: "User3",
-                        isActive: true,
-                        time: {
-                            6: {
-                                timeID: 6,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            }
-                        }
-                    },
-                    7: {
-                        userID: 7,
-                        firstName: "Test",
-                        lastName: "User4",
-                        isActive: true,
-                        time: {
-                            7: {
-                                timeID: 7,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            }
-                        }
-                    },
-                    8: {
-                        userID: 8,
-                        firstName: "Test",
-                        lastName: "User5",
-                        isActive: true,
-                        time: {
-                            8: {
-                                timeID: 8,
-                                hours: "",
-                                isEdited: false,
-                                timeIn: "04/05/2018 7:30 PM",
-                                timeOut: "04/05/2018 9:30 PM",
-                                desc: "Description of things I did."
-                            }
-                        }
-                    }
-                }
-            };
-        } else {
-            toastr["info"]("No dummy data for this group.");
-            window.history.back();
-        }
+        //if ($scope.groupID === "1") {
+        //    $scope.group = {
+        //        groupID: 1,
+        //        groupName: "Group Awesome",
+        //        isActive: true,
+        //        users: {
+        //            1: {
+        //                userID: 1,
+        //                firstName: "Joe",
+        //                lastName: "Bob",
+        //                isActive: true,
+        //                time: {
+        //                    1: {
+        //                        timeID: 1,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    },
+        //                    9: {
+        //                        timeID: 9,
+        //                        hours: "",
+        //                        isEdited: true,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    },
+        //                    10: {
+        //                        timeID: 10,
+        //                        hours: "",
+        //                        isEdited: true,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    },
+        //                    11: {
+        //                        timeID: 11,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    },
+        //                    12: {
+        //                        timeID: 12,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    }
+        //                }
+        //            },
+        //            2: {
+        //                userID: 2,
+        //                firstName: "Joes",
+        //                lastName: "Bobs",
+        //                isActive: true,
+        //                time: {
+        //                    2: {
+        //                        timeID: 2,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    }
+        //                }
+        //            },
+        //            3: {
+        //                userID: 3,
+        //                firstName: "Skylar",
+        //                lastName: "Olsen",
+        //                isActive: false,
+        //                time: {
+        //                    3: {
+        //                        timeID: 3,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    }
+        //                }
+        //            },
+        //            4: {
+        //                userID: 4,
+        //                firstName: "Test",
+        //                lastName: "User",
+        //                isActive: true,
+        //                time: {
+        //                    4: {
+        //                        timeID: 4,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    }
+        //                }
+        //            },
+        //            5: {
+        //                userID: 5,
+        //                firstName: "Test",
+        //                lastName: "User2",
+        //                isActive: true,
+        //                time: {
+        //                    5: {
+        //                        timeID: 5,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    }
+        //                }
+        //            },
+        //            6: {
+        //                userID: 6,
+        //                firstName: "Test",
+        //                lastName: "User3",
+        //                isActive: true,
+        //                time: {
+        //                    6: {
+        //                        timeID: 6,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    }
+        //                }
+        //            },
+        //            7: {
+        //                userID: 7,
+        //                firstName: "Test",
+        //                lastName: "User4",
+        //                isActive: true,
+        //                time: {
+        //                    7: {
+        //                        timeID: 7,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    }
+        //                }
+        //            },
+        //            8: {
+        //                userID: 8,
+        //                firstName: "Test",
+        //                lastName: "User5",
+        //                isActive: true,
+        //                time: {
+        //                    8: {
+        //                        timeID: 8,
+        //                        hours: "",
+        //                        isEdited: false,
+        //                        timeIn: "04/05/2018 7:30 PM",
+        //                        timeOut: "04/05/2018 9:30 PM",
+        //                        desc: "Description of things I did."
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    };
+        //} else {
+        //    toastr["info"]("No dummy data for this group.");
+        //    window.history.back();
+        //}
 
         $.each($scope.group.users, function (userID, user) {
             $scope.group.users[userID].blank = {

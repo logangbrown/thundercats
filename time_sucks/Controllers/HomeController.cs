@@ -513,13 +513,15 @@ namespace time_sucks.Controllers
         public IActionResult GetGroup([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            Group requestedGroup = JsonConvert.DeserializeObject<Group>(JsonString);
+            String requestedGroupStr = JsonConvert.DeserializeObject<String>(JsonString);
+            Group requestedGroup = new Group();
+            requestedGroup.groupID = Int32.Parse(requestedGroupStr);
 
             //Make sure that the user is part of the groups course
-            //if (IsStudentInCourse(GetCourseForGroup(requestedGroup.groupID)) || IsAdmin())
-            //{
-            //    return Ok(DBHelper.getGroup(requestedGroup.groupID));
-            //}
+            if (IsStudentInCourse(GetCourseForGroup(requestedGroup.groupID)) || IsAdmin())
+            {
+                return Ok(DBHelper.getGroup(requestedGroup.groupID));
+            }
 
             return NoContent();
         }

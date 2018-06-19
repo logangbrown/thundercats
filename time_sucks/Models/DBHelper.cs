@@ -134,11 +134,11 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    
+
                     cmd.CommandText = "SELECT password FROM users WHERE userID = @userID";
                     cmd.Parameters.AddWithValue("@userID", user.userID);
 
-                    using(MySqlDataReader reader = cmd.ExecuteReader())
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         //Runs once per record retrieved
                         while (reader.Read())
@@ -149,18 +149,18 @@ namespace time_sucks.Models
 
                     if (password == user.password)
                     {
-                        cmd.CommandText = "UPDATE users SET password = @password WHERE userID = @userID"; 
+                        cmd.CommandText = "UPDATE users SET password = @password WHERE userID = @userID";
                         cmd.Parameters.AddWithValue("@password", user.newPassword);
 
                         if (cmd.ExecuteNonQuery() > 0) return true;
                         return false;
                     }
-                    
+
                 }
             }
-                return false;
+            return false;
         }
-        
+
         //Admin version doesn't require the current password to be passed
         public static bool ChangePasswordA(User user)
         {
@@ -179,7 +179,7 @@ namespace time_sucks.Models
                 }
             }
         }
-        
+
         public static User GetUser(string username, string password)
         {
             username = username.ToLower();
@@ -187,14 +187,14 @@ namespace time_sucks.Models
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
-                using(MySqlCommand cmd = conn.CreateCommand())
+                using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
                     cmd.CommandText = "SELECT * FROM users WHERE username = @username AND password = @password";
                     cmd.Parameters.AddWithValue("@username", username);
                     cmd.Parameters.AddWithValue("@password", password);
 
-                    using(MySqlDataReader reader = cmd.ExecuteReader())
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         //Runs once per record retrieved
                         while (reader.Read())
@@ -246,7 +246,7 @@ namespace time_sucks.Models
 
         public static long AddUser(User user)
         {
-            if(user.username != null) user.username = user.username.ToLower();
+            if (user.username != null) user.username = user.username.ToLower();
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -261,7 +261,7 @@ namespace time_sucks.Models
                     cmd.Parameters.AddWithValue("@lastName", user.lastName);
 
                     //Return the last inserted ID if successful
-                    if(cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
 
                     return 0;
                 }
@@ -379,7 +379,7 @@ namespace time_sucks.Models
         //Admin version also saves type and isActive
         public static bool ChangeUserA(User user)
         {
-            if(user.username != null) user.username = user.username.ToLower();
+            if (user.username != null) user.username = user.username.ToLower();
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -399,79 +399,17 @@ namespace time_sucks.Models
                 }
             }
         }
-    
-        public static Group getGroup(int groupID)
-        {
-            Group group = new Group();
 
-<<<<<<< HEAD
-=======
         //Normal version doesn't save type or isActive
         public static bool ChangeUser(User user)
         {
             if (user.username != null) user.username = user.username.ToLower();
->>>>>>> master
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-<<<<<<< HEAD
-                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.timeIn, t.timeOut, t.description  " +
-                                      "From groups g Inner Join uGroups ug On " +
-                                      "ug.groupID = g.groupID " +
-                                      "Inner Join users u On " +
-                                      "u.userID = ug.userID " +
-                                      "Inner Join timeCards t On " +
-                                      "u.userID = t.userID " +
-                                      "Where groupID = @groupID";
-                    cmd.Parameters.AddWithValue("@groupID", groupID);
-
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        //Runs once per record retrieved
-                        while (reader.Read())
-                        {
-                            //if groupID isn't set yet
-                            if(group.groupID == 0)
-                            {
-                                group.groupID = reader.GetInt32("groupID");
-                                group.groupName = reader.GetString("groupName");
-                                group.isActive = reader.GetBoolean("isActive");
-                                group.projectID = reader.GetInt32("projectID");
-                            }
-
-                            bool foundUser = false;
-                            foreach(User user in group.users)
-                            {
-                                if(user.userID == reader.GetInt32("groupID"))
-                                {
-                                    foundUser = true;
-                                    //Add time slot
-                                    TimeCard timeCard = new TimeCard();
-                                    timeCard.userID = user.userID;
-                                   
-                                }
-                            }
-
-                            if (!foundUser)
-                            {
-                                //Add the user and then the time slot
-                            }
-                        }
-                    }
-                }
-            }
-            return group;
-        }
-
-
-
-
-
-
-=======
                     cmd.CommandText = "UPDATE users SET username = @username, firstName = @firstName, lastName = @lastName WHERE userID = @userID";
                     cmd.Parameters.AddWithValue("@username", user.username);
                     cmd.Parameters.AddWithValue("@firstName", user.firstName);
@@ -483,6 +421,92 @@ namespace time_sucks.Models
                 }
             }
         }
->>>>>>> master
-    }
-}
+
+        public static Group getGroup(int groupID)
+        {
+           // List<TimeCard> timecard = new List<TimeCard>();
+            Group group = new Group();
+            bool foundUser = false;
+           // List<User> user = new List<User>();
+
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.timeIn, t.timeOut, t.description  " +
+                                      "From groups g Inner Join uGroups ug On " +
+                                      "ug.groupID = g.groupID " +
+                                      "Inner Join users u On " +
+                                      "u.userID = ug.userID " +
+                                      "Inner Join timeCards t On " +
+                                      "u.userID = t.userID " +
+                                      "Where g.groupID = @groupID";
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+
+                            group.users.Add(new User()
+                            {
+                                userID = reader.GetInt32("userID"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                                
+                               
+                            });
+
+                            //if groupID isn't set yet then return nothing
+                            //if (group.groupID == null)
+                            //{
+                            //    return group; 
+                            //}
+
+                            ////get each users time info 
+                            //foreach (User user in group.users)
+                            //{
+                            //    if (user.userID == reader.GetInt32("groupID"))
+                            //    {
+                            //        foundUser = true;
+                            //        //Add time slot
+
+                                   
+
+                                    
+
+                            //    }
+
+                            //}
+                        }
+                    }
+
+                    if (!foundUser)
+                    {
+                        //Add the user and then the time slot
+                    }
+                }
+            }
+            return group;
+        }
+      
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+} //end DBHelper class
+} //end namespace
