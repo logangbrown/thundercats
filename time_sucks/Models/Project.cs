@@ -14,6 +14,7 @@ namespace time_sucks.Models
         public string projectName { get; set; }
 
         public bool isActive { get; set; }
+        public string desc { get; set; }
 
         //public List<Group> groups { get; set; }
 

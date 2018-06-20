@@ -9,149 +9,149 @@
         if (!$scope.courseID) $location.path('/courses');
 
         //TODO: Enable GetCourse and remove dummy data below
-        //$http.post("/Home/GetCourse", { courseID: $scope.courseID })
-        //    .then(function (response) {
-        //        $scope.course = response.data;
-        //        if (!$scope.course.users) $scope.course.users = null;
-        //        if (!$scope.course.projects) $scope.course.projects = null;
-        //    }, function () {
-        //        toastr["error"]("Failed retrieving course.");
-        //    });
+        $http.post("/Home/GetCourse", { courseID: $scope.courseID })
+            .then(function (response) {
+                $scope.course = response.data;
+                if (!$scope.course.users) $scope.course.users = null;
+                if (!$scope.course.projects) $scope.course.projects = null;
+            }, function () {
+                toastr["error"]("Failed retrieving course.");
+            });
 
         //Dummy Data
-        {
-            if ($scope.courseID === "12") {
-                $scope.course = {
-                    courseName: "CS 3750 Spring 2018 MW 7:30",
-                    courseID: 12,
-                    instructorName: "Brad Peterson",
-                    instructorID: 68,
-                    isActive: true,
-                    projects: {
-                        1: {
-                            projectID: 1,
-                            projectName: "PHP Game",
-                            isActive: true
-                        },
-                        2: {
-                            projectID: 2,
-                            projectName: "Multiplayer Conway's Game of Life",
-                            isActive: true
-                        },
-                        3: {
-                            projectID: 3,
-                            projectName: "Student Time Tracker",
-                            isActive: false
-                        }
-                    },
-                    users: {
-                        1: {
-                            userID: 1,
-                            firstName: "Joe",
-                            lastName: "Bob",
-                            isActive: true
-                        },
-                        2: {
-                            userID: 2,
-                            firstName: "Rizwan",
-                            lastName: "Mohammed",
-                            isActive: false
-                        },
-                        3: {
-                            userID: 3,
-                            firstName: "Skylar",
-                            lastName: "Olsen",
-                            isActive: true
-                        }
-                    }
-                };
-            } else if ($scope.courseID === "14") {
-                $scope.course = {
-                    courseName: "CS 3750 Fall 2018 MW 7:30",
-                    id: 14,
-                    instructorName: "Brad Peterson",
-                    isActive: true,
-                    projects: {
-                        3: {
-                            projectID: 4,
-                            projectName: "PHP Game",
-                            isActive: true
-                        },
-                        4: {
-                            projectID: 5,
-                            projectName: "Multiplayer Conway's Game of Life",
-                            isActive: true
-                        },
-                        5: {
-                            projectID: 6,
-                            projectName: "Student Time Tracker",
-                            isActive: true
-                        }
-                    },
-                    users: {
-                        2: {
-                            userID: 2,
-                            firstName: "Rizwan",
-                            lastName: "Mohammed",
-                            isActive: true
-                        },
-                        3: {
-                            userID: 3,
-                            firstName: "Skylar",
-                            lastName: "Olsen",
-                            isActive: false
-                        }
-                    }
-                };
-            } else if ($scope.courseID === "15") {
-                $scope.course = {
-                    courseName: "CS 3750 Spring 2019 MW 7:30",
-                    courseID: 15,
-                    instructorName: "Brad Peterson",
-                    isActive: 0,
-                    projects: {
-                        1: {
-                            projectID: 7,
-                            projectName: "PHP Game",
-                            isActive: true
-                        },
-                        2: {
-                            projectID: 8,
-                            projectName: "Multiplayer Conway's Game of Life",
-                            isActive: true
-                        },
-                        3: {
-                            projectID: 1,
-                            projectName: "Student Time Tracker",
-                            isActive: true
-                        }
-                    },
-                    users: {
-                        1: {
-                            userID: 1,
-                            firstName: "Logan",
-                            lastName: "Brown",
-                            isActive: false
-                        },
-                        2: {
-                            userID: 2,
-                            firstName: "Rizwan",
-                            lastName: "Mohammed",
-                            isActive: true
-                        },
-                        3: {
-                            userID: 3,
-                            firstName: "Skylar",
-                            lastName: "Olsen",
-                            isActive: true
-                        }
-                    }
-                };
-            } else {
-                toastr["info"]("No dummy data for this course.");
-                window.history.back();
-            }
-        } 
+        //{
+        //    //if ($scope.courseID === "12") {
+        //    //    $scope.course = {
+        //    //        courseName: "CS 3750 Spring 2018 MW 7:30",
+        //    //        courseID: 12,
+        //    //        instructorName: "Brad Peterson",
+        //    //        instructorID: 68,
+        //    //        isActive: true,
+        //    //        projects: {
+        //    //            1: {
+        //    //                projectID: 1,
+        //    //                projectName: "PHP Game",
+        //    //                isActive: true
+        //    //            },
+        //    //            2: {
+        //    //                projectID: 2,
+        //    //                projectName: "Multiplayer Conway's Game of Life",
+        //    //                isActive: true
+        //    //            },
+        //    //            3: {
+        //    //                projectID: 3,
+        //    //                projectName: "Student Time Tracker",
+        //    //                isActive: false
+        //    //            }
+        //    //        },
+        //    //        users: {
+        //    //            1: {
+        //    //                userID: 1,
+        //    //                firstName: "Joe",
+        //    //                lastName: "Bob",
+        //    //                isActive: true
+        //    //            },
+        //    //            2: {
+        //    //                userID: 2,
+        //    //                firstName: "Rizwan",
+        //    //                lastName: "Mohammed",
+        //    //                isActive: false
+        //    //            },
+        //    //            3: {
+        //    //                userID: 3,
+        //    //                firstName: "Skylar",
+        //    //                lastName: "Olsen",
+        //    //                isActive: true
+        //    //            }
+        //    //        }
+        //    //    };
+        //    //} else if ($scope.courseID === "14") {
+        //    //    $scope.course = {
+        //    //        courseName: "CS 3750 Fall 2018 MW 7:30",
+        //    //        id: 14,
+        //    //        instructorName: "Brad Peterson",
+        //    //        isActive: true,
+        //    //        projects: {
+        //    //            3: {
+        //    //                projectID: 4,
+        //    //                projectName: "PHP Game",
+        //    //                isActive: true
+        //    //            },
+        //    //            4: {
+        //    //                projectID: 5,
+        //    //                projectName: "Multiplayer Conway's Game of Life",
+        //    //                isActive: true
+        //    //            },
+        //    //            5: {
+        //    //                projectID: 6,
+        //    //                projectName: "Student Time Tracker",
+        //    //                isActive: true
+        //    //            }
+        //    //        },
+        //    //        users: {
+        //    //            2: {
+        //    //                userID: 2,
+        //    //                firstName: "Rizwan",
+        //    //                lastName: "Mohammed",
+        //    //                isActive: true
+        //    //            },
+        //    //            3: {
+        //    //                userID: 3,
+        //    //                firstName: "Skylar",
+        //    //                lastName: "Olsen",
+        //    //                isActive: false
+        //    //            }
+        //    //        }
+        //    //    };
+        //    //} else if ($scope.courseID === "15") {
+        //    //    $scope.course = {
+        //    //        courseName: "CS 3750 Spring 2019 MW 7:30",
+        //    //        courseID: 15,
+        //    //        instructorName: "Brad Peterson",
+        //    //        isActive: 0,
+        //    //        projects: {
+        //    //            1: {
+        //    //                projectID: 7,
+        //    //                projectName: "PHP Game",
+        //    //                isActive: true
+        //    //            },
+        //    //            2: {
+        //    //                projectID: 8,
+        //    //                projectName: "Multiplayer Conway's Game of Life",
+        //    //                isActive: true
+        //    //            },
+        //    //            3: {
+        //    //                projectID: 1,
+        //    //                projectName: "Student Time Tracker",
+        //    //                isActive: true
+        //    //            }
+        //    //        },
+        //    //        users: {
+        //    //            1: {
+        //    //                userID: 1,
+        //    //                firstName: "Logan",
+        //    //                lastName: "Brown",
+        //    //                isActive: false
+        //    //            },
+        //    //            2: {
+        //    //                userID: 2,
+        //    //                firstName: "Rizwan",
+        //    //                lastName: "Mohammed",
+        //    //                isActive: true
+        //    //            },
+        //    //            3: {
+        //    //                userID: 3,
+        //    //                firstName: "Skylar",
+        //    //                lastName: "Olsen",
+        //    //                isActive: true
+        //    //            }
+        //    //        }
+        //    //    };
+        //    //} else {
+        //    //    toastr["info"]("No dummy data for this course.");
+        //    //    window.history.back();
+        //    //}
+        //} 
         //End Dummy Data
 
         $scope.createProject = function () {
@@ -168,14 +168,14 @@
 
         $scope.saveCourse = function () {
             //TODO Enable SaveCourse, disable info toast
-            //$http.post("/Home/SaveCourse", $scope.course)
-            //    .then(function (response) {
-            //        toastr["success"]("Saved course.");
-            //    }, function () {
-            //        toastr["error"]("Failed saving course.");
-            //    });
+            $http.post("/Home/SaveCourse", $scope.course)
+                .then(function (response) {
+                    toastr["success"]("Saved course.");
+                }, function () {
+                    toastr["error"]("Failed saving course.");
+                });
 
-            toastr["info"]("Attempted to save course - enable REST endpoint.");
+            //toastr["info"]("Attempted to save course - enable REST endpoint.");
         }
 
         $scope.joinCourse = function () {
