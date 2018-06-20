@@ -377,7 +377,7 @@ namespace time_sucks.Models
         }
 
         //Admin version also saves type and isActive
-        public static bool ChangeUserA(User user)
+        public static bool ChangeUser(User user)
         {
             if (user.username != null) user.username = user.username.ToLower();
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -401,7 +401,7 @@ namespace time_sucks.Models
         }
 
         //Normal version doesn't save type or isActive
-        public static bool ChangeUser(User user)
+        public static bool ChangeUserA(User user)
         {
             if (user.username != null) user.username = user.username.ToLower();
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -424,10 +424,13 @@ namespace time_sucks.Models
 
         public static Group getGroup(int groupID)
         {
-           // List<TimeCard> timecard = new List<TimeCard>();
+           //List<TimeCard> timecard = new List<TimeCard>();
             Group group = new Group();
+            group.users = new List<User>();
+            //User user = new User();
+            //TimeCard timecard = new TimeCard();
             bool foundUser = false;
-           // List<User> user = new List<User>();
+          // List<User> user = new List<User>();
 
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -435,7 +438,7 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.timeIn, t.timeOut, t.description  " +
+                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.timeIn, t.timeOut, t.description, ug.isActive  " +
                                       "From groups g Inner Join uGroups ug On " +
                                       "ug.groupID = g.groupID " +
                                       "Inner Join users u On " +
@@ -450,43 +453,48 @@ namespace time_sucks.Models
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
+                            foundUser = false;
 
-                            group.users.Add(new User()
+                            //get each users time info 
+                            foreach (User user in group.users)
                             {
-                                userID = reader.GetInt32("userID"),
-                                firstName = reader.GetString("firstName"),
-                                lastName = reader.GetString("lastName"),
-                                
-                               
-                            });
+                                if (user.userID == reader.GetInt32("userID"))
+                                {
+                                    foundUser = true;
+                                    //Add time slot
 
-                            //if groupID isn't set yet then return nothing
-                            //if (group.groupID == null)
-                            //{
-                            //    return group; 
-                            //}
+                                    if (user.timecards == null) user.timecards = new List<TimeCard>();
 
-                            ////get each users time info 
-                            //foreach (User user in group.users)
-                            //{
-                            //    if (user.userID == reader.GetInt32("groupID"))
-                            //    {
-                            //        foundUser = true;
-                            //        //Add time slot
+                                    user.timecards.Add(new TimeCard()
+                                    {
+                                        timeIn = reader.GetDateTime("timeIn"),
+                                        timeOut = reader.GetDateTime("timeOut"),
+                                        description = reader.GetString("description"),
+                                    });
+                                }
+                            }
 
-                                   
+                            if (!foundUser)
+                            {
+                                List<TimeCard> timecardlist = new List<TimeCard>();
+                                timecardlist.Add(new TimeCard()
+                                {
+                                    timeIn = reader.GetDateTime("timeIn"),
+                                    timeOut = reader.GetDateTime("timeOut"),
+                                    description = reader.GetString("description")
+                                });
 
-                                    
-
-                            //    }
-
-                            //}
+                                //Add the user and then the time slot
+                                group.users.Add(new User()
+                                {
+                                    userID = reader.GetInt32("userID"),
+                                    firstName = reader.GetString("firstName"),
+                                    lastName = reader.GetString("lastName"),
+                                    timecards = timecardlist,
+                                    isActive = reader.GetBoolean("isActive")
+                                });
+                            }
                         }
-                    }
-
-                    if (!foundUser)
-                    {
-                        //Add the user and then the time slot
                     }
                 }
             }
