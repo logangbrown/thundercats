@@ -438,7 +438,7 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.timeIn, t.timeOut, t.description, ug.isActive  " +
+                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, date_format(t.timeIn, '%m/%d/%Y %l:%i %p') AS 'timeIn', date_format(t.timeOut, '%m/%d/%Y %l:%i %p') AS 'timeOut', t.description, ug.isActive  " +
                                       "From groups g Inner Join uGroups ug On " +
                                       "ug.groupID = g.groupID " +
                                       "Inner Join users u On " +
@@ -450,10 +450,12 @@ namespace time_sucks.Models
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
+
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
                             foundUser = false;
+                            group.groupName = reader.GetString("groupName");
 
                             //get each users time info 
                             foreach (User user in group.users)
@@ -467,8 +469,8 @@ namespace time_sucks.Models
 
                                     user.timecards.Add(new TimeCard()
                                     {
-                                        timeIn = reader.GetDateTime("timeIn"),
-                                        timeOut = reader.GetDateTime("timeOut"),
+                                        timeIn = reader.GetString("timeIn"),
+                                        timeOut = reader.GetString("timeOut"),
                                         description = reader.GetString("description"),
                                     });
                                 }
@@ -479,8 +481,8 @@ namespace time_sucks.Models
                                 List<TimeCard> timecardlist = new List<TimeCard>();
                                 timecardlist.Add(new TimeCard()
                                 {
-                                    timeIn = reader.GetDateTime("timeIn"),
-                                    timeOut = reader.GetDateTime("timeOut"),
+                                    timeIn = reader.GetString("timeIn"),
+                                    timeOut = reader.GetString("timeOut"),
                                     description = reader.GetString("description")
                                 });
 
@@ -491,7 +493,7 @@ namespace time_sucks.Models
                                     firstName = reader.GetString("firstName"),
                                     lastName = reader.GetString("lastName"),
                                     timecards = timecardlist,
-                                    isActive = reader.GetBoolean("isActive")
+                                    isActive = reader.GetBoolean("isActive"),
                                 });
                             }
                         }
