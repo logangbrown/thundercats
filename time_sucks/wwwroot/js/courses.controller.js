@@ -23,14 +23,14 @@
 
         $scope.createCourse = function () {
             //TODO Enable AddCourse (Rename CreateCourse?), disable info toast
-            //$http.post("/Home/AddCourse", $scope.user)
-            //    .then(function (response) {
-            //        $location.path('/course/'+response.data);
-            //    }, function () {
-            //        toastr["error"]("Error creating course.");
-            //    });
+            $http.post("/Home/AddCourse", $scope.user)
+                .then(function (response) {
+                    $location.path('/course/'+response.data);
+                }, function () {
+                    toastr["error"]("Error creating course.");
+                });
 
-            toastr["info"]("Attempted to create course - enable REST endpoint");
+            //toastr["info"]("Attempted to create course - enable REST endpoint");
         };
 
         $scope.loaded = true;

@@ -3,21 +3,21 @@
     <div class="row">
         <div class="col-12 col-md-6 mt-4">
             <div class="row">
-                <div class="col-6 text-right">
-                    <label class="mb-2" for="username">Username</label>
+                <div class="col-5 text-right pr-1 pl-0">
+                    <label class="mb-2 mt-1" for="username">Username</label>
                     <br />
-                    <label class="mb-2" for="firstName">First Name</label>
+                    <label class="mb-2 mt-1" for="firstName">First Name</label>
                     <br />
-                    <label class="mb-2" for="lastName">Last Name</label>
+                    <label class="mb-2 mt-1" for="lastName">Last Name</label>
                 </div>
-                <div class="col-6 pl-0">
+                <div class="col pl-0">
                     <input class="mb-1" type="text" name="username" ng-model="viewUser.username" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
                     <br />
                     <input class="mb-1" type="text" name="firstName" ng-model="viewUser.firstName" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
                     <br />
                     <input class="mb-1" type="text" name="lastName" ng-model="viewUser.lastName" ng-model-options="{debounce: 750}" ng-change="saveUser()" />
                 </div>
-                <div class="mx-auto" style="padding-left: 99px;">
+                <div class="mx-auto">
                     <div class="pretty p-default mr-4">
                         <input type="checkbox" ng-model="viewUser.isActive" ng-change="saveUser()" ng-disabled="$parent.user.type !== 'A'" />
                         <div class="state p-primary">
@@ -35,19 +35,19 @@
         </div>
         <div class="col-12 col-md-6 mt-4">
             <div class="row">
-                <div class="col-6 text-right">
-                    <label class="mb-2"  for="currentPassword">Current Password</label>
+                <div class="col-5 text-right pr-1 pl-0">
+                    <label class="mb-2 mt-1"  for="currentPassword">Current Password</label>
                     <br />
-                    <label class="mb-2"  for="newPassword">New Password</label>
+                    <label class="mb-2 mt-1"  for="newPassword">New Password</label>
                     <br />
-                    <label class="mb-2"  for="repeatPassword">Repeat Password</label>
+                    <label class="mb-2 mt-1"  for="repeatPassword">Repeat Password</label>
                 </div>
-                <div class="col-6 pl-0">
-                    <input class="mb-1" type="password" name="currentPassword" ng-disabled="$parent.user.type === 'A'" />
+                <div class="col pl-0">
+                    <input class="mb-1" type="password" name="currentPassword" ng-model="viewUser.currentPassword" ng-disabled="$parent.user.type === 'A'" />
                     <br />
-                    <input class="mb-1" type="password" name="newPassword" />
+                    <input class="mb-1" type="password" name="newPassword"  ng-model="viewUser.newPassword"/>
                     <br />
-                    <input class="mb-1" type="password" name="repeatPassword" />
+                    <input class="mb-1" type="password" name="repeatPassword"  ng-model="viewUser.repeatPassword"/>
                 </div>
                 <div class="row mt-2 mx-auto">
                     <button type="button" class="btn btn-primary col mr-1" ng-click="changePassword()">Change Password</button>
