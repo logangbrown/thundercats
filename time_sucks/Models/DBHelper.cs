@@ -375,6 +375,28 @@ namespace time_sucks.Models
                 }
             }
         }
+      
+        //Normal version doesn't save type or isActive
+        public static bool ChangeUser(User user)
+        {
+            if(user.username != null) user.username = user.username.ToLower();
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "UPDATE users SET username = @username, firstName = @firstName, lastName = @lastName WHERE userID = @userID";
+                    cmd.Parameters.AddWithValue("@username", user.username);
+                    cmd.Parameters.AddWithValue("@firstName", user.firstName);
+                    cmd.Parameters.AddWithValue("@lastName", user.lastName);
+                    cmd.Parameters.AddWithValue("@userID", user.userID);
+
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
 
         //Admin version also saves type and isActive
         public static bool ChangeUserA(User user)
@@ -400,26 +422,138 @@ namespace time_sucks.Models
             }
         }
 
-        //Normal version doesn't save type or isActive
-        public static bool ChangeUser(User user)
+
+        public static bool saveCourse(Course course)
         {
-            if (user.username != null) user.username = user.username.ToLower();
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    // SQL and Parameters
+                    cmd.CommandText = "UPDATE courses SET courseName = @courseName, instructorID = @instructorID, " +
+                                      "isActive = @isActive, description = @desc WHERE courseID = @courseID";
+                    cmd.Parameters.AddWithValue("@courseName", course.courseName);
+                    cmd.Parameters.AddWithValue("@instructorID", course.instructorID);
+                    cmd.Parameters.AddWithValue("@isActive", course.isActive);
+                    cmd.Parameters.AddWithValue("@desc", course.desc);
+                    cmd.Parameters.AddWithValue("@courseID", course.courseID);
+
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+
+        public static bool saveProject(Project project)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    // SQL and Parameters
+                    cmd.CommandText = "UPDATE projects SET projectName = @projectName, " +
+                                      "isActive = @isActive, description = @desc WHERE projectID = @projectID";
+                    cmd.Parameters.AddWithValue("@projectName", project.projectName);
+                    cmd.Parameters.AddWithValue("@isActive", project.isActive);
+                    cmd.Parameters.AddWithValue("@desc", project.desc);
+                    cmd.Parameters.AddWithValue("@projectID", project.projectID);
+
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+
+        public static bool saveGroup(Group group)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    // SQL and Parameters
+                    cmd.CommandText = "UPDATE group SET groupName = @groupName, " +
+                                      "isActive = @isActive, evalID = @evalID, projectID = @projectID WHERE groupID = @groupID";
+                    cmd.Parameters.AddWithValue("@groupName", group.groupName);
+                    cmd.Parameters.AddWithValue("@isActive", group.isActive);
+                    cmd.Parameters.AddWithValue("@evalID", group.evalID);
+                    cmd.Parameters.AddWithValue("@projectID", group.projectID);
+                    cmd.Parameters.AddWithValue("@groupID", group.groupdID);
+
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+
+        public static Course getCourse(int courseID)
+        {
+            Course course = new Course();
+            course.users = new List<User>();
+            course.projects = new List<Project>();
+
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "UPDATE users SET username = @username, firstName = @firstName, lastName = @lastName WHERE userID = @userID";
-                    cmd.Parameters.AddWithValue("@username", user.username);
-                    cmd.Parameters.AddWithValue("@firstName", user.firstName);
-                    cmd.Parameters.AddWithValue("@lastName", user.lastName);
-                    cmd.Parameters.AddWithValue("@userID", user.userID);
+                    cmd.CommandText =
+                        "SELECT c.*, uc.isActive AS ucIsActive, u.userID, u.firstName, u.lastName FROM courses c" +
+                        " LEFT JOIN uCourse uc ON c.courseID = uc.courseID LEFT JOIN users u ON uc.userID = u.userID" +
+                        " WHERE c.courseID = @courseID";
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
 
-                    if (cmd.ExecuteNonQuery() > 0) return true;
-                    return false;
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            if (course.courseID == 0)
+                            {
+                                course.courseID = reader.GetInt32("courseId");
+                                course.courseName = reader.GetString("courseName");
+                                course.instructorID = reader.GetInt32("instructorId");
+                                course.isActive = reader.GetBoolean("isActive");
+                                course.desc = reader.GetString("description");
+                            }
+
+                            if (!reader.IsDBNull(6))
+                            {
+                                course.users.Add(new User()
+                                {
+                                    userID = reader.GetInt32("userID"),
+                                    firstName = reader.GetString("firstName"),
+                                    lastName = reader.GetString("lastName"),
+                                    isActive = reader.GetBoolean("ucIsActive"),
+                                });
+
+                            }
+                            
+                        }
+                    }
+
+                    cmd.CommandText = "SELECT * FROM projects WHERE courseID = @courseID";
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            course.projects.Add(new Project()
+                            {
+                                projectID = reader.GetInt32("projectID"),
+                                projectName = reader.GetString("projectName"),
+                                desc = reader.GetString("description"),
+                                isActive = reader.GetBoolean("isActive"),
+                            });
+                        }
+                    }
                 }
             }
+            return course;
         }
     }
 }
