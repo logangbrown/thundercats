@@ -8,13 +8,15 @@
 
         if (!$scope.courseID) $location.path('/courses');
 
-        //TODO: Enable GetCourse and remove dummy data below
+        usSpinnerService.spin('spinner');
         $http.post("/Home/GetCourse", { courseID: $scope.courseID })
             .then(function (response) {
+                usSpinnerService.stop('spinner');
                 $scope.course = response.data;
                 if (!$scope.course.users) $scope.course.users = null;
                 if (!$scope.course.projects) $scope.course.projects = null;
             }, function () {
+                usSpinnerService.stop('spinner');
                 toastr["error"]("Failed retrieving course.");
             });
 

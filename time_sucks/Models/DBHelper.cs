@@ -436,7 +436,7 @@ namespace time_sucks.Models
                     cmd.Parameters.AddWithValue("@courseName", course.courseName);
                     cmd.Parameters.AddWithValue("@instructorID", course.instructorID);
                     cmd.Parameters.AddWithValue("@isActive", course.isActive);
-                    cmd.Parameters.AddWithValue("@desc", course.desc);
+                    cmd.Parameters.AddWithValue("@desc", course.description);
                     cmd.Parameters.AddWithValue("@courseID", course.courseID);
 
                     if (cmd.ExecuteNonQuery() > 0) return true;
@@ -517,7 +517,7 @@ namespace time_sucks.Models
                                 course.courseName = reader.GetString("courseName");
                                 course.instructorID = reader.GetInt32("instructorId");
                                 course.isActive = reader.GetBoolean("isActive");
-                                course.desc = reader.GetString("description");
+                                course.description = reader.GetString("description");
                             }
 
                             if (!reader.IsDBNull(6))

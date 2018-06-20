@@ -389,13 +389,7 @@ namespace time_sucks.Controllers
         public IActionResult GetCourses()
         {
             List<Course> allCourses = DBHelper.GetCourses();
-
-            if (IsAdmin() || IsInstructorForCourse(course.courseID))
-            {
-                List<Course> allCourses = DBHelper.getCourses();
-                return Ok(allCourses);
-            }
-            return NoContent();
+            return Ok(allCourses);
         }
 
         /// <summary>
@@ -477,8 +471,6 @@ namespace time_sucks.Controllers
                 return StatusCode(500); // Query failed
             }
             return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)
-
-            return Ok();
         }
 
         [HttpPost]
@@ -495,8 +487,6 @@ namespace time_sucks.Controllers
                 return StatusCode(500); // Query failed
             }
             return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)
-
-            return Ok();
         }
 
         /// <summary>

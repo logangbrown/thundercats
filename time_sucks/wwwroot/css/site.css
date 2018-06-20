@@ -2,9 +2,19 @@
     padding-bottom: 20px;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
+a {
+    color: #0B6552;
+    text-decoration: underline;
+}
+
+nav a {
+    color: #18BC9C;
+    text-decoration: none;
+}
+
+    /* Wrapping element */
+    /* Set some basic padding to keep content from hitting the edges */
+    .body-content {
     padding-left: 15px;
     padding-right: 15px;
 }
@@ -119,11 +129,11 @@
     }
 
     .course-name {
-        font-size: 0.8em;
+        font-size: 1em;
     }
 
     .instructor-name {
-        font-size: 0.8em;
+        font-size: 1em;
     }
 
     .navbar-icon {
