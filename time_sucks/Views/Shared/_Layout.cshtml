@@ -1,39 +1,52 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CS 3750 Time Tracker</title>
+    <title>Timecats</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap4/bootswatch-flatly.css">
     <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/css/tempusdominus-bootstrap-4.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="~/lib/angular-spinner/spin.css"/>
+    <link rel="stylesheet" href="~/lib/angular-spinner/spin.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
+    <!-- Favicon and Mobile information -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#4f3868">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Timecats">
+    <meta name="application-name" content="Timecats">
+    <meta name="msapplication-TileColor" content="#18BC9C">
+    <meta name="theme-color" content="#18BC9C">
 </head>
 
 <body ng-app="time" ng-controller="MasterCtrl">
     <nav class="navbar navbar-expand-sm bg-primary py-0">
-        <a href="/#!/" class="navbar-brand" style="height: 50px; padding-top: 10px;">Time</a>
+        <a href="/#!/" class="navbar-brand" style="height: 60px; padding-top: 0px;"><img src="/images/logo.svg" alt="Logo" class="rounded-circle" style="height: 58px; background-color: #ffffff"/></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"><i class="fa fa-bars navbar-text-color" style="font-size:30px;"></i></span>
         </button>
         <div class="collapse navbar-collapse invisible" id="navbarSupportedContent" ng-cloak ng-if="userExists()">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item" ng-class="{active: location.path === '/dashboard'}">
-                    <a class="nav-link" href="/#!/dashboard" data-toggle="collapse" data-target="#navbarSupportedContent">Dashboard</a>
+                    <a class="nav-link" href="/#!/dashboard" ng-click="collapse()" data-target="#navbarSupportedContent">Dashboard</a>
                 </li>
                 <li class="nav-item" ng-class="{active: location.path === '/courses'}">
-                    <a class="nav-link" href="/#!/courses" data-toggle="collapse" data-target="#navbarSupportedContent">Courses</a>
+                    <a class="nav-link" href="/#!/courses" ng-click="collapse()" data-target="#navbarSupportedContent">Courses</a>
                 </li>
                 <li class="nav-item" ng-class="{active: location.path === '/users'}" ng-cloak ng-if="user.type === 'A'">
-                    <a class="nav-link" href="/#!/users" data-toggle="collapse" data-target="#navbarSupportedContent">Users</a>
+                    <a class="nav-link" href="/#!/users" ng-click="collapse()" data-target="#navbarSupportedContent">Users</a>
                 </li>
             </ul>
             <div class="my-2 my-lg-0" ng-cloak ng-if="user">
-                <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}">{{user.firstName}} {{user.lastName}}</a></span>
+                <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}" ng-click="collapse()">{{user.firstName}} {{user.lastName}}</a></span>
                 <button class="btn btn-default my-2 my-sm-0" ng-click="logout()">Logout</button>
             </div>
         </div>
@@ -49,8 +62,8 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="~/lib/bootstrap4/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular-route.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>

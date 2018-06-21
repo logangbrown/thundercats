@@ -319,29 +319,29 @@ namespace time_sucks.Controllers
             return Unauthorized(); //Not an Admin or the current user, Unauthorized (401)
         }
 
-        /// <summary>
-        /// Return a course based on the ID. Returns a course if successful null otherwise
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult GetCourse([FromBody]Object json)
-        {
-            String JsonString = json.ToString();
+        ///// <summary>
+        ///// Return a course based on the ID. Returns a course if successful null otherwise
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public IActionResult GetCourse([FromBody]Object json)
+        //{
+        //    String JsonString = json.ToString();
 
-            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+        //    Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
 
-            //Check database for Course based on ID
-            //Course DBCourse = DataAccess.GetDetailedCourse(course._id);
-            Course DBCourse = null;
+        //    //Check database for Course based on ID
+        //    //Course DBCourse = DataAccess.GetDetailedCourse(course._id);
+        //    Course DBCourse = null;
 
-            //return null if we dont have a user
-            if (DBCourse == null)
-                return null;
+        //    //return null if we dont have a user
+        //    if (DBCourse == null)
+        //        return null;
 
-            return Ok(DBCourse);
+        //    return Ok(DBCourse);
 
-        }
+        //}
 
         /// <summary>
         /// Updates a Course name
@@ -355,14 +355,12 @@ namespace time_sucks.Controllers
 
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-
-            //Send ID and course name to the DB
-            //TODO
-            //DataAccess.UpdateCourse(course);
-
-
-
-            return Ok();
+            if (IsAdmin() || IsInstructorForCourse(course.courseID))
+            {
+                if (DBHelper.saveCourse(course)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
         }
 
         /// <summary>
@@ -390,11 +388,24 @@ namespace time_sucks.Controllers
         [HttpGet]
         public IActionResult GetCourses()
         {
-            //TODO
-            //List<Course> allCourses = DataAccess.GetCourses();
             List<Course> allCourses = DBHelper.GetCourses();
-
             return Ok(allCourses);
+        }
+
+        /// <summary>
+        /// Get a course and its projects and users
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult GetCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+            Course retreivedCourse = DBHelper.getCourse(course.courseID);
+
+            return Ok(retreivedCourse);
         }
 
         /// <summary>
@@ -452,15 +463,31 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
 
             Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-            //Send DB ID and name
-            //TODO
-            //DataAccess.UpdateProject(project);
-
-            return Ok();
-
+            if (IsAdmin() || IsInstructorForCourse(course.courseID))
+            {
+                if (DBHelper.saveProject(project)) return Ok();
+                return StatusCode(500); // Query failed
+            }
+            return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)
         }
 
+        [HttpPost]
+        public IActionResult SaveGroup([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+            if (IsAdmin() || IsInstructorForCourse(course.courseID))
+            {
+                if (DBHelper.saveGroup(group)) return Ok();
+                return StatusCode(500); // Query failed
+            }
+            return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)
+        }
 
         /// <summary>
         /// Returns OK if a users session succesfully ended. 204 otherwise
@@ -518,10 +545,10 @@ namespace time_sucks.Controllers
             requestedGroup.groupID = Int32.Parse(requestedGroupStr);
 
             //Make sure that the user is part of the groups course
-            if (IsStudentInCourse(GetCourseForGroup(requestedGroup.groupID)) || IsAdmin())
-            {
-                return Ok(DBHelper.getGroup(requestedGroup.groupID));
-            }
+            //if (IsStudentInCourse(GetCourseForGroup(requestedGroup.groupID)) || IsAdmin())
+            //{
+            //    return Ok(DBHelper.getGroup(requestedGroup.groupID));
+            //}
 
             return NoContent();
         }

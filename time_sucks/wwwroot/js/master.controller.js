@@ -19,6 +19,10 @@
         "hideMethod": "fadeOut"
     };
 
+    $scope.collapse = function () {
+        $('.navbar-collapse').collapse('hide');
+    }
+
     $scope.userExists = function () {
         if ($scope.user !== null) {
             $('#navbarSupportedContent').removeClass('invisible');
@@ -35,6 +39,7 @@
                 usSpinnerService.stop('spinner');
                 $location.path('/login');
             }, function () {
+                usSpinnerService.stop('spinner');
                 toastr["error"]("Failed to logout.");
             });
 

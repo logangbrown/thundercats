@@ -4,13 +4,15 @@
     $scope.config = {};
     $scope.config.showInactiveCourses = false;
 
-    $scope.load = function() {
+    $scope.load = function () {
 
-       // TODO enable Courses (rename GetCourses), remove dummy data
+        usSpinnerService.spin('spinner');
         $http.get("/Home/GetCourses")
             .then(function (response) {
+                usSpinnerService.stop('spinner');
                 $scope.courses = response.data;
             }, function () {
+                usSpinnerService.stop('spinner');
                 toastr["error"]("Error retrieving courses.");
             });
 
