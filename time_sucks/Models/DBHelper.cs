@@ -424,7 +424,6 @@ namespace time_sucks.Models
 
 
         public static bool saveCourse(Course course)
-
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -489,6 +488,84 @@ namespace time_sucks.Models
             }
         }
 
+        public static Group getGroup(int groupID)
+        {
+            Group group = new Group();
+            group.users = new List<User>();
+            bool foundUser = false;
+            
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, date_format(t.timeIn, '%m/%d/%Y %l:%i %p') AS 'timeIn', date_format(t.timeOut, '%m/%d/%Y %l:%i %p') AS 'timeOut', t.description, ug.isActive  " +
+                                      "From groups g Inner Join uGroups ug On " +
+                                      "ug.groupID = g.groupID " +
+                                      "Inner Join users u On " +
+                                      "u.userID = ug.userID " +
+                                      "Inner Join timeCards t On " +
+                                      "u.userID = t.userID " +
+                                      "Where g.groupID = @groupID";
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            foundUser = false;
+                            group.groupName = reader.GetString("groupName");
+
+                            //get each users time info 
+                            foreach (User user in group.users)
+                            {
+                                if (user.userID == reader.GetInt32("userID"))
+                                {
+                                    foundUser = true;
+                                    //Add time slot
+
+                                    if (user.timecards == null) user.timecards = new List<TimeCard>();
+
+                                    user.timecards.Add(new TimeCard()
+                                    {
+                                        timeIn = reader.GetString("timeIn"),
+                                        timeOut = reader.GetString("timeOut"),
+                                        description = reader.GetString("description"),
+                                    });
+                                }
+                            }
+
+                            if (!foundUser)
+                            {
+                                List<TimeCard> timecardlist = new List<TimeCard>();
+                                timecardlist.Add(new TimeCard()
+                                {
+                                    timeIn = reader.GetString("timeIn"),
+                                    timeOut = reader.GetString("timeOut"),
+                                    description = reader.GetString("description")
+                                });
+
+                                //Add the user and then the time slot
+                                group.users.Add(new User()
+                                {
+                                    userID = reader.GetInt32("userID"),
+                                    firstName = reader.GetString("firstName"),
+                                    lastName = reader.GetString("lastName"),
+                                    timecards = timecardlist,
+                                    isActive = reader.GetBoolean("isActive"),
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            return group;
+        }
+
+
         public static Course getCourse(int courseID)
         {
             Course course = new Course();
@@ -521,17 +598,40 @@ namespace time_sucks.Models
                                 course.description = reader.GetString("description");
                             }
 
+                            if (!reader.IsDBNull(6))
+                            {
+                                course.users.Add(new User()
+                                {
+                                    userID = reader.GetInt32("userID"),
+                                    firstName = reader.GetString("firstName"),
+                                    lastName = reader.GetString("lastName"),
+                                    isActive = reader.GetBoolean("ucIsActive"),
+                                });
+
+                            }
 
                         }
-
                     }
 
+                    cmd.CommandText = "SELECT * FROM projects WHERE courseID = @courseID";
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            course.projects.Add(new Project()
+                            {
+                                projectID = reader.GetInt32("projectID"),
+                                projectName = reader.GetString("projectName"),
+                                desc = reader.GetString("description"),
+                                isActive = reader.GetBoolean("isActive"),
+                            });
+                        }
+                    }
                 }
             }
             return course;
         }
-
     }
 }
-
-
