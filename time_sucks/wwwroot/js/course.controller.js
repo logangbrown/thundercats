@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('CourseCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
+﻿angular.module('time').controller('CourseCtrl',['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.config = {};
     $scope.config.showInactiveProjects = false;
@@ -295,4 +295,4 @@
     } else {
         $scope.load();
     }
-});
+}]);

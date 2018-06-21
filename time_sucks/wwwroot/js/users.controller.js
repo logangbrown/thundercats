@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('UsersCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
+﻿angular.module('time').controller('UsersCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.search = '';
     $scope.loaded = false;
     $scope.load = function() {
@@ -59,4 +59,4 @@
     } else {
         $scope.load();
     }
-});
+}]);

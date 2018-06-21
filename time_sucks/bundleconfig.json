@@ -1,24 +1,113 @@
-﻿// Configure bundling and minification for the project.
-// More info at https://go.microsoft.com/fwlink/?LinkId=808241
 [
-  {
-    "outputFileName": "wwwroot/css/site.min.css",
-    // An array of relative input file paths. Globbing patterns supported
-    "inputFiles": [
-      "wwwroot/css/site.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/js/site.min.js",
-    "inputFiles": [
-      "wwwroot/js/site.js"
-    ],
-    // Optionally specify minification options
-    "minify": {
-      "enabled": true,
-      "renameLocals": true
+    {
+        "outputFileName": "wwwroot/css/site.min.css",
+        "inputFiles": [
+            "wwwroot/css/site.css"
+        ]
     },
-    // Optionally generate .map file
-    "sourceMap": false
-  }
+    {
+        "outputFileName": "wwwroot/lib/bootstrap4/bootswatch-flatly.min.css",
+        "inputFiles": [
+            "wwwroot/lib/bootstrap4/bootswatch-flatly.css"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/group.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/group.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/course.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/course.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/lib/angular-spinner/spin.min.css",
+        "inputFiles": [
+            "wwwroot/lib/angular-spinner/spin.css"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/app.min.js",
+        "inputFiles": [
+            "wwwroot/js/app.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/courses.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/courses.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/dashboard.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/dashboard.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/login.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/login.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/master.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/master.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/project.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/project.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/register.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/register.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/user.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/user.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/users.controller.min.js",
+        "inputFiles": [
+            "wwwroot/js/users.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/lib/angular-spinner/spin.min.js",
+        "inputFiles": [
+            "wwwroot/lib/angular-spinner/spin.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/essentials.min.js",
+        "inputFiles": [
+            "wwwroot/js/app.js",
+            "wwwroot/js/master.controller.js",
+            "wwwroot/js/login.controller.js"
+        ]
+    },
+    {
+        "outputFileName": "wwwroot/js/nonessentials.min.js",
+        "inputFiles": [
+            "wwwroot/js/group.controller.js",
+            "wwwroot/js/course.controller.js",
+            "wwwroot/js/courses.controller.js",
+            "wwwroot/js/dashboard.controller.js",
+            "wwwroot/js/project.controller.js",
+            "wwwroot/js/register.controller.js",
+            "wwwroot/js/user.controller.js",
+            "wwwroot/js/users.controller.js"
+        ]
+    }
 ]

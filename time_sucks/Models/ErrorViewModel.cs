@@ -1,5 +1,3 @@
-using System;
-
 namespace time_sucks.Models
 {
     public class ErrorViewModel

@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('RegisterCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
+﻿angular.module('time').controller('RegisterCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
 
     $scope.load = function () {
@@ -76,4 +76,4 @@
         if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
         else $location.path('/dashboard');
     }
-});
+}]);

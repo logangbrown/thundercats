@@ -357,7 +357,7 @@ namespace time_sucks.Controllers
 
             if (IsAdmin() || IsInstructorForCourse(course.courseID))
             {
-                if (DBHelper.saveCourse(course)) return Ok();
+                if (DBHelper.SaveCourse(course)) return Ok();
                 return StatusCode(500); //Query failed
             }
             return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
@@ -403,7 +403,7 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-            Course retreivedCourse = DBHelper.getCourse(course.courseID);
+            Course retreivedCourse = DBHelper.GetCourse(course.courseID);
 
             return Ok(retreivedCourse);
         }
@@ -467,7 +467,7 @@ namespace time_sucks.Controllers
 
             if (IsAdmin() || IsInstructorForCourse(course.courseID))
             {
-                if (DBHelper.saveProject(project)) return Ok();
+                if (DBHelper.SaveProject(project)) return Ok();
                 return StatusCode(500); // Query failed
             }
             return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)
@@ -483,7 +483,7 @@ namespace time_sucks.Controllers
 
             if (IsAdmin() || IsInstructorForCourse(course.courseID))
             {
-                if (DBHelper.saveGroup(group)) return Ok();
+                if (DBHelper.SaveGroup(group)) return Ok();
                 return StatusCode(500); // Query failed
             }
             return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)

@@ -30,13 +30,15 @@ namespace time_sucks.Models
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
-                            user = new User();
-                            user.userID = reader.GetInt32("userID");
-                            user.username = reader.GetString("username");
-                            user.firstName = reader.GetString("firstName");
-                            user.lastName = reader.GetString("lastName");
-                            user.type = reader.GetChar("type");
-                            user.isActive = reader.GetBoolean("isActive");
+                            user = new User()
+                            {
+                                userID = reader.GetInt32("userID"),
+                                username = reader.GetString("username"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                                type = reader.GetChar("type"),
+                                isActive = reader.GetBoolean("isActive")
+                            };
                         }
                     }
                 }
@@ -199,13 +201,15 @@ namespace time_sucks.Models
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
-                            user = new User();
-                            user.userID = reader.GetInt32("userID");
-                            user.username = reader.GetString("username");
-                            user.firstName = reader.GetString("firstName");
-                            user.lastName = reader.GetString("lastName");
-                            user.type = reader.GetChar("type");
-                            user.isActive = reader.GetBoolean("isActive");
+                            user = new User()
+                            {
+                                userID = reader.GetInt32("userID"),
+                                username = reader.GetString("username"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                                type = reader.GetChar("type"),
+                                isActive = reader.GetBoolean("isActive")
+                            };
                         }
                     }
                 }
@@ -230,13 +234,15 @@ namespace time_sucks.Models
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
-                            user = new User();
-                            user.userID = reader.GetInt32("userID");
-                            user.username = reader.GetString("username");
-                            user.firstName = reader.GetString("firstName");
-                            user.lastName = reader.GetString("lastName");
-                            user.type = reader.GetChar("type");
-                            user.isActive = reader.GetBoolean("isActive");
+                            user = new User()
+                            {
+                                userID = reader.GetInt32("userID"),
+                                username = reader.GetString("username"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                                type = reader.GetChar("type"),
+                                isActive = reader.GetBoolean("isActive")
+                            };
                         }
                     }
                 }
@@ -423,7 +429,7 @@ namespace time_sucks.Models
         }
 
 
-        public static bool saveCourse(Course course)
+        public static bool SaveCourse(Course course)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -445,7 +451,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static bool saveProject(Project project)
+        public static bool SaveProject(Project project)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -466,7 +472,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static bool saveGroup(Group group)
+        public static bool SaveGroup(Group group)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -480,7 +486,7 @@ namespace time_sucks.Models
                     cmd.Parameters.AddWithValue("@isActive", group.isActive);
                     cmd.Parameters.AddWithValue("@evalID", group.evalID);
                     cmd.Parameters.AddWithValue("@projectID", group.projectID);
-                    cmd.Parameters.AddWithValue("@groupID", group.groupdID);
+                    cmd.Parameters.AddWithValue("@groupID", group.groupID);
 
                     if (cmd.ExecuteNonQuery() > 0) return true;
                     return false;
@@ -488,11 +494,13 @@ namespace time_sucks.Models
             }
         }
 
-        public static Course getCourse(int courseID)
+        public static Course GetCourse(int courseID)
         {
-            Course course = new Course();
-            course.users = new List<User>();
-            course.projects = new List<Project>();
+            Course course = new Course()
+            {
+                users = new List<User>(),
+                projects = new List<Project>()
+            };
 
             using (var conn = new MySqlConnection(connstring.ToString()))
             {

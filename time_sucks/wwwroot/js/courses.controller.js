@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('CoursesCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
+﻿angular.module('time').controller('CoursesCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.search = '';
     $scope.config = {};
@@ -56,4 +56,4 @@
     } else {
         $scope.load();
     }
-});
+}]);
