@@ -98,6 +98,34 @@ namespace time_sucks.Models
             }
             return courseID;
         }
+        
+        public static bool JoinCourse(int courseID, int userID)
+        {   
+             using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    if (UserIsInCourse(courseID, userID))
+                    {
+                        cmd.CommandText = "UPDATE uCourses SET userID = @userID WHERE userID = @userID"; 
+                        cmd.Parameters.AddWithValue("@userID", userID);
+                        cmd.Parameters.AddWithValue("@courseID", courseID);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                        return false;
+                    }
+                    else
+                    {
+                        cmd.CommandText = "INSERT INTO uCourses (userID, courseID) VALUES (@userID, @courseID)";
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                        return false;
+                    }
+                }
+             }
+            
+            
+        }
+        
 
         public static bool UserIsInCourse(int courseID, int userID)
         {
