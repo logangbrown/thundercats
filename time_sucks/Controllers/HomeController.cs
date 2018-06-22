@@ -265,6 +265,18 @@ namespace time_sucks.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult JoinCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            User user = JsonConvert.DeserializeObject<User>(JsonString);
+            
+            if (DBHelper.JoinCourse(course)) return Ok();
+            return StatusCode(500); //Query failed
+        
+        }
+
+
         /// <summary>
         /// Add a course. Returns the course ID
         /// </summary>
