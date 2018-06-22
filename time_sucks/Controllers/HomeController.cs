@@ -527,7 +527,8 @@ namespace time_sucks.Controllers
             //Make sure that the user is part of the groups course
             if (IsStudentInCourse(GetCourseForGroup(requestedGroup.groupID)) || IsAdmin())
             {
-                return Ok(DBHelper.getGroup(requestedGroup.groupID));
+                requestedGroup = DBHelper.getGroup(requestedGroup.groupID);
+                return Ok(requestedGroup);
             }
 
             return NoContent();

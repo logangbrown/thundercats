@@ -518,6 +518,8 @@ namespace time_sucks.Models
                         {
                             foundUser = false;
                             group.groupName = reader.GetString("groupName");
+                            group.groupID = reader.GetInt32("groupID");
+                            group.isActive = reader.GetBoolean("isActive");
 
                             //get each users time info 
                             foreach (User user in group.users)
