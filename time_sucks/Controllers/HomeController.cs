@@ -275,6 +275,17 @@ namespace time_sucks.Controllers
             return StatusCode(500); //Query failed
         
         }
+        
+        [HttpPost]
+        public IActionResult JoinGroup([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            uGroups uGroups = JsonConvert.DesrializeObject<uGroups>(JsonString);
+            
+            if (DBHelper.JoinGroup(uGroups.userID, uGroups.groupID)) return Ok();//Need to make sure this is done correctly.
+            return StatusCode(500); //Query failed
+            
+        }
 
 
         /// <summary>
