@@ -116,7 +116,7 @@ namespace time_sucks.Models
                     }
                     else
                     {
-                        cmd.CommandText = "INSERT INTO uCourses (userID, courseID) VALUES (@userID, @courseID)";
+                        cmd.CommandText = "INSERT INTO uCourses (userID, courseID, isActive) VALUES (@userID, @courseID, 1)";
                         if (cmd.ExecuteNonQuery() > 0) return true;
                         return false;
                     }
