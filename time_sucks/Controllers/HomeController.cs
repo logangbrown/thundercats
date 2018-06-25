@@ -271,7 +271,7 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
             uCourse uCourse = JsonConvert.DeserializeObject<uCourse>(JsonString);
             
-            if (DBHelper.JoinCourse(uCourse.userID, uCourse.courseID)) return Ok();//Need to make sure this is done correctly.
+            if (DBHelper.JoinCourse(uCourse.userID, uCourse.courseID)) return Ok();
             return StatusCode(500); //Query failed
         
         }
@@ -280,10 +280,18 @@ namespace time_sucks.Controllers
         public IActionResult JoinGroup([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            uGroups uGroups = JsonConvert.DesrializeObject<uGroups>(JsonString);
-            
-            if (DBHelper.JoinGroup(uGroups.userID, uGroups.groupID)) return Ok();//Need to make sure this is done correctly.
-            return StatusCode(500); //Query failed
+            uGroups uGroups = JsonConvert.DeserializeObject<uGroups>(JsonString);
+
+            //TODO We need to make sure that the user isn't in any groups on the project as well
+
+            if (IsStudentInCourse(GetCourseForGroup(uGroups.groupID)))
+            {
+                //TODO define DBHelper.JoinGroup()
+                //if (DBHelper.JoinGroup(uGroups.userID, uGroups.groupID)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+
+            return Unauthorized(); //User not in Course
             
         }
 

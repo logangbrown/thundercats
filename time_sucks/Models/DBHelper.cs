@@ -101,31 +101,69 @@ namespace time_sucks.Models
         
         public static bool JoinCourse(int courseID, int userID)
         {   
-             using (var conn = new MySqlConnection(connstring.ToString()))
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    if (!UserIsInCourse(courseID, userID))
+                    //{
+                    //    cmd.CommandText = "UPDATE uCourses SET userID = @userID WHERE userID = @userID"; 
+                    //    cmd.Parameters.AddWithValue("@userID", userID);
+                    //    cmd.Parameters.AddWithValue("@courseID", courseID);
+                    //    if (cmd.ExecuteNonQuery() > 0) return true;
+                    //    return false;
+                    //}
+                    //else
+                    {
+                        cmd.CommandText = "INSERT INTO uCourses (userID, courseID, isActive) VALUES (@userID, @courseID, 0)";
+                        cmd.Parameters.AddWithValue("@userID", userID);
+                        cmd.Parameters.AddWithValue("@courseID", courseID);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                    }
+                    return false;
+                }
+            }
+        }
+
+        public static bool LeaveCourse(int courseID, int userID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     if (UserIsInCourse(courseID, userID))
                     {
-                        cmd.CommandText = "UPDATE uCourses SET userID = @userID WHERE userID = @userID"; 
+                        cmd.CommandText = "DELETE FROM uCourses WHERE courseID = @courseID AND userID = @userID";
                         cmd.Parameters.AddWithValue("@userID", userID);
                         cmd.Parameters.AddWithValue("@courseID", courseID);
                         if (cmd.ExecuteNonQuery() > 0) return true;
-                        return false;
                     }
-                    else
-                    {
-                        cmd.CommandText = "INSERT INTO uCourses (userID, courseID, isActive) VALUES (@userID, @courseID, 1)";
-                        if (cmd.ExecuteNonQuery() > 0) return true;
-                        return false;
-                    }
+                    return false;
                 }
-             }
-            
-            
+            }
         }
-        
+
+        public static bool SaveUserCourse(uCourse uCourse)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    if (UserIsInCourse(uCourse.courseID, uCourse.userID))
+                    {
+                        cmd.CommandText = "UPDATE uCourses SET isActive = @isActive WHERE userID = @userID AND courseID = @courseID";
+                        cmd.Parameters.AddWithValue("@userID", uCourse.userID);
+                        cmd.Parameters.AddWithValue("@courseID", uCourse.courseID);
+                        cmd.Parameters.AddWithValue("@isActive", uCourse.isActive);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                    }
+                    return false;
+                }
+            }
+        }
 
         public static bool UserIsInCourse(int courseID, int userID)
         {
