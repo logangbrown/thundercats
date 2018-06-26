@@ -290,6 +290,27 @@ namespace time_sucks.Models
             }
         }
 
+        public static long JoinGroup(User user, Group group)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO uGroups (userID, groupID, isActive)" +
+                        "VALUES (@userID, @groupID, 1)";
+                    cmd.Parameters.AddWithValue("@userID", user.userID);
+                    cmd.Parameters.AddWithValue("@groupID", group.groupID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+
+                    return 0;
+                }
+            }
+        }
+
         public static List<User> GetUsers()
         {
             List<User> user = new List<User>();
@@ -500,7 +521,7 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, date_format(t.timeIn, '%m/%d/%Y %l:%i %p') AS 'timeIn', date_format(t.timeOut, '%m/%d/%Y %l:%i %p') AS 'timeOut', t.description, ug.isActive  " +
+                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.groupID AS 'tgroupID', t.timeID, date_format(t.timeIn, '%m/%d/%Y %l:%i %p') AS 'timeIn', date_format(t.timeOut, '%m/%d/%Y %l:%i %p') AS 'timeOut', t.description, ug.isActive  " +
                                       "From groups g Inner Join uGroups ug On " +
                                       "ug.groupID = g.groupID " +
                                       "Inner Join users u On " +
@@ -536,6 +557,8 @@ namespace time_sucks.Models
                                         timeIn = reader.GetString("timeIn"),
                                         timeOut = reader.GetString("timeOut"),
                                         description = reader.GetString("description"),
+                                        groupID = reader.GetInt32("tgroupID"),
+                                        timeslotID  = reader.GetInt32("timeID")
                                     });
                                 }
                             }
@@ -547,7 +570,9 @@ namespace time_sucks.Models
                                 {
                                     timeIn = reader.GetString("timeIn"),
                                     timeOut = reader.GetString("timeOut"),
-                                    description = reader.GetString("description")
+                                    description = reader.GetString("description"),
+                                    groupID = reader.GetInt32("tgroupID"),
+                                    timeslotID = reader.GetInt32("timeID")
                                 });
 
                                 //Add the user and then the time slot
