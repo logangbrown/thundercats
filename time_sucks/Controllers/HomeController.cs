@@ -74,6 +74,19 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Returns true if the user is part of a group
+        /// </summary>
+        /// <returns></returns>
+        public bool IsUserInGroup(int userID)
+        {
+            userID = 
+
+            
+
+            return false;
+        }
+
+        /// <summary>
         /// Returns true if the logged in user is a student for the passed courseID
         /// </summary>
         /// <returns></returns>
