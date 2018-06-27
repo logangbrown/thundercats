@@ -6,12 +6,12 @@ namespace time_sucks.Models
     {
         public int timeslotID { get; set; }
         public double hours { get; set; }
-        public DateTime timeIn { get; set; }
-        public DateTime timeOut { get; set; }
+        public String timeIn { get; set; }
+        public String timeOut { get; set; }
         public bool isEdited { get; set; }
-        public DateTime createdOn { get; set; }
+        public String createdOn { get; set; }
         public int userID { get; set; }
         public int groupID { get; set; }
-        public string desc { get; set; }
+        public string description { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace time_sucks.Controllers
         {
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
 
-            if(user != null)
+            if (user != null)
             {
                 return user.type;
             }
@@ -83,7 +83,7 @@ namespace time_sucks.Controllers
 
             if (user != null)
             {
-                return DBHelper.UserIsInCourse(courseID,user.userID);
+                return DBHelper.UserIsInCourse(courseID, user.userID);
             }
 
             return false;
@@ -177,7 +177,7 @@ namespace time_sucks.Controllers
 
             return Ok();
         }
-        
+
         [HttpPost]
         public IActionResult ChangePassword([FromBody]Object json)
         {
@@ -197,8 +197,8 @@ namespace time_sucks.Controllers
                 return StatusCode(500); //Query failed
             }
             return Unauthorized(); //Not an Admin or the current user, Unathorized (401)
-        }      
-        
+        }
+
 
         /// <summary>
         /// Allows a user to log in. Returns an OK (200) if successful, No Content (204) if the
@@ -217,11 +217,12 @@ namespace time_sucks.Controllers
 
             //Check if the user exists
             User DBUser = null;
-            if(DBHelper.GetUser(user.username) != null)
+            if (DBHelper.GetUser(user.username) != null)
             {
                 user.password = GenerateHash(user.password);
                 DBUser = DBHelper.GetUser(user.username, user.password);
-            } else
+            }
+            else
             {
                 //return No Content (204) if there isn't a user
                 return NoContent();
@@ -327,13 +328,13 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
             User user = JsonConvert.DeserializeObject<User>(JsonString);
-            if(user.username == null || user.username.Length < 1)
+            if (user.username == null || user.username.Length < 1)
             {
                 return StatusCode(400); //Didn't pass a valid username, Bad Request (400) 
             }
             user.username = user.username.ToLower();
             User checkUser = DBHelper.GetUser(user.username);
-            if(checkUser != null && checkUser.userID != user.userID)
+            if (checkUser != null && checkUser.userID != user.userID)
             {
                 return StatusCode(403); //Username already exists, Forbidden (403)
             }
@@ -342,7 +343,8 @@ namespace time_sucks.Controllers
             {
                 if (DBHelper.ChangeUserA(user)) return Ok();
                 return StatusCode(500); //Query failed
-            } else if (user.userID == GetUserID())
+            }
+            else if (user.userID == GetUserID())
             {
                 if (DBHelper.ChangeUser(user)) return Ok();
                 return StatusCode(500); //Query failed
@@ -458,6 +460,29 @@ namespace time_sucks.Controllers
             return Ok(DBProjectID);
         }
 
+
+        /// <summary>
+        /// Adds a member to an existing group
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult JoinGroup([FromBody]Object json)
+        {
+            User user = new User(); 
+
+            user.userID = GetUserID();
+
+            //check if user is part of any existing groups in course
+
+
+
+
+            return Ok();
+        }
+
+
+
         /// <summary>
         /// Return a Project based on the ID. Returns a Project if successful 204 otherwise
         /// </summary>
@@ -538,6 +563,29 @@ namespace time_sucks.Controllers
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult GetGroup([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            String requestedGroupStr = JsonConvert.DeserializeObject<String>(JsonString);
+            Group requestedGroup = new Group();
+            requestedGroup.groupID = Int32.Parse(requestedGroupStr);
+
+            //Make sure that the user is part of the groups course
+            if (IsStudentInCourse(GetCourseForGroup(requestedGroup.groupID)) || IsAdmin())
+            {
+                requestedGroup = DBHelper.getGroup(requestedGroup.groupID);
+                return Ok(requestedGroup);
+            }
+
+            return NoContent();
         }
 
         /// <summary>
