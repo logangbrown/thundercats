@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('GroupCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
+﻿angular.module('time').controller('GroupCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.group = {};
     $scope.group.users = {};
@@ -489,4 +489,4 @@
     } else {
         $scope.load();
     }
-});
+}]);

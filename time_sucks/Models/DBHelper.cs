@@ -30,13 +30,15 @@ namespace time_sucks.Models
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
-                            user = new User();
-                            user.userID = reader.GetInt32("userID");
-                            user.username = reader.GetString("username");
-                            user.firstName = reader.GetString("firstName");
-                            user.lastName = reader.GetString("lastName");
-                            user.type = reader.GetChar("type");
-                            user.isActive = reader.GetBoolean("isActive");
+                            user = new User()
+                            {
+                                userID = reader.GetInt32("userID"),
+                                username = reader.GetString("username"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                                type = reader.GetChar("type"),
+                                isActive = reader.GetBoolean("isActive")
+                            };
                         }
                     }
                 }
@@ -95,6 +97,72 @@ namespace time_sucks.Models
                 }
             }
             return courseID;
+        }
+        
+        public static bool JoinCourse(int courseID, int userID)
+        {   
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    if (!UserIsInCourse(courseID, userID))
+                    //{
+                    //    cmd.CommandText = "UPDATE uCourses SET userID = @userID WHERE userID = @userID"; 
+                    //    cmd.Parameters.AddWithValue("@userID", userID);
+                    //    cmd.Parameters.AddWithValue("@courseID", courseID);
+                    //    if (cmd.ExecuteNonQuery() > 0) return true;
+                    //    return false;
+                    //}
+                    //else
+                    {
+                        cmd.CommandText = "INSERT INTO uCourses (userID, courseID, isActive) VALUES (@userID, @courseID, 0)";
+                        cmd.Parameters.AddWithValue("@userID", userID);
+                        cmd.Parameters.AddWithValue("@courseID", courseID);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                    }
+                    return false;
+                }
+            }
+        }
+
+        public static bool LeaveCourse(int courseID, int userID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    if (UserIsInCourse(courseID, userID))
+                    {
+                        cmd.CommandText = "DELETE FROM uCourses WHERE courseID = @courseID AND userID = @userID";
+                        cmd.Parameters.AddWithValue("@userID", userID);
+                        cmd.Parameters.AddWithValue("@courseID", courseID);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                    }
+                    return false;
+                }
+            }
+        }
+
+        public static bool SaveUserCourse(uCourse uCourse)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    if (UserIsInCourse(uCourse.courseID, uCourse.userID))
+                    {
+                        cmd.CommandText = "UPDATE uCourses SET isActive = @isActive WHERE userID = @userID AND courseID = @courseID";
+                        cmd.Parameters.AddWithValue("@userID", uCourse.userID);
+                        cmd.Parameters.AddWithValue("@courseID", uCourse.courseID);
+                        cmd.Parameters.AddWithValue("@isActive", uCourse.isActive);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                    }
+                    return false;
+                }
+            }
         }
 
         public static bool UserIsInCourse(int courseID, int userID)
@@ -199,13 +267,15 @@ namespace time_sucks.Models
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
-                            user = new User();
-                            user.userID = reader.GetInt32("userID");
-                            user.username = reader.GetString("username");
-                            user.firstName = reader.GetString("firstName");
-                            user.lastName = reader.GetString("lastName");
-                            user.type = reader.GetChar("type");
-                            user.isActive = reader.GetBoolean("isActive");
+                            user = new User()
+                            {
+                                userID = reader.GetInt32("userID"),
+                                username = reader.GetString("username"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                                type = reader.GetChar("type"),
+                                isActive = reader.GetBoolean("isActive")
+                            };
                         }
                     }
                 }
@@ -230,13 +300,15 @@ namespace time_sucks.Models
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
-                            user = new User();
-                            user.userID = reader.GetInt32("userID");
-                            user.username = reader.GetString("username");
-                            user.firstName = reader.GetString("firstName");
-                            user.lastName = reader.GetString("lastName");
-                            user.type = reader.GetChar("type");
-                            user.isActive = reader.GetBoolean("isActive");
+                            user = new User()
+                            {
+                                userID = reader.GetInt32("userID"),
+                                username = reader.GetString("username"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                                type = reader.GetChar("type"),
+                                isActive = reader.GetBoolean("isActive")
+                            };
                         }
                     }
                 }
@@ -444,7 +516,7 @@ namespace time_sucks.Models
         }
 
 
-        public static bool saveCourse(Course course)
+        public static bool SaveCourse(Course course)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -466,7 +538,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static bool saveProject(Project project)
+        public static bool SaveProject(Project project)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -487,7 +559,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static bool saveGroup(Group group)
+        public static bool SaveGroup(Group group)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -508,6 +580,7 @@ namespace time_sucks.Models
                 }
             }
         }
+
 
         public static Group getGroup(int groupID)
         {
@@ -592,12 +665,14 @@ namespace time_sucks.Models
             return group;
         }
 
-
-        public static Course getCourse(int courseID)
+      
+        public static Course GetCourse(int courseID)
         {
-            Course course = new Course();
-            course.users = new List<User>();
-            course.projects = new List<Project>();
+            Course course = new Course()
+            {
+                users = new List<User>(),
+                projects = new List<Project>()
+            };
 
             using (var conn = new MySqlConnection(connstring.ToString()))
             {

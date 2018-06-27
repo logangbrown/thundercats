@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('LoginCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
+﻿angular.module('time').controller('LoginCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.user = {};
     $scope.password = '';
@@ -69,10 +69,11 @@
                 if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
                 else $location.path('/dashboard');
             }, function () {
+                $scope.$parent.loaded = true;
                 $scope.load();
             });
     } else {
         if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
         else $location.path('/dashboard');
     }
-});
+}]);

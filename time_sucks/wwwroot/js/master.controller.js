@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('MasterCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
+﻿angular.module('time').controller('MasterCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.user = null;
     $scope.loaded = false;
     toastr.options = {
@@ -48,4 +48,4 @@
         //$location.path('/login');
         //toastr["info"]("Simulated logout - enable REST endpoint");
     }
-});
+}]);

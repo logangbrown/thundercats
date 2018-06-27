@@ -266,6 +266,37 @@ namespace time_sucks.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult JoinCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            uCourse uCourse = JsonConvert.DeserializeObject<uCourse>(JsonString);
+            
+            if (DBHelper.JoinCourse(uCourse.userID, uCourse.courseID)) return Ok();
+            return StatusCode(500); //Query failed
+        
+        }
+        
+        [HttpPost]
+        public IActionResult JoinGroup([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            uGroups uGroups = JsonConvert.DeserializeObject<uGroups>(JsonString);
+
+            //TODO We need to make sure that the user isn't in any groups on the project as well
+
+            if (IsStudentInCourse(GetCourseForGroup(uGroups.groupID)))
+            {
+                //TODO define DBHelper.JoinGroup()
+                //if (DBHelper.JoinGroup(uGroups.userID, uGroups.groupID)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+
+            return Unauthorized(); //User not in Course
+            
+        }
+
+
         /// <summary>
         /// Add a course. Returns the course ID
         /// </summary>
@@ -359,7 +390,7 @@ namespace time_sucks.Controllers
 
             if (IsAdmin() || IsInstructorForCourse(course.courseID))
             {
-                if (DBHelper.saveCourse(course)) return Ok();
+                if (DBHelper.SaveCourse(course)) return Ok();
                 return StatusCode(500); //Query failed
             }
             return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
@@ -405,7 +436,7 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-            Course retreivedCourse = DBHelper.getCourse(course.courseID);
+            Course retreivedCourse = DBHelper.GetCourse(course.courseID);
 
             return Ok(retreivedCourse);
         }
@@ -492,7 +523,7 @@ namespace time_sucks.Controllers
 
             if (IsAdmin() || IsInstructorForCourse(course.courseID))
             {
-                if (DBHelper.saveProject(project)) return Ok();
+                if (DBHelper.SaveProject(project)) return Ok();
                 return StatusCode(500); // Query failed
             }
             return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)
@@ -508,7 +539,7 @@ namespace time_sucks.Controllers
 
             if (IsAdmin() || IsInstructorForCourse(course.courseID))
             {
-                if (DBHelper.saveGroup(group)) return Ok();
+                if (DBHelper.SaveGroup(group)) return Ok();
                 return StatusCode(500); // Query failed
             }
             return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)
