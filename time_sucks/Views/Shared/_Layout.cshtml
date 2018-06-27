@@ -5,13 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Timecats</title>
 
-    <link rel="stylesheet" href="~/lib/bootstrap4/bootswatch-flatly.css">
-    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" />
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/css/tempusdominus-bootstrap-4.min.css" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="~/lib/angular-spinner/spin.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap4/bootswatch-flatly.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet" media="none" onload="if(media!='all')media='all'" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" media="none" onload="if(media!='all')media='all'" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/css/tempusdominus-bootstrap-4.min.css" media="none" onload="if(media!='all')media='all'" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" media="none" onload="if(media!='all')media='all'">
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+
+    <!-- angular-spinner/spin.min.css -->
+    <style>
+        @@keyframes spinner-line-fade-more {
+            0%, 100% {
+                opacity: 0
+            }
+
+            1% {
+                opacity: 1
+            }
+        }
+
+        @@keyframes spinner-line-fade-quick {
+            0%, 39%, 100% {
+                opacity: .25
+            }
+
+            40% {
+                opacity: 1
+            }
+        }
+
+        @@keyframes spinner-line-fade-default {
+            0%, 100% {
+                opacity: .22
+            }
+
+            1% {
+                opacity: 1
+            }
+        }
+    </style>
 
     <!-- Favicon and Mobile information -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -29,7 +67,7 @@
 
 <body ng-app="time" ng-controller="MasterCtrl">
     <nav class="navbar navbar-expand-sm bg-primary py-0">
-        <a href="/#!/" class="navbar-brand" style="height: 60px; padding-top: 0px;"><img src="/images/logo.svg" alt="Logo" class="rounded-circle" style="height: 58px; background-color: #ffffff"/></a>
+        <a href="/#!/" class="navbar-brand" style="height: 60px; padding-top: 0px;"><img src="/images/logo.svg" alt="Logo" class="rounded-circle" style="height: 58px; background-color: #ffffff" /></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"><i class="fa fa-bars navbar-text-color" style="font-size:30px;"></i></span>
         </button>
@@ -54,38 +92,43 @@
     <div class="container body-content">
         @*@RenderBody*@
         @{ IgnoreBody(); }
-        <span us-spinner spinner-key="spinner"></span> <!-- Global spinner -->
+        <span us-spinner spinner-key="spinner" spinner-on="!loaded"></span> <!-- Global spinner -->
         <div ng-view></div> <!-- Viewport for Angular -->
     </div>
 
     <!-- Libraries -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="~/lib/bootstrap4/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular-route.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/js/tempusdominus-bootstrap-4.min.js"></script>
-    <script src="~/lib/unsaved-changes/unsavedChanges.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular-route.min.js"></script>
+    <script async src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+    <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/js/tempusdominus-bootstrap-4.min.js"></script>
     <script src="~/lib/angular-spinner/spin.js"></script>
     <script src="~/lib/angular-spinner/angular-spinner.min.js"></script>
 
     <!-- Angular Scripts -->
-    <script src="~/js/app.js"></script>
-    <script src="~/js/course.controller.js"></script>
-    <script src="~/js/courses.controller.js"></script>
-    <script src="~/js/dashboard.controller.js"></script>
-    <script src="~/js/group.controller.js"></script>
-    <script src="~/js/login.controller.js"></script>
-    <script src="~/js/master.controller.js"></script>
-    <script src="~/js/project.controller.js"></script>
-    <script src="~/js/register.controller.js"></script>
-    <script src="~/js/users.controller.js"></script>
-    <script src="~/js/user.controller.js"></script>
-
-    @RenderSection("Scripts", required: false)
+    <environment include="Development">
+        <!-- Full versions for debugging -->
+        <script src="~/js/app.js" asp-append-version="true"></script>
+        <script src="~/js/course.controller.js" asp-append-version="true"></script>
+        <script src="~/js/courses.controller.js" asp-append-version="true"></script>
+        <script src="~/js/dashboard.controller.js" asp-append-version="true"></script>
+        <script src="~/js/group.controller.js" asp-append-version="true"></script>
+        <script src="~/js/login.controller.js" asp-append-version="true"></script>
+        <script src="~/js/master.controller.js" asp-append-version="true"></script>
+        <script src="~/js/project.controller.js" asp-append-version="true"></script>
+        <script src="~/js/register.controller.js" asp-append-version="true"></script>
+        <script src="~/js/users.controller.js" asp-append-version="true"></script>
+        <script src="~/js/user.controller.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <!-- Minified and bundled versions, non-critical as async for production -->
+        <script src="~/js/essentials.min.js" asp-append-version="true"></script>
+        <script src="~/js/nonessentials.min.js" asp-append-version="true" async></script>
+    </environment>
 </body>
 </html>

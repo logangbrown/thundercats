@@ -1,4 +1,4 @@
-﻿angular.module('time').controller('UserCtrl', function ($scope, $http, $routeParams, $location, usSpinnerService) {
+﻿angular.module('time').controller('UserCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
     $scope.userID = $routeParams.ID;
     $scope.viewUser = {};
@@ -103,4 +103,4 @@
     } else {
         $scope.load();
     }
-});
+}]);
