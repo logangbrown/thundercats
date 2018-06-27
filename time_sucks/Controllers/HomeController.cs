@@ -466,28 +466,6 @@ namespace time_sucks.Controllers
 
 
         /// <summary>
-        /// Adds a member to an existing group
-        /// </summary>
-        /// <param name="json"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult JoinGroup([FromBody]Object json)
-        {
-            User user = new User(); 
-
-            user.userID = GetUserID();
-
-            //check if user is part of any existing groups in course
-
-
-
-
-            return Ok();
-        }
-
-
-
-        /// <summary>
         /// Return a Project based on the ID. Returns a Project if successful 204 otherwise
         /// </summary>
         /// <returns></returns>
