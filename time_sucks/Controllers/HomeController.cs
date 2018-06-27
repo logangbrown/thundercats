@@ -293,7 +293,8 @@ namespace time_sucks.Controllers
             if (IsStudentInCourse(GetCourseForGroup(uGroups.groupID)))
             {
                 //TODO define DBHelper.JoinGroup()
-                //if (DBHelper.JoinGroup(user.userID, uGroups.groupID)) return Ok();
+                long groupID = DBHelper.JoinGroup(user.userID, uGroups.groupID);
+                if (groupID > 0) return Ok(groupID);
                 return StatusCode(500); //Query failed
             }
 
