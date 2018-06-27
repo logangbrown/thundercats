@@ -293,7 +293,6 @@ namespace time_sucks.Controllers
             }
 
             return Unauthorized(); //User not in Course
-            
         }
 
 
