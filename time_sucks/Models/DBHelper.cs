@@ -362,7 +362,7 @@ namespace time_sucks.Models
                 {
                     //SQL and Parameters
                     cmd.CommandText = "INSERT INTO uGroups (userID, groupID, isActive) " +
-                        "VALUES (@userID, @groupID, 1)";
+                        "VALUES (@userID, @groupID, 0)";
                     cmd.Parameters.AddWithValue("@userID", userID);
                     cmd.Parameters.AddWithValue("@groupID", groupID);
 
