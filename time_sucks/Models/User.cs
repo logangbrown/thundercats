@@ -12,6 +12,6 @@ namespace time_sucks.Models
         public string lastName { get; set; }
         public char type { get; set; }
         public bool isActive { get; set; }
-        public List<TimeCard> TimeCards { get; set; }
+        public List<TimeCard> timecards { get; set; }
     }
 }
