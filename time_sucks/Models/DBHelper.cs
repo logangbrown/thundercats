@@ -106,21 +106,12 @@ namespace time_sucks.Models
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
-                    if (!UserIsInCourse(courseID, userID))
-                    //{
-                    //    cmd.CommandText = "UPDATE uCourses SET userID = @userID WHERE userID = @userID"; 
-                    //    cmd.Parameters.AddWithValue("@userID", userID);
-                    //    cmd.Parameters.AddWithValue("@courseID", courseID);
-                    //    if (cmd.ExecuteNonQuery() > 0) return true;
-                    //    return false;
-                    //}
-                    //else
-                    {
-                        cmd.CommandText = "INSERT INTO uCourses (userID, courseID, isActive) VALUES (@userID, @courseID, 0)";
-                        cmd.Parameters.AddWithValue("@userID", userID);
-                        cmd.Parameters.AddWithValue("@courseID", courseID);
-                        if (cmd.ExecuteNonQuery() > 0) return true;
-                    }
+                    
+                    cmd.CommandText = "INSERT INTO uCourses (userID, courseID, isActive) VALUES (@userID, @courseID, 0)";
+                    cmd.Parameters.AddWithValue("@userID", userID);
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    
                     return false;
                 }
             }
@@ -362,7 +353,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static long JoinGroup(User user, Group group)
+        public static long JoinGroup(int userID, int groupID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -370,10 +361,10 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "INSERT INTO uGroups (userID, groupID, isActive)" +
+                    cmd.CommandText = "INSERT INTO uGroups (userID, groupID, isActive) " +
                         "VALUES (@userID, @groupID, 1)";
-                    cmd.Parameters.AddWithValue("@userID", user.userID);
-                    cmd.Parameters.AddWithValue("@groupID", group.groupID);
+                    cmd.Parameters.AddWithValue("@userID", userID);
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
 
                     //Return the last inserted ID if successful
                     if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
