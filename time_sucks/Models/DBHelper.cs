@@ -100,7 +100,7 @@ namespace time_sucks.Models
             return courseID;
         }
         
-        public static bool SaveTime()
+        public static bool SaveTime(TimeCard timecard)
         {
             String edited = "";
             DateTime before;
@@ -111,7 +111,7 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {   
                     cmd.CommandText = "SELECT timeID, createdOn FROM timeCards WHERE timeID = @timeID";
-                    cmd.Parameters.AddWithValue("@timeID", timeID);
+                    cmd.Parameters.AddWithValue("@timeID", timecard.timeslotID);
                     
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -122,22 +122,22 @@ namespace time_sucks.Models
                         }
                     }
                     after = Convert.ToDateTime(edited);
-                    before = edited.AddDays(-7);
+                    before = after.AddDays(-7);
                     
                     if (after < before)
                     {
                         cmd.CommandText = "UPDATE timeCards SET timeIn = @timeIn, timeOut = @timeOut, isEdited = 1, description = @description WHERE timeID = @timeID";
-                        cmd.Parameters.AddWithValue("@timeIn", timeIn);
-                        cmd.Parameters.AddWithValue("@timeOut", timeOut);
-                        cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Parameters.AddWithValue("@timeIn", timecard.timeIn);
+                        cmd.Parameters.AddWithValue("@timeOut", timecard.timeOut);
+                        cmd.Parameters.AddWithValue("@description", timecard.description);
                         if (cmd.ExecuteNonQuery() > 0) return true;
                     }
                     else
                     {
                         cmd.CommandText = "UPDATE timeCards SET timeIn = @timeIn, timeOut = @timeOut, description = @description WHERE timeID = @timeID";
-                        cmd.Parameters.AddWithValue("@timeIn", timeIn);
-                        cmd.Parameters.AddWithValue("@timeOut", timeOut);
-                        cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Parameters.AddWithValue("@timeIn", timecard.timeIn);
+                        cmd.Parameters.AddWithValue("@timeOut", timecard.timeOut);
+                        cmd.Parameters.AddWithValue("@description", timecard.description);
                         if (cmd.ExecuteNonQuery() > 0) return true;
                     }
                     return false;

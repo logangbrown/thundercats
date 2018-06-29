@@ -324,9 +324,9 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
             
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            TimeCards timeCards = JsonConvert.DeserializeObject<TimeCards>(JsonString);
+            TimeCard timeCards = JsonConvert.DeserializeObject<TimeCard>(JsonString);
             
-            if (isAdmin() || user.userID == timeCards.userID)
+            if (IsAdmin() || user.userID == timeCards.userID)
             {
                if (DBHelper.SaveTime(timeCards)) return Ok();
                 return StatusCode(500);
