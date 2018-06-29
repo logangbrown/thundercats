@@ -10,7 +10,7 @@ namespace time_sucks.Models
 
         public bool isActive { get; set; }
 
-        public string desc { get; set; }
+        public string description { get; set; }
 
         public List<Group> groups { get; set; }
 
