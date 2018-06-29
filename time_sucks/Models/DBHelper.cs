@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 
 namespace time_sucks.Models
@@ -101,8 +102,8 @@ namespace time_sucks.Models
         
         public static bool SaveTime()
         {
-            String edited = "";
-            DateTime before = "";
+            string edited = "";
+            DateTime before;
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -181,6 +182,23 @@ namespace time_sucks.Models
                         cmd.Parameters.AddWithValue("@courseID", courseID);
                         if (cmd.ExecuteNonQuery() > 0) return true;
                     }
+                    return false;
+                }
+            }
+        }
+
+        public static bool LeaveGroup(int userID, int groupID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                        cmd.CommandText = "DELETE FROM uGroups ug INNER JOIN groups g ON ug.groupID = g.groupID" +
+                            "WHERE userID = @userID AND groupID = @groupID ";
+                        cmd.Parameters.AddWithValue("@userID", userID);
+                        cmd.Parameters.AddWithValue("@groupID", groupID);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
                     return false;
                 }
             }

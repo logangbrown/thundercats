@@ -318,6 +318,24 @@ namespace time_sucks.Controllers
             return Unauthorized(); //User not in Course
         }
 
+        [HttpPost]
+        public IActionResult LeaveGroup([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            uGroups uGroups = JsonConvert.DeserializeObject<uGroups>(JsonString);
+
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (IsStudentInCourse(GetCourseForGroup(uGroups.groupID)))
+            {
+                if (DBHelper.LeaveGroup(user.userID, uGroups.groupID)) return Ok();
+                               
+                return StatusCode(500); //Query failed
+            }
+
+            return Unauthorized(); //User not in Course
+        }
+
 
         /// <summary>
         /// Add a course. Returns the course ID
