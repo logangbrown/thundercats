@@ -318,6 +318,23 @@ namespace time_sucks.Controllers
             return Unauthorized(); //User not in Course
         }
 
+        [HttpPost]
+        public IActionResult SaveTime([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            TimeCards timeCards = JsonConvert.DeserializeObject<TimeCards>(JsonString);
+            
+            if (isAdmin() || user.userID == timeCards.userID)
+            {
+               if (DBHelper.SaveTime(timeCards)) return Ok();
+                return StatusCode(500);
+            }
+            return Unauthorized();
+            
+            
+        }
 
         /// <summary>
         /// Add a course. Returns the course ID
