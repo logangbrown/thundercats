@@ -68,7 +68,6 @@ namespace time_sucks.Models
                         if (cmd.ExecuteNonQuery() > 0) return true;
                         return false;
                     }
-
                 }
             }
             return false;
@@ -341,12 +340,12 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.groupID AS 'tgroupID', t.timeID, date_format(t.timeIn, '%m/%d/%Y %l:%i %p') AS 'timeIn', date_format(t.timeOut, '%m/%d/%Y %l:%i %p') AS 'timeOut', t.description, ug.isActive  " +
-                                      "From groups g Inner Join uGroups ug On " +
+                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.groupID AS 'tgroupID', t.timeID, date_format(t.timeIn, '%m/%d/%Y %l:%i %p') AS 'timeIn', date_format(t.timeOut, '%m/%d/%Y %l:%i %p') AS 'timeOut', t.description, ug.isActive AS isActiveInGroup  " +
+                                      "From groups g Left Join uGroups ug On " +
                                       "ug.groupID = g.groupID " +
-                                      "Inner Join users u On " +
+                                      "Left Join users u On " +
                                       "u.userID = ug.userID " +
-                                      "Inner Join timeCards t On " +
+                                      "Left Join timeCards t On " +
                                       "u.userID = t.userID " +
                                       "Where g.groupID = @groupID";
                     cmd.Parameters.AddWithValue("@groupID", groupID);
@@ -372,7 +371,26 @@ namespace time_sucks.Models
 
                                     if (user.timecards == null) user.timecards = new List<TimeCard>();
 
-                                    user.timecards.Add(new TimeCard()
+                                    if (!reader.IsDBNull(9))
+                                    {
+                                        user.timecards.Add(new TimeCard()
+                                        {
+                                            timeIn = reader.GetString("timeIn"),
+                                            timeOut = reader.GetString("timeOut"),
+                                            description = reader.GetString("description"),
+                                            groupID = reader.GetInt32("tgroupID"),
+                                            timeslotID = reader.GetInt32("timeID")
+                                        });
+                                    }
+                                }
+                            }
+
+                            if (!foundUser)
+                            {
+                                List<TimeCard> timecardlist = new List<TimeCard>();
+                                if (!reader.IsDBNull(9))
+                                {
+                                    timecardlist.Add(new TimeCard()
                                     {
                                         timeIn = reader.GetString("timeIn"),
                                         timeOut = reader.GetString("timeOut"),
@@ -381,29 +399,19 @@ namespace time_sucks.Models
                                         timeslotID = reader.GetInt32("timeID")
                                     });
                                 }
-                            }
-
-                            if (!foundUser)
-                            {
-                                List<TimeCard> timecardlist = new List<TimeCard>();
-                                timecardlist.Add(new TimeCard()
-                                {
-                                    timeIn = reader.GetString("timeIn"),
-                                    timeOut = reader.GetString("timeOut"),
-                                    description = reader.GetString("description"),
-                                    groupID = reader.GetInt32("tgroupID"),
-                                    timeslotID = reader.GetInt32("timeID")
-                                });
 
                                 //Add the user and then the time slot
-                                group.users.Add(new User()
+                                if (!reader.IsDBNull(5))
                                 {
-                                    userID = reader.GetInt32("userID"),
-                                    firstName = reader.GetString("firstName"),
-                                    lastName = reader.GetString("lastName"),
-                                    timecards = timecardlist,
-                                    isActive = reader.GetBoolean("isActive"),
-                                });
+                                    group.users.Add(new User()
+                                    {
+                                        userID = reader.GetInt32("userID"),
+                                        firstName = reader.GetString("firstName"),
+                                        lastName = reader.GetString("lastName"),
+                                        timecards = timecardlist,
+                                        isActive = reader.GetBoolean("isActiveInGroup"),
+                                    });
+                                }
                             }
                         }
                     }

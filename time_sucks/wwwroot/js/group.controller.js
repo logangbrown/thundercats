@@ -12,7 +12,7 @@
         
         //TODO Enable Group functionality, disable dummy data
         usSpinnerService.spin('spinner');
-        $http.post("/Home/GetGroup", $scope.groupID)
+        $http.post("/Home/GetGroup", { groupID: $scope.groupID })
             .then(function (response) {
                 $scope.group = {}
                 $scope.group.evalID = response.data.evalID;
