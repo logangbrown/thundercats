@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using System;
 
 namespace time_sucks.Models
 {
@@ -102,7 +103,8 @@ namespace time_sucks.Models
         public static bool SaveTime()
         {
             String edited = "";
-            DateTime before = "";
+            DateTime before;
+            DateTime after;
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -119,10 +121,10 @@ namespace time_sucks.Models
                             edited = reader.GetString("createdOn");
                         }
                     }
-                    edited = Convert.ToDateTime(edited);
+                    after = Convert.ToDateTime(edited);
                     before = edited.AddDays(-7);
                     
-                    if (edited < before)
+                    if (after < before)
                     {
                         cmd.CommandText = "UPDATE timeCards SET timeIn = @timeIn, timeOut = @timeOut, isEdited = 1, description = @description WHERE timeID = @timeID";
                         cmd.Parameters.AddWithValue("@timeIn", timeIn);
