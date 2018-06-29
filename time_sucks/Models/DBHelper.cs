@@ -99,6 +99,56 @@ namespace time_sucks.Models
             return courseID;
         }
         
+        public static bool SaveTime()
+        {
+            String edited = "";
+            DateTime before = "";
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {   
+                    cmd.CommandText = "SELECT timeID, createdOn FROM timeCards WHERE timeID = @timeID";
+                    cmd.Parameters.AddWithValue("@timeID", timeID);
+                    
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            edited = reader.GetString("createdOn");
+                        }
+                    }
+                    edited = Convert.ToDateTime(edited);
+                    before = edited.AddDays(-7);
+                    
+                    if (edited < before)
+                    {
+                        cmd.CommandText = "UPDATE timeCards SET timeIn = @timeIn, timeOut = @timeOut, isEdited = 1, description = @description WHERE timeID = @timeID";
+                        cmd.Parameters.AddWithValue("@timeIn", timeIn);
+                        cmd.Parameters.AddWithValue("@timeOut", timeOut);
+                        cmd.Parameters.AddWithValue("@description", description);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                    }
+                    else
+                    {
+                        cmd.CommandText = "UPDATE timeCards SET timeIn = @timeIn, timeOut = @timeOut, description = @description WHERE timeID = @timeID";
+                        cmd.Parameters.AddWithValue("@timeIn", timeIn);
+                        cmd.Parameters.AddWithValue("@timeOut", timeOut);
+                        cmd.Parameters.AddWithValue("@description", description);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                    }
+                    return false;
+                    
+                }
+                
+            }
+            
+            
+            
+            
+        }
+        
         public static bool JoinCourse(int courseID, int userID)
         {   
             using (var conn = new MySqlConnection(connstring.ToString()))
