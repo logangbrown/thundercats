@@ -374,6 +374,35 @@ namespace time_sucks.Models
             }
         }
 
+        public static bool IsUserInGroup(int userID, int groupID)
+        {
+            bool isInGroup = false;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+
+                    //SQL and Parameters
+                    cmd.CommandText = " Select u.userID, u.firstName, u.lastName, ug.groupID From users u " +
+                        "Inner Join uGroups ug On u.userID = ug.userID Inner Join groups g On ug.groupID = g.groupID Where u.userID = @userID" +
+                        "And g.projectID = 	(SELECT projectID FROM groups WHERE groupID = @groupID) ";
+                    cmd.Parameters.AddWithValue("@userID", userID);
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            if (!isInGroup) isInGroup = true;
+                        }
+                    }
+                }
+            }
+            return isInGroup;
+        }
+
         public static List<User> GetUsers()
         {
             List<User> user = new List<User>();
@@ -407,6 +436,7 @@ namespace time_sucks.Models
             }
             return user;
         }
+
 
         public static List<Course> GetCourses()
         {

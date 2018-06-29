@@ -90,6 +90,23 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Returns true if the user is already in a group
+        /// </summary>
+        /// <returns></returns>
+        public bool IsStudentInGroup(int groupID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return DBHelper.IsUserInGroup(user.userID, groupID);
+            }
+            return false;
+        }
+
+       
+
+        /// <summary>
         /// Returns the courseID for the passed groupID
         /// </summary>
         /// <returns></returns>
@@ -286,9 +303,9 @@ namespace time_sucks.Controllers
             uGroups uGroups = JsonConvert.DeserializeObject<uGroups>(JsonString);
             
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
 
             //TODO We need to make sure that the user isn't in any groups on the project as well
+            if (IsStudentInGroup(uGroups.groupID)) return Unauthorized();
 
             if (IsStudentInCourse(GetCourseForGroup(uGroups.groupID)))
             {
