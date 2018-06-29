@@ -104,7 +104,20 @@ namespace time_sucks.Controllers
             return false;
         }
 
-       
+        /// <summary>
+        /// Returns true if the user is already in a group
+        /// </summary>
+        /// <returns></returns>
+        public bool IsStudentInGroupForProject(int projectID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return DBHelper.IsUserInGroupForProject(user.userID, projectID);
+            }
+            return false;
+        }
 
         /// <summary>
         /// Returns the courseID for the passed groupID
@@ -287,21 +300,21 @@ namespace time_sucks.Controllers
         public IActionResult JoinCourse([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            
+
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
-            
+
             if (DBHelper.JoinCourse(user.userID, course.courseID)) return Ok();
             return StatusCode(500); //Query failed
-        
+
         }
-        
+
         [HttpPost]
         public IActionResult JoinGroup([FromBody]Object json)
         {
             String JsonString = json.ToString();
             uGroups uGroups = JsonConvert.DeserializeObject<uGroups>(JsonString);
-            
+
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
 
             //TODO We need to make sure that the user isn't in any groups on the project as well
@@ -322,18 +335,18 @@ namespace time_sucks.Controllers
         public IActionResult SaveTime([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            
+
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
             TimeCard timeCards = JsonConvert.DeserializeObject<TimeCard>(JsonString);
-            
+
             if (IsAdmin() || user.userID == timeCards.userID)
             {
                if (DBHelper.SaveTime(timeCards)) return Ok();
                 return StatusCode(500);
             }
             return Unauthorized();
-            
-            
+
+
         }
 
         /// <summary>
@@ -369,7 +382,7 @@ namespace time_sucks.Controllers
             User user = JsonConvert.DeserializeObject<User>(JsonString);
             if (user.username == null || user.username.Length < 1)
             {
-                return StatusCode(400); //Didn't pass a valid username, Bad Request (400) 
+                return StatusCode(400); //Didn't pass a valid username, Bad Request (400)
             }
             user.username = user.username.ToLower();
             User checkUser = DBHelper.GetUser(user.username);
@@ -583,7 +596,7 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
@@ -626,7 +639,28 @@ namespace time_sucks.Controllers
                 return NoContent();
             }
         }
-        #endregion
+        public IActionResult CreateGroup([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
 
+            Group group = new Group();
+            Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+
+            if (IsAdmin() || IsInstructorForCourse(project.CourseID) || IsStudentInCourse(project.CourseID))
+            {
+                if (GetUserType() == 'S' && !IsStudentInGroupForProject(project.projectID))
+                {
+                    group.groupID = (int)DBHelper.CreateGroup(project.projectID);
+                    DBHelper.JoinGroup(GetUserID(), group.groupID);
+                }
+                else
+                {
+                    group.groupID = (int)DBHelper.CreateGroup(project.projectID);
+                }
+                return Ok(group.groupID);
+            }
+            return null;
+        }
+        #endregion
     }
 }

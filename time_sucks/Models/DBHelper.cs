@@ -455,6 +455,35 @@ namespace time_sucks.Models
             return isInGroup;
         }
 
+        public static bool IsUserInGroupForProject(int userID, int projectID)
+        {
+            bool isInGroup = false;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+
+                    //SQL and Parameters
+                    cmd.CommandText = " Select u.userID, u.firstName, u.lastName, ug.groupID From users u " +
+                                      "Inner Join uGroups ug On u.userID = ug.userID Inner Join groups g On ug.groupID = g.groupID Where u.userID = @userID" +
+                                      "And g.projectID = @projectID";
+                    cmd.Parameters.AddWithValue("@userID", userID);
+                    cmd.Parameters.AddWithValue("@projectID", projectID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            if (!isInGroup) isInGroup = true;
+                        }
+                    }
+                }
+            }
+            return isInGroup;
+        }
+
         public static List<User> GetUsers()
         {
             List<User> user = new List<User>();
@@ -807,6 +836,26 @@ namespace time_sucks.Models
                 }
             }
             return course;
+        }
+
+        public static long CreateGroup(int projectID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO groups (groupName, isActive, evalID, projectID)" +
+                                      " VALUES ('New Group', 1, @evalID, @projectID);";
+                    cmd.Parameters.AddWithValue("@projectID", projectID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+
+                    return 0;
+                }
+            }
         }
     }
 }
