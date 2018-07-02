@@ -326,7 +326,7 @@ namespace time_sucks.Controllers
 
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
 
-            if (IsStudentInCourse(GetCourseForGroup(uGroups.groupID)))
+            if (IsStudentInCourse(GetCourseForGroup(uGroups.groupID)) && IsStudentInGroup(uGroups.groupID))
             {
                 if (DBHelper.LeaveGroup(user.userID, uGroups.groupID)) return Ok();
                                
