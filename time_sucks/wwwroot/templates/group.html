@@ -51,7 +51,7 @@
                                 <th scope="col" class="col col-md-4 col-lg">Time<span class="d-none d-lg-inline"> In</span></th>
                                 <th scope="col" class="col d-none d-lg-table-cell col-lg">Time Out</th>
                                 <th scope="col" class="col d-none d-sm-table-cell col-lg-6">Description</th>
-                                <th scope="col" style="width: 44px;">Hours</th>
+                                <th scope="col" class="hours-col">Hours</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,7 +103,7 @@
                                     <textarea class="full-width form-control date-text description-textarea" ng-model="u.blank.description" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
                                               ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" placeholder="Description"></textarea>
                                 </td>
-                                <td class="pr-1" style="width: 44px; position:relative;">
+                                <td class="pr-1 hours-col" style="position:relative;">
                                     <!--<span style="position: absolute;">{{u.blank.hours = diffHours(u.blank.timeIn, u.blank.timeOut)}}</span>
                                     <i class="fa fa-pencil edited-icon" ng-if="u.blank.isEdited" title="This time entry has been edited."></i>-->
                                 </td>
@@ -163,7 +163,7 @@
                                     <textarea class="full-width form-control date-text description-textarea" ng-model="t.description" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
                                               ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)" placeholder="Description"></textarea>
                                 </td>
-                                <td class="pr-1" style="width: 44px; position:relative;">
+                                <td class="pr-1 hours-col" style="position:relative;">
                                     <span style="position: absolute;">{{t.hours = diffHours(t.timeIn, t.timeOut)}}</span>
                                     <i class="fa fa-pencil edited-icon" ng-if="t.isEdited" title="This time entry has been edited."></i>
                                 </td>
@@ -193,7 +193,7 @@
                                 <th scope="col" class="col col-md-4 col-lg">Time<span class="d-none d-lg-inline"> In</span></th>
                                 <th scope="col" class="col d-none d-lg-table-cell col-lg">Time Out</th>
                                 <th scope="col" class="col d-none d-sm-table-cell col-lg-6">Description</th>
-                                <th scope="col" style="width: 44px;">Hours</th>
+                                <th scope="col" class="hours-col">Hours</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -245,7 +245,7 @@
                                     <textarea class="full-width form-control date-text description-textarea" ng-model="u.blank.description" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
                                               ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" placeholder="Description"></textarea>
                                 </td>
-                                <td class="pr-1" style="width: 44px; position:relative;">
+                                <td class="pr-1 hours-col" style="position:relative;">
                                     <!--<span style="position: absolute;">{{u.blank.hours = diffHours(u.blank.timeIn, u.blank.timeOut)}}</span>
             <i class="fa fa-pencil edited-icon" ng-if="u.blank.isEdited" title="This time entry has been edited."></i>-->
                                 </td>
@@ -305,7 +305,7 @@
                                     <textarea class="full-width form-control date-text description-textarea" ng-model="t.description" ng-readonly="!isUser(u.userID)" placeholder="Description"
                                               ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)"></textarea>
                                 </td>
-                                <td class="pr-1" style="width: 44px; position:relative;">
+                                <td class="pr-1 hours-col" style="position:relative;">
                                     <span style="position: absolute;">{{t.hours = diffHours(t.timeIn, t.timeOut)}}</span>
                                     <i class="fa fa-pencil edited-icon" ng-if="t.isEdited" title="This time entry has been edited."></i>
                                 </td>

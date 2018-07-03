@@ -125,6 +125,20 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Returns true if the logged in user is a student for the passed courseID
+        /// </summary>
+        /// <returns></returns>
+        public bool UserIsStudentInCourse(int userID, int courseID)
+        {
+            if (userID != 0 && courseID != 0)
+            {
+                return DBHelper.UserIsInCourse(courseID, userID);
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Returns true if the user is already in a group
         /// </summary>
         /// <returns></returns>
@@ -352,13 +366,14 @@ namespace time_sucks.Controllers
             //requestedGroup.groupID = Int32.Parse(requestedGroupStr);
 
             //Make sure that the user is part of the groups course
-            if (IsStudentInCourse(GetCourseForGroup(requestedGroup.groupID)) || IsAdmin())
+            int courseID = GetCourseForGroup(requestedGroup.groupID);
+            if (IsStudentInCourse(courseID) || IsAdmin() || IsInstructorForCourse(courseID))
             {
                 requestedGroup = DBHelper.GetGroup(requestedGroup.groupID);
                 return Ok(requestedGroup);
             }
 
-            return NoContent();
+            return Unauthorized(); //Not allowed to view the group.
         }
 
         /// <summary>
@@ -432,13 +447,53 @@ namespace time_sucks.Controllers
         public IActionResult JoinCourse([FromBody]Object json)
         {
             String JsonString = json.ToString();
-
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-            if (DBHelper.JoinCourse(user.userID, course.courseID)) return Ok();
+            if (DBHelper.JoinCourse(course.courseID, GetUserID())) return Ok();
             return StatusCode(500); //Query failed
 
+        }
+
+        [HttpPost]
+        public IActionResult LeaveCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+            if (IsStudentInCourse(course.courseID))
+            {
+                if (DBHelper.LeaveCourse(course.courseID, GetUserID())) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            return Unauthorized();
+        }
+
+        [HttpPost]
+        public IActionResult SaveUserInCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            uCourse uCourse = JsonConvert.DeserializeObject<uCourse>(JsonString);
+
+            if ((IsAdmin() || IsInstructorForCourse(uCourse.courseID)) && UserIsStudentInCourse(uCourse.userID, uCourse.courseID))
+            {
+                if (DBHelper.SaveUserInCourse(uCourse)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            return Unauthorized();
+        }
+
+        [HttpPost]
+        public IActionResult DeleteUserFromCourse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            uCourse uCourse = JsonConvert.DeserializeObject<uCourse>(JsonString);
+
+            if((IsAdmin() || IsInstructorForCourse(uCourse.courseID)) && UserIsStudentInCourse(uCourse.userID, uCourse.courseID))
+            {
+                if (DBHelper.DeleteFromCourse(uCourse.courseID, uCourse.userID)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            return Unauthorized();
         }
 
         [HttpPost]

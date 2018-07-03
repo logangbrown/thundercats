@@ -187,7 +187,7 @@ namespace time_sucks.Models
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "DELETE FROM uCourse WHERE userID = @userID AND courseID = @courseID";
+                    cmd.CommandText = "DELETE FROM uCourses WHERE userID = @userID AND courseID = @courseID";
                     cmd.Parameters.AddWithValue("@userID", userID);
                     cmd.Parameters.AddWithValue("@courseID", courseID);
 
@@ -213,7 +213,7 @@ namespace time_sucks.Models
                     //SQL and Parameters
                     cmd.CommandText =
                         "SELECT c.*, uc.isActive AS ucIsActive, u.userID, u.firstName, u.lastName FROM courses c" +
-                        " LEFT JOIN uCourse uc ON c.courseID = uc.courseID LEFT JOIN users u ON uc.userID = u.userID" +
+                        " LEFT JOIN uCourses uc ON c.courseID = uc.courseID LEFT JOIN users u ON uc.userID = u.userID" +
                         " WHERE c.courseID = @courseID";
                     cmd.Parameters.AddWithValue("@courseID", courseID);
 
@@ -340,7 +340,7 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.groupID AS 'tgroupID', t.timeID, date_format(t.timeIn, '%m/%d/%Y %l:%i %p') AS 'timeIn', date_format(t.timeOut, '%m/%d/%Y %l:%i %p') AS 'timeOut', t.description, ug.isActive AS isActiveInGroup  " +
+                    cmd.CommandText = "Select g.*, u.userID, u.firstName, u.lastName, t.groupID AS 'tgroupID', t.timeID, date_format(t.timeIn, '%m/%d/%Y %l:%i %p') AS 'timeIn', date_format(t.timeOut, '%m/%d/%Y %l:%i %p') AS 'timeOut', t.description, t.isEdited, ug.isActive AS isActiveInGroup  " +
                                       "From groups g Left Join uGroups ug On " +
                                       "ug.groupID = g.groupID " +
                                       "Left Join users u On " +
@@ -379,7 +379,8 @@ namespace time_sucks.Models
                                             timeOut = reader.GetString("timeOut"),
                                             description = reader.GetString("description"),
                                             groupID = reader.GetInt32("tgroupID"),
-                                            timeslotID = reader.GetInt32("timeID")
+                                            timeslotID = reader.GetInt32("timeID"),
+                                            isEdited = reader.GetBoolean("isEdited")
                                         });
                                     }
                                 }
@@ -396,7 +397,8 @@ namespace time_sucks.Models
                                         timeOut = reader.GetString("timeOut"),
                                         description = reader.GetString("description"),
                                         groupID = reader.GetInt32("tgroupID"),
-                                        timeslotID = reader.GetInt32("timeID")
+                                        timeslotID = reader.GetInt32("timeID"),
+                                        isEdited = reader.GetBoolean("isEdited")
                                     });
                                 }
 
@@ -409,7 +411,7 @@ namespace time_sucks.Models
                                         firstName = reader.GetString("firstName"),
                                         lastName = reader.GetString("lastName"),
                                         timecards = timecardlist,
-                                        isActive = reader.GetBoolean("isActiveInGroup"),
+                                        isActive = reader.GetBoolean("isActiveInGroup")
                                     });
                                 }
                             }
@@ -687,6 +689,42 @@ namespace time_sucks.Models
                 {
                     if (UserIsInCourse(courseID, userID))
                     {
+                        cmd.CommandText = "UPDATE uCourses SET isActive = 0 WHERE courseID = @courseID AND userID = @userID";
+                        cmd.Parameters.AddWithValue("@userID", userID);
+                        cmd.Parameters.AddWithValue("@courseID", courseID);
+                        if (cmd.ExecuteNonQuery() > 0) return true;
+                    }
+                    return false;
+                }
+            }
+        }
+
+        public static bool SaveUserInCourse(uCourse uCourse)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "UPDATE uCourses SET isActive = @isActive WHERE courseID = @courseID AND userID = @userID";
+                    cmd.Parameters.AddWithValue("@userID", uCourse.userID);
+                    cmd.Parameters.AddWithValue("@courseID", uCourse.courseID);
+                    cmd.Parameters.AddWithValue("@isActive", uCourse.isActive);
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+
+        public static bool DeleteFromCourse(int courseID, int userID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    if (UserIsInCourse(courseID, userID))
+                    {
                         cmd.CommandText = "DELETE FROM uCourses WHERE courseID = @courseID AND userID = @userID";
                         cmd.Parameters.AddWithValue("@userID", userID);
                         cmd.Parameters.AddWithValue("@courseID", courseID);
@@ -807,25 +845,6 @@ namespace time_sucks.Models
                 }
             }
         }
-        public static bool SaveUserCourse(uCourse uCourse)
-        {
-            using (var conn = new MySqlConnection(connstring.ToString()))
-            {
-                conn.Open();
-                using (MySqlCommand cmd = conn.CreateCommand())
-                {
-                    if (UserIsInCourse(uCourse.courseID, uCourse.userID))
-                    {
-                        cmd.CommandText = "UPDATE uCourses SET isActive = @isActive WHERE userID = @userID AND courseID = @courseID";
-                        cmd.Parameters.AddWithValue("@userID", uCourse.userID);
-                        cmd.Parameters.AddWithValue("@courseID", uCourse.courseID);
-                        cmd.Parameters.AddWithValue("@isActive", uCourse.isActive);
-                        if (cmd.ExecuteNonQuery() > 0) return true;
-                    }
-                    return false;
-                }
-            }
-        }
 
         public static bool UserIsInCourse(int courseID, int userID)
         {
@@ -836,7 +855,7 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "SELECT userID FROM uCourse WHERE courseID = @courseID AND userID = @userID";
+                    cmd.CommandText = "SELECT userID FROM uCourses WHERE courseID = @courseID AND userID = @userID";
                     cmd.Parameters.AddWithValue("@courseID", courseID);
                     cmd.Parameters.AddWithValue("@userID", userID);
 

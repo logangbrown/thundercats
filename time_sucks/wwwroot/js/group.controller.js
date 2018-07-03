@@ -8,7 +8,6 @@
         $scope.groupID = $routeParams.ID;
 
         if (!$scope.groupID) $location.path('/courses');
-
         
         //TODO Enable Group functionality, disable dummy data
         usSpinnerService.spin('spinner');
@@ -37,104 +36,15 @@
                 $scope.updateAllHours();
                 $scope.updateChart();
                 usSpinnerService.stop('spinner');
-            }, function () {
+            }, function (response) {
                 usSpinnerService.stop('spinner');
-                toastr["error"]("Failed to get group.");
+                if (response.status === 401) {
+                    toastr["error"]("Unauthorized to view this group.");
+                    window.history.back();
+                } else {
+                    toastr["error"]("Error getting group.");
+                }
             });
-
-        //Dummy data
-        //if ($scope.groupID === "1") {
-        //    $scope.group = {
-        //        groupID: 1,
-        //        groupName: "Group Awesome",
-        //        isActive: true,
-        //        users: {
-        //            1: {
-        //                userID: 1,
-        //                firstName: "Joe",
-        //                lastName: "Bob",
-        //                isActive: true,
-        //                timecards: {
-        //                    1: {
-        //                        timeslotID: 1,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    },
-        //                    9: {
-        //                        timeslotID: 9,
-        //                        hours: "",
-        //                        isEdited: true,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    },
-        //                    10: {
-        //                        timeslotID: 10,
-        //                        hours: "",
-        //                        isEdited: true,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    },
-        //                    11: {
-        //                        timeslotID: 11,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    },
-        //                    12: {
-        //                        timeslotID: 12,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    }
-        //                }
-        //            },
-        //            2: {
-        //                userID: 2,
-        //                firstName: "Joes",
-        //                lastName: "Bobs",
-        //                isActive: true,
-        //                timecards: {
-        //                    2: {
-        //                        timeslotID: 2,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    }
-        //                }
-        //            },
-        //            3: {
-        //                userID: 3,
-        //                firstName: "Skylar",
-        //                lastName: "Olsen",
-        //                isActive: false,
-        //                timecards: {
-        //                    3: {
-        //                        timeslotID: 3,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    };
-        //} else {
-        //    toastr["info"]("No dummy data for this group.");
-        //    window.history.back();
-        //}
 
         $.each($scope.group.users, function (userID, user) {
             $scope.group.users[userID].blank = {
@@ -177,7 +87,7 @@
                 description: ""
             }
             $scope.newNumber++;
-            toastr["info"]("Create time for user: " + id);
+            toastr["info"]("Dummy: Created time for user: " + id);
         }
 
         $scope.createTimeFromBlank = function (id) {
@@ -186,7 +96,7 @@
                 groupID: $scope.groupID
             };
 
-            if ($scope.group.users[id].blank.timeIn === '' && $scope.group.users[id].blank.timeOut === '' && $scope.group.users[id].blank.desc === '')
+            if ($scope.group.users[id].blank.timeIn === '' && $scope.group.users[id].blank.timeOut === '' && $scope.group.users[id].blank.description === '')
                 return;
 
             //TODO Enable create time functionality, disable extra stuff below
@@ -209,12 +119,12 @@
                 isEdited: false,
                 timeIn: $scope.group.users[id].blank.timeIn,
                 timeOut: $scope.group.users[id].blank.timeOut,
-                description: $scope.group.users[id].blank.desc
+                description: $scope.group.users[id].blank.description
             };
             $scope.newNumber++;
             $scope.group.users[id].blank.timeIn = '';
             $scope.group.users[id].blank.timeOut = '';
-            $scope.group.users[id].blank.desc = '';
+            $scope.group.users[id].blank.description = '';
 
             toastr["info"]("Create time for user: " + id);
         }
