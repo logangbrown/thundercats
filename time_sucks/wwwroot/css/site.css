@@ -35,6 +35,20 @@ nav a {
     margin: 15px;
 }
 
+/* lg+ */
+@media (min-width: 992px) {
+    .description-textarea{
+        height: 25px;
+    }
+}
+
+@media (max-width: 991px) {
+    .description-textarea {
+        height: 53px;
+        line-height: 1.2;
+    }
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */
@@ -191,8 +205,6 @@ nav a {
 
     .description-textarea {
         padding: 0px 3px;
-        line-height: 1.2;
-        height: 53px;
     }
 
     .form-control:disabled, .form-control[readonly] {
