@@ -9,221 +9,86 @@
 
         if (!$scope.projectID) $location.path('/courses');
 
-        //TODO Enable Project (rename GetProject), disable dummy data
-        //$http.post("/Home/Project", { projectID: $scope.projectID })
-        //    .then(function (response) {
-        //        $scope.project = response.data;
-        //    }, function () {
-        //        toastr["error"]("Failed to retrieve project.");
-        //    });
-
-        //Dummy Data
-        if ($scope.projectID === "1") {
-            $scope.project = {
-                projectName: "PHP Game",
-                projectID: 1,
-                isActive: true,
-                groups: {
-                    1: {
-                        groupID: 1,
-                        groupName: "Group Awesome",
-                        isActive: true,
-                        users: {
-                            1: {
-                                userID: 1,
-                                firstName: "Logan",
-                                lastName: "Brown",
-                                time: {
-                                    1: {
-                                        timeID: 1,
-                                        hours: "3",
-                                        isEdited: false
-                                    }
-                                }
-                            },
-                            2: {
-                                userID: 2,
-                                firstName: "Rizwan",
-                                lastName: "Mohammed",
-                                time: {
-                                    2: {
-                                        timeID: 2,
-                                        hours: "4",
-                                        isEdited: false
-                                    }
-                                }
-                            },
-                            3: {
-                                userID: 3,
-                                firstName: "Skylar",
-                                lastName: "Olsen",
-                                time: {
-                                    3: {
-                                        timeID: 3,
-                                        hours: "5",
-                                        isEdited: false
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    2: {
-                        groupID: 2,
-                        groupName: "Group One Thing",
-                        isActive: true,
-                        users: {
-                            1: {
-                                userID: 1,
-                                firstName: "Logan",
-                                lastName: "Brown",
-                                time: {
-                                    4: {
-                                        timeID: 4,
-                                        hours: "1",
-                                        isEdited: false
-                                    }
-                                }
-                            },
-                            2: {
-                                userID: 2,
-                                firstName: "Rizwan",
-                                lastName: "Mohammed",
-                                time: {
-                                    5: {
-                                        timeID: 5,
-                                        hours: "1",
-                                        isEdited: false
-                                    }
-                                }
-                            },
-                            3: {
-                                userID: 3,
-                                firstName: "Skylar",
-                                lastName: "Olsen",
-                                time: {
-                                    6: {
-                                        timeID: 6,
-                                        hours: "1",
-                                        isEdited: false
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    3: {
-                        groupID: 3,
-                        groupName: "Group Other Thing",
-                        isActive: true,
-                        users: {
-                            1: {
-                                userID: 1,
-                                firstName: "Logan",
-                                lastName: "Brown",
-                                time: {
-                                    7: {
-                                        timeID: 7,
-                                        hours: "2",
-                                        isEdited: false
-                                    }
-                                }
-                            },
-                            2: {
-                                userID: 2,
-                                firstName: "Rizwan",
-                                lastName: "Mohammed",
-                                time: {
-                                    8: {
-                                        timeID: 8,
-                                        hours: "2",
-                                        isEdited: false
-                                    }
-                                }
-                            },
-                            3: {
-                                userID: 3,
-                                firstName: "Skylar",
-                                lastName: "Olsen",
-                                time: {
-                                    9: {
-                                        timeID: 9,
-                                        hours: "2",
-                                        isEdited: false
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    4: {
-                        groupID: 4,
-                        groupName: "Group Four (Inactive)",
-                        isActive: false,
-                        users: {
-                            1: {
-                                userID: 1,
-                                firstName: "Logan",
-                                lastName: "Brown",
-                                time: {
-                                    10: {
-                                        timeID: 10,
-                                        hours: "2",
-                                        isEdited: false
-                                    }
-                                }
-                            },
-                            2: {
-                                userID: 2,
-                                firstName: "Rizwan",
-                                lastName: "Mohammed",
-                                time: {
-                                    11: {
-                                        timeID: 11,
-                                        hours: "2",
-                                        isEdited: false
-                                    }
-                                }
-                            },
-                            3: {
-                                userID: 3,
-                                firstName: "Skylar",
-                                lastName: "Olsen",
-                                time: {
-                                    12: {
-                                        timeID: 12,
-                                        hours: "2",
-                                        isEdited: false
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-        } else {
-            toastr["info"]("No dummy data for this project.");
-            window.history.back();
-        }
+        usSpinnerService.spin('spinner');
+        $http.post("/Home/GetProject", { projectID: $scope.projectID })
+            .then(function (response) {
+                $scope.project = {}
+                $scope.project.projectID = response.data.projectID;
+                $scope.project.projectName = response.data.projectName;
+                $scope.project.isActive = response.data.isActive;
+                $scope.project.description = response.data.description;
+                $scope.project.courseID = response.data.courseID;
+                $scope.project.groups = {};
+                $.each(response.data.groups, function (index, group) {
+                    $scope.project.groups[group.groupID] = {}
+                    $scope.project.groups[group.groupID].evalID = group.evalID;
+                    $scope.project.groups[group.groupID].groupID = group.groupID;
+                    $scope.project.groups[group.groupID].groupName = group.groupName;
+                    $scope.project.groups[group.groupID].isActive = group.isActive;
+                    $scope.project.groups[group.groupID].users = {};
+                    //Setting users to be in the index of their userID
+                    $.each(group.users, function (index, user) {
+                        $scope.project.groups[group.groupID].users[user.userID] = {};
+                        $scope.project.groups[group.groupID].users[user.userID].firstName = user.firstName;
+                        $scope.project.groups[group.groupID].users[user.userID].lastName = user.lastName;
+                        $scope.project.groups[group.groupID].users[user.userID].isActive = user.isActive;
+                        $scope.project.groups[group.groupID].users[user.userID].userID = user.userID;
+                        $scope.project.groups[group.groupID].users[user.userID].timecards = {};
+                        $.each(user.timecards, function (index, timecard) {
+                            $scope.project.groups[group.groupID].users[user.userID].timecards[timecard.timeslotID] = timecard;
+                            $scope.project.groups[group.groupID].users[user.userID].timecards[timecard.timeslotID].hours = "";
+                        });
+                    });
+                });
+                
+                $scope.updateAllHours();
+                $scope.updateChart();
+                usSpinnerService.stop('spinner');
+            }, function (response) {
+                usSpinnerService.stop('spinner');
+                if (response.status === 401) toastr["error"]("Unauthorized to view this project.");
+                else toastr["error"]("Failed to load project, unknown error.");
+            });
 
         $scope.createGroup = function () {
-            //TODO Enable Create Group functionality, disable info toast
-            //$http.post("/Home/CreateGroup", $scope.projectID)
-            //    .then(function (response) {
-            //        $location.path('/group/'+response.data);
-            //    }, function () {
-            //        toastr["error"]("Failed to create group.");
-            //    });
-            toastr["info"]("Attempted to create a group - enable REST endpoint");
+            $http.post("/Home/CreateGroup", {
+                projectID: $scope.projectID
+            })
+                .then(function (response) {
+                    $location.path('/group/'+response.data);
+                }, function (response) {
+                    if (response.status === 401) toastr["error"]("Unauthorized to create a group on this project.");
+                    else if (response.status === 403) toastr["error"]("You are already part of a group on this project. Please leave the group before creating a new one.");
+                    else toastr["error"]("Failed to create group, unknown error.");
+                });
         }
 
         $scope.saveProject = function () {
-            //TODO Enable SaveProject, disable info toast
-            //$http.post("/Home/SaveProject", $scope.project)
-            //    .then(function (response) {
-            //        toastr["success"]("Saved group.");
-            //    }, function () {
-            //        toastr["error"]("Failed to save group.");
-            //    });
+            $http.post("/Home/SaveProject", {
+                projectID: $scope.project.projectID,
+                projectName: $scope.project.projectName,
+                description: $scope.project.description,
+                isActive: $scope.project.isActive
+            })
+                .then(function (response) {
+                    toastr["success"]("Saved group.");
+                }, function () {
+                    toastr["error"]("Failed to save group.");
+                });
+        }
 
-            toastr["info"]("Attempted to save a project - enable REST endpoint");
+        $scope.updateAllHours = function () {
+            $.each($scope.project.groups, function (index, group) {
+                $.each(group.users, function (index, user) {
+                    $.each(user.timecards, function (index, time) {
+                        if (time.timeIn !== '' && time.timeOut !== '') {
+                            $scope.project.groups[group.groupID].users[user.userID].timecards[time.timeslotID].hours = moment.duration(
+                                moment($scope.project.groups[group.groupID].users[user.userID].timecards[time.timeslotID].timeOut).diff(
+                                    $scope.project.groups[group.groupID].users[user.userID].timecards[time.timeslotID].timeIn)).asHours().toFixed(2);
+                        }
+                    });
+                });
+            });
         }
 
         var data = { //Data and labels are set in the setData function
@@ -251,8 +116,8 @@
                 var hours = 0;
                 for (var u in g.users) {
                     u = g.users[u];
-                    for (var t in u.time) {
-                        t = u.time[t];
+                    for (var t in u.timecards) {
+                        t = u.timecards[t];
                         hours += Number(t.hours);
                     }
                 }
@@ -289,9 +154,6 @@
                 $location.path('/login');
             });
 
-        //Dummy data
-        //toastr["error"]("Not logged in - enable REST endpoint");
-        //$location.path('/login');
     } else {
         $scope.load();
     }

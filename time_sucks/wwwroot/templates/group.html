@@ -27,22 +27,23 @@
 
             <div class="card">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item p-2" ng-repeat="u in group.users" ng-if="userInGroup() && u.userID === $parent.user.userID">{{u.firstName}} {{u.lastName}}</li>
+                    <li class="list-group-item p-2" ng-repeat="u in group.users" ng-if="userInGroup() && u.userID === $parent.user.userID">{{u.firstName}} {{u.lastName}} <span ng-if="!u.isActive" class="text-danger">(Left Group)</span></li>
                     <li class="list-group-item p-2" ng-repeat="u in group.users | orderObjectBy :'firstName'" ng-if="u.userID !== $parent.user.userID || !userInGroup()">{{u.firstName}} {{u.lastName}} <span ng-if="!u.isActive" class="text-danger">(Left Group)</span></li>
                 </ul>
             </div>
+            
         </div>
     </div>
 
     <div class="row mt-4">
         <div class="col-12 mb-2">
-            <button class="btn btn-success" ng-click="startTime()" ng-if="userInGroup() && !hasUnfinishedBusiness()">Start Time</button>
-            <button class="btn btn-warning" ng-click="endTime()" ng-if="userInGroup() && hasUnfinishedBusiness()">End Time</button>
+            <button class="btn btn-success" ng-click="startTime()" ng-if="userActiveInGroup() && !hasUnfinishedBusiness()">Start Time</button>
+            <button class="btn btn-warning" ng-click="endTime()" ng-if="userActiveInGroup() && hasUnfinishedBusiness()">End Time</button>
         </div>
         <!-- The current user on top if they are in the group -->
         <div class="col-12 mb-2" ng-if="userInGroup() && u.userID === $parent.user.userID" ng-repeat="u in group.users">
             <div class="card position-relative">
-                <div class="card-header font-weight-bold py-1 px-3">{{u.firstName}} {{u.lastName}}</div>
+                <div class="card-header font-weight-bold py-1 px-3">{{u.firstName}} {{u.lastName}} <span ng-if="!u.isActive" class="text-danger">(Left Group)</span></div>
                 <!--<i class="fa fa-plus mt-2 mr-2 my-auto card-button" ng-click="createTime(u.userID)" ng-if="isUser(u.userID)" title="Create a new time entry."></i>-->
                 <div class="card-body p-0">
                     <table class="full-width table-striped">

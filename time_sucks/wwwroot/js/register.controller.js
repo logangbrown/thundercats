@@ -25,9 +25,8 @@
                 return;
             }
 
-            //TODO Reenable hashing
             $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
-            //$scope.user.password = $scope.password;
+
             usSpinnerService.spin('spinner');
             $http.post("/Home/RegisterUser", $scope.user)
                 .then(function (response) { //Success Callback
@@ -42,7 +41,6 @@
                     usSpinnerService.stop('spinner');
                     toastr["error"]("Error creating user.");
                 });
-            //toastr["info"]("Attempted to register user - enable REST endpoint");
         };
 
         $scope.cancel = function () {
@@ -70,8 +68,6 @@
                 $scope.load();
             });
 
-        //Dummy
-        //$scope.load();
     } else {
         if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
         else $location.path('/dashboard');

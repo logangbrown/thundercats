@@ -46,6 +46,15 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Returns the courseID for the passed projectID
+        /// </summary>
+        /// <returns></returns>
+        public int GetCourseForProject(int projectID)
+        {
+            return DBHelper.GetCourseForProject(projectID);
+        }
+
+        /// <summary>
         /// Returns the currently logged in user's userID.
         /// </summary>
         /// <returns></returns>
@@ -139,7 +148,7 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
-        /// Returns true if the user is already in a group
+        /// Returns true if the user is already in a group for the project associated with the given group, ACTIVE OR INACTIVE
         /// </summary>
         /// <returns></returns>
         public bool IsStudentInGroup(int groupID)
@@ -154,7 +163,37 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
-        /// Returns true if the user is already in a group
+        /// Returns true if the user is already in a group for the project associated with the given group
+        /// </summary>
+        /// <returns></returns>
+        public bool IsActiveStudentInGroup(int groupID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return DBHelper.IsActiveUserInGroup(user.userID, groupID);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the user is already in a group for the project associated with the given group
+        /// </summary>
+        /// <returns></returns>
+        public bool IsStudentInOtherGroup(int groupID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return DBHelper.IsUserInOtherGroup(user.userID, groupID);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the user is already in a group for the given project
         /// </summary>
         /// <returns></returns>
         public bool IsStudentInGroupForProject(int projectID)
@@ -165,6 +204,22 @@ namespace time_sucks.Controllers
             {
                 return DBHelper.IsUserInGroupForProject(user.userID, projectID);
             }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the logged in user has timecard entries for the passed group
+        /// </summary>
+        /// <returns></returns>
+        public bool UserHasTimeInGroup(int groupID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return DBHelper.UserHasTimeInGroup(user.userID, groupID);
+            }
+
             return false;
         }
         #endregion
@@ -269,23 +324,31 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
 
-            Group group = new Group();
+            int groupID = 0;
             Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+            int courseID = GetCourseForProject(project.projectID);
 
-            if (IsAdmin() || IsInstructorForCourse(project.CourseID) || IsStudentInCourse(project.CourseID))
+            if (IsAdmin() || IsInstructorForCourse(courseID) || IsStudentInCourse(courseID))
             {
-                if (GetUserType() == 'S' && !IsStudentInGroupForProject(project.projectID))
+                if (GetUserType() == 'S')
                 {
-                    group.groupID = (int)DBHelper.CreateGroup(project.projectID);
-                    DBHelper.JoinGroup(GetUserID(), group.groupID);
+                    if (!IsStudentInGroupForProject(project.projectID)) {
+                        groupID = (int)DBHelper.CreateGroup(project.projectID);
+                        if(groupID > 0) DBHelper.JoinGroup(GetUserID(), groupID);
+                    } else
+                    {
+                        return StatusCode(403); //Student already part of group, unable to create a new one.
+                    }
                 }
                 else
                 {
-                    group.groupID = (int)DBHelper.CreateGroup(project.projectID);
+                    groupID = (int)DBHelper.CreateGroup(project.projectID);
                 }
-                return Ok(group.groupID);
+
+                if (groupID > 0) return Ok(groupID);
+                else return StatusCode(500); //Failed Query
             }
-            return null;
+            return Unauthorized();
         }
 
         /// <summary>
@@ -386,18 +449,15 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
 
             Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+            int courseID = GetCourseForProject(project.projectID);
 
-            //Check database for Project based on ID
-            //TODO
-            //Project DBProject = DataAccess.GetProject(project._id);
-            Project DBProject = null;
+            if (IsAdmin() || IsInstructorForCourse(courseID) || IsStudentInCourse(courseID))
+            {
+                project = DBHelper.GetProject(project.projectID);
+                return Ok(project);
+            }
 
-            //return 404 if we dont have a user
-            if (DBProject == null)
-                return null;
-
-            return Ok(DBProject);
-
+            return Unauthorized();
         }
 
         /// <summary>
@@ -504,18 +564,44 @@ namespace time_sucks.Controllers
 
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
 
-            //TODO We need to make sure that the user isn't in any groups on the project as well
-            if (IsStudentInGroup(uGroups.groupID)) return Unauthorized();
+            if (IsStudentInOtherGroup(uGroups.groupID)) return StatusCode(403);
 
             if (IsStudentInCourse(GetCourseForGroup(uGroups.groupID)))
             {
-                //TODO define DBHelper.JoinGroup()
-                long groupID = DBHelper.JoinGroup(user.userID, uGroups.groupID);
-                if (groupID > 0) return Ok(groupID);
-                return StatusCode(500); //Query failed
+                if (IsStudentInGroup(uGroups.groupID))
+                {
+                    if(DBHelper.ReJoinGroup(user.userID, uGroups.groupID)) return NoContent();
+                    return StatusCode(500); //Query failed
+                } else {
+                    long groupID = DBHelper.JoinGroup(user.userID, uGroups.groupID);
+                    if (groupID > 0) return Ok(groupID);
+                    return StatusCode(500); //Query failed
+                }
+                
             }
 
             return Unauthorized(); //User not in Course
+        }
+
+        [HttpPost]
+        public IActionResult LeaveGroup([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+
+            if (IsActiveStudentInGroup(group.groupID))
+            {
+                if (UserHasTimeInGroup(group.groupID))
+                {   //Mark the user as inactive in the group if they have existing time entries
+                    if (DBHelper.LeaveGroup(GetUserID(), group.groupID)) return Ok();
+                    return StatusCode(500); //Query failed
+                } else
+                {   //Actually remove the user from the group if they don't have any time entries yet.
+                    if (DBHelper.DeleteFromGroup(GetUserID(), group.groupID)) return NoContent();
+                    return StatusCode(500); //Query failed
+                }
+            }
+            return Unauthorized();
         }
 
         /// <summary>
@@ -644,19 +730,19 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
 
             Group group = JsonConvert.DeserializeObject<Group>(JsonString);
-            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+            int courseID = GetCourseForGroup(group.groupID);
 
-            if (IsAdmin() || IsInstructorForCourse(course.courseID))
+            if (IsAdmin() || IsInstructorForCourse(courseID) || IsActiveStudentInGroup(group.groupID))
             {
                 if (DBHelper.SaveGroup(group)) return Ok();
                 return StatusCode(500); // Query failed
             }
-            return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)
+            return Unauthorized(); // Not an Admin or the Instructor for the course, or a student in the group, Unauthorized (401)
         }
 
         //}
         /// <summary>
-        /// Update a Project name.
+        /// Update a Project name or isActive status.
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
@@ -666,9 +752,8 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
 
             Project project = JsonConvert.DeserializeObject<Project>(JsonString);
-            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-            if (IsAdmin() || IsInstructorForCourse(course.courseID))
+            if (IsAdmin() || IsInstructorForCourse(GetCourseForProject(project.projectID)))
             {
                 if (DBHelper.SaveProject(project)) return Ok();
                 return StatusCode(500); // Query failed
@@ -681,13 +766,12 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
 
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            TimeCard timeCards = JsonConvert.DeserializeObject<TimeCard>(JsonString);
+            TimeCard timecard = JsonConvert.DeserializeObject<TimeCard>(JsonString);
 
-            if (IsAdmin() || user.userID == timeCards.userID)
+            if (IsAdmin() || GetUserID() == timecard.userID || IsInstructorForCourse(GetCourseForGroup(timecard.groupID)))
             {
-               if (DBHelper.SaveTime(timeCards)) return Ok();
-                return StatusCode(500);
+               if (DBHelper.SaveTime(timecard)) return Ok();
+               return StatusCode(500);
             }
             return Unauthorized();
 

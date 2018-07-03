@@ -188,9 +188,6 @@
                 $location.path('/login');
             });
 
-        //Dummy data
-        //toastr["error"]("Not logged in - enable REST endpoint");
-        //$location.path('/login');
     } else {
         $scope.load();
     }
