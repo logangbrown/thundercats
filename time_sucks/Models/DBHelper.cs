@@ -138,7 +138,7 @@ namespace time_sucks.Models
             }
         }
 
-        public static long CreateCourse(Course course)
+        public static long CreateCourse(int instructorID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -147,10 +147,28 @@ namespace time_sucks.Models
                 {
                     //SQL and Parameters
                     cmd.CommandText = "INSERT INTO courses (courseName, instructorID, isActive, description) " +
-                        "VALUES ('New Course', @instructorID, 1, 'No description')";
-                    cmd.Parameters.AddWithValue("@courseName", course.courseName);
-                    cmd.Parameters.AddWithValue("@instructorID", course.instructorID);
-                    cmd.Parameters.AddWithValue("@description", course.description);
+                        "VALUES ('New Course', @instructorID, 1, '')";
+                    cmd.Parameters.AddWithValue("@instructorID", instructorID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+
+                    return 0;
+                }
+            }
+        }
+
+        public static long CreateProject(int courseID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO projects (projectName, courseID, isActive, description) " +
+                        "VALUES ('New Project', @courseID, 1, '')";
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
 
                     //Return the last inserted ID if successful
                     if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;

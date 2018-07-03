@@ -234,17 +234,34 @@ namespace time_sucks.Controllers
         public IActionResult AddCourse([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            Course course = new Course();
-            User user = JsonConvert.DeserializeObject<User>(JsonString);
 
             if (GetUserType() == 'I' || IsAdmin())
             {
-                course.instructorName = user.firstName + " " + user.lastName;
-                course.instructorID = user.userID;
-                course.courseID = (int)DBHelper.CreateCourse(course);
-                return Ok(course.courseID);
+                int courseID = (int)DBHelper.CreateCourse(GetUserID());
+                if(courseID > 0) return Ok(courseID);
+                return StatusCode(500); //Query Error
             }
-            return null;
+            return Unauthorized();
+        }
+
+        /// <summary>
+        /// Add a project for the passed course. Returns the projectID
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult AddProject([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+            if (IsInstructorForCourse(course.courseID) || IsAdmin())
+            {
+                int projectID = (int)DBHelper.CreateProject(course.courseID);
+                if (projectID > 0) return Ok(projectID);
+                return StatusCode(500); //Query Error
+            }
+            return Unauthorized();
         }
 
         [HttpPost]

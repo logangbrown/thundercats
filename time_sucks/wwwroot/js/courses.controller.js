@@ -20,8 +20,9 @@
             $http.post("/Home/AddCourse", $scope.user)
                 .then(function (response) {
                     $location.path('/course/'+response.data);
-                }, function () {
-                    toastr["error"]("Error creating course.");
+                }, function (response) {
+                    if (response.status === 401) toastr["error"]("Unauthorized to create a course.");
+                    else toastr["error"]("Failed to create course, unknown error.");
                 });
         };
 

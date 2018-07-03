@@ -34,18 +34,16 @@
             });
 
         $scope.createProject = function () {
-            //TODO Enable CreateProject, disable info toast
-            //usSpinnerService.spin('spinner');
-            //$http.post("/Home/CreateProject", $scope.course)
-            //    .then(function (response) {
-            //        usSpinnerService.stop('spinner');
-            //        $location.path('/project/'+response.data);
-            //    }, function () {
-            //        usSpinnerService.stop('spinner');
-            //        toastr["error"]("Failed to create project.");
-            //    });
-
-            toastr["info"]("Attempted to create project - enable REST endpoint.");
+            usSpinnerService.spin('spinner');
+            $http.post("/Home/AddProject", { courseID: $scope.course.courseID })
+                .then(function (response) {
+                    usSpinnerService.stop('spinner');
+                    $location.path('/project/'+response.data);
+                }, function (response) {
+                    usSpinnerService.stop('spinner');
+                    if (response.status === 401) toastr["error"]("Unauthorized to create a project on this course.");
+                    else toastr["error"]("Failed to create project, unknown error.");
+                });
         }
 
         $scope.saveCourse = function () {
