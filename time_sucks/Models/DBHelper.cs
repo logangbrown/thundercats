@@ -138,6 +138,8 @@ namespace time_sucks.Models
             }
         }
 
+
+
         public static long CreateCourse(int instructorID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -661,6 +663,51 @@ namespace time_sucks.Models
             return instructorID;
         }
 
+        public static List<Dashboard> GetDashboard(int userID)
+        {
+            List<Dashboard> dashboard = new List<Dashboard>();
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT g.groupID, g.groupName, p.projectID, p.projectName, c.courseID, c.courseName, " +
+                        "u.userID AS 'instructorID', CONCAT(u.firstName, ' ',u.lastName) as instructorName FROM uGroups uG " +
+                        "LEFT JOIN groups g ON g.groupID = uG.groupID " +
+                        "LEFT JOIN projects p ON g.projectID = p.projectID " +
+                        "LEFT JOIN courses c on p.courseID = c.courseID " +
+                        "LEFT JOIN users u ON c.instructorID = u.userID " +
+                        "WHERE uG.userID = @userID " +
+                        "AND uG.isActive = 1 " +
+                        "AND g.isActive = 1 " +
+                        "AND p.isActive = 1 " +
+                        "AND c.isActive = 1 ";
+                    cmd.Parameters.AddWithValue("@userID", userID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            dashboard.Add(new Dashboard()
+                            {
+                                groupID = reader.GetInt32("groupID"),
+                                groupName = reader.GetString("groupName"),
+                                projectID = reader.GetInt32("projectID"),
+                                projectName = reader.GetString("projectName"),
+                                courseID = reader.GetInt32("courseID"),
+                                courseName = reader.GetString("courseName"),
+                                instructorID = reader.GetInt32("instructorID"),
+                                instructorName = reader.GetString("instructorName")
+                            });
+                        }
+                    }
+                }
+            }
+            return dashboard;
+        }
+
         public static User GetUser(string username)
         {
             username = username.ToLower();
@@ -694,6 +741,7 @@ namespace time_sucks.Models
             }
             return user;
         }
+
         public static User GetUser(string username, string password)
         {
             username = username.ToLower();

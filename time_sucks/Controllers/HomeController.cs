@@ -500,6 +500,17 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Returns dashboard for a given userID
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetDashboard()
+        {
+            List<Dashboard> dashboard = DBHelper.GetDashboard(GetUserID());
+            return Ok(dashboard);
+        }
+
+        /// <summary>
         /// Returns all users in the system after verifying access.
         /// </summary>
         /// <returns></returns>
@@ -794,27 +805,6 @@ namespace time_sucks.Controllers
 
 
         }
-        ///// <summary>
-        ///// Return a course based on the ID. Returns a course if successful null otherwise
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpPost]
-        //public IActionResult GetCourse([FromBody]Object json)
-        //{
-        //    String JsonString = json.ToString();
-
-        //    Course course = JsonConvert.DeserializeObject<Course>(JsonString);
-
-
-        //    //Check database for Course based on ID
-        //    //Course DBCourse = DataAccess.GetDetailedCourse(course._id);
-        //    Course DBCourse = null;
-
-        //    //return null if we dont have a user
-        //    if (DBCourse == null)
-        //        return null;
-
-        //    return Ok(DBCourse);
         #endregion
     }
 }
