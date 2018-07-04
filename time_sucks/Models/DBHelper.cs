@@ -200,6 +200,33 @@ namespace time_sucks.Models
             }
         }
 
+        public static long CreateTimeCard(TimeCard timeCard)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO timeCards (timeIn, timeOut, isEdited, createdOn, userID, groupID, description)" +
+                                      " VALUES (@timeIn, @timeOut, 0, @createdOn, @userID, @groupID, @description);";
+
+                    cmd.Parameters.AddWithValue("@timeIn", timeCard.timeIn);
+                    cmd.Parameters.AddWithValue("@timeOut", timeCard.timeOut);
+                    cmd.Parameters.AddWithValue("@createdOn", timeCard.createdOn);
+                    cmd.Parameters.AddWithValue("@userID", timeCard.userID);
+                    cmd.Parameters.AddWithValue("@groupID", timeCard.groupID);
+                    cmd.Parameters.AddWithValue("@description", timeCard.description);
+
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+
+                    return 0;
+                }
+            }
+        }
+
         public static bool DeleteUserCourse(int userID, int courseID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -402,7 +429,7 @@ namespace time_sucks.Models
                                             });
                                         }
                                     }
-                                }                                
+                                }
                             }
 
                             if(!foundGroup)
@@ -465,7 +492,7 @@ namespace time_sucks.Models
                     cmd.CommandText = "SELECT c.courseID FROM courses c LEFT JOIN projects p ON (c.courseID = p.courseID) " +
                         "LEFT JOIN groups g ON (p.projectID = g.projectID) WHERE g.groupID = @groupID";
                     cmd.Parameters.AddWithValue("@groupID", groupID);
-                    
+
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         //Runs once per record retrieved
@@ -490,7 +517,7 @@ namespace time_sucks.Models
                     //SQL and Parameters
                     cmd.CommandText = "SELECT courseID FROM projects WHERE projectID = @projectID";
                     cmd.Parameters.AddWithValue("@projectID", projectID);
-                    
+
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         //Runs once per record retrieved
@@ -1035,7 +1062,7 @@ namespace time_sucks.Models
                     cmd.CommandText = "UPDATE uGroups SET isActive = 1 WHERE userID = @userID AND groupID = @groupID";
                     cmd.Parameters.AddWithValue("@userID", userID);
                     cmd.Parameters.AddWithValue("@groupID", groupID);
-                    
+
                     if (cmd.ExecuteNonQuery() > 0) return true;
 
                     return false;
@@ -1149,12 +1176,12 @@ namespace time_sucks.Models
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
-                    
+
                     cmd.CommandText = "DELETE FROM uGroups WHERE userID = @userID AND groupID = @groupID";
                     cmd.Parameters.AddWithValue("@userID", userID);
                     cmd.Parameters.AddWithValue("@groupID", groupID);
                     if (cmd.ExecuteNonQuery() > 0) return true;
-                    
+
                     return false;
                 }
             }

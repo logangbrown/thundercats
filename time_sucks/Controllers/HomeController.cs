@@ -369,6 +369,37 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Creates a TimeCard and returns the timeSlotID
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        public IActionResult CreateTimeCard([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            TimeCard timeCard = JsonConvert.DeserializeObject<TimeCard>(JsonString);
+            int courseID = GetCourseForGroup(timeCard.groupID);
+
+            if (IsAdmin() || IsInstructorForCourse(courseID) || IsStudentInCourse(courseID))
+            {
+                if (GetUserType() == 'S' && GetUserID() == timeCard.userID)
+                {
+                    timeCard.timeslotID = (int)DBHelper.CreateTimeCard(timeCard);
+                }
+                else
+                {
+                    timeCard.timeslotID = (int)DBHelper.CreateTimeCard(timeCard);
+                }
+                if (timeCard.timeslotID > 0)
+                {
+                    return Ok(timeCard.timeslotID);
+                }
+                return StatusCode(500);
+            }
+            return Unauthorized();
+        }
+
+        /// <summary>
         /// Creates a project given a project object. Returns the project ID
         /// </summary>
         /// <param name="json"></param>
