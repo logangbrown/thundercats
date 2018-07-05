@@ -12,7 +12,7 @@
 
 
     <div class="row mt-4">
-        <div class="col-sm-6 col-12">
+        <div class="col-sm-6 col-md-5 col-lg-4 col-12">
             <canvas id="projectHours" width="400" height="400"></canvas>
         </div>
 
@@ -31,7 +31,7 @@
 
             <div class="card">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item p-2" ng-repeat="g in project.groups | orderObjectBy :'groupName'" ng-if="g.isActive || config.showInactiveGroups"><a href="/#!/group/{{g.groupID}}">{{g.groupName}}</a></li>
+                    <li class="list-group-item p-0" ng-repeat="g in project.groups | orderObjectBy :'groupName'" ng-if="g.isActive || config.showInactiveGroups"><a class="card-list-link p-2" href="/#!/group/{{g.groupID}}">{{g.groupName}}</a></li>
                 </ul>
             </div>
         </div>
