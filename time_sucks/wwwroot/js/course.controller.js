@@ -1,5 +1,8 @@
 ﻿angular.module('time').controller('CourseCtrl',['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
+    $scope.course = {};
+    $scope.course.users = {};
+    $scope.course.projects = {};
     $scope.config = {};
     $scope.config.showInactiveProjects = false;
 
@@ -12,7 +15,17 @@
         $http.post("/Home/GetCourse", { courseID: $scope.courseID })
             .then(function (response) {
                 usSpinnerService.stop('spinner');
-                $scope.course = response.data;
+                $scope.course.courseID = response.data.courseID;
+                $scope.course.courseName = response.data.courseName;
+                $scope.course.description = response.data.description;
+                $scope.course.instructorID = response.data.instructorID;
+                $scope.course.isActive = response.data.isActive;
+                $.each(response.data.users, function (index, user) {
+                    $scope.course.users[user.userID] = user;
+                });
+                $.each(response.data.projects, function (index, project) {
+                    $scope.course.projects[project.projectID] = project;
+                });
                 if (!$scope.course.users) $scope.course.users = null;
                 if (!$scope.course.projects) $scope.course.projects = null;
             }, function () {
@@ -20,200 +33,84 @@
                 toastr["error"]("Failed retrieving course.");
             });
 
-        //Dummy Data
-        //{
-        //    //if ($scope.courseID === "12") {
-        //    //    $scope.course = {
-        //    //        courseName: "CS 3750 Spring 2018 MW 7:30",
-        //    //        courseID: 12,
-        //    //        instructorName: "Brad Peterson",
-        //    //        instructorID: 68,
-        //    //        isActive: true,
-        //    //        projects: {
-        //    //            1: {
-        //    //                projectID: 1,
-        //    //                projectName: "PHP Game",
-        //    //                isActive: true
-        //    //            },
-        //    //            2: {
-        //    //                projectID: 2,
-        //    //                projectName: "Multiplayer Conway's Game of Life",
-        //    //                isActive: true
-        //    //            },
-        //    //            3: {
-        //    //                projectID: 3,
-        //    //                projectName: "Student Time Tracker",
-        //    //                isActive: false
-        //    //            }
-        //    //        },
-        //    //        users: {
-        //    //            1: {
-        //    //                userID: 1,
-        //    //                firstName: "Joe",
-        //    //                lastName: "Bob",
-        //    //                isActive: true
-        //    //            },
-        //    //            2: {
-        //    //                userID: 2,
-        //    //                firstName: "Rizwan",
-        //    //                lastName: "Mohammed",
-        //    //                isActive: false
-        //    //            },
-        //    //            3: {
-        //    //                userID: 3,
-        //    //                firstName: "Skylar",
-        //    //                lastName: "Olsen",
-        //    //                isActive: true
-        //    //            }
-        //    //        }
-        //    //    };
-        //    //} else if ($scope.courseID === "14") {
-        //    //    $scope.course = {
-        //    //        courseName: "CS 3750 Fall 2018 MW 7:30",
-        //    //        id: 14,
-        //    //        instructorName: "Brad Peterson",
-        //    //        isActive: true,
-        //    //        projects: {
-        //    //            3: {
-        //    //                projectID: 4,
-        //    //                projectName: "PHP Game",
-        //    //                isActive: true
-        //    //            },
-        //    //            4: {
-        //    //                projectID: 5,
-        //    //                projectName: "Multiplayer Conway's Game of Life",
-        //    //                isActive: true
-        //    //            },
-        //    //            5: {
-        //    //                projectID: 6,
-        //    //                projectName: "Student Time Tracker",
-        //    //                isActive: true
-        //    //            }
-        //    //        },
-        //    //        users: {
-        //    //            2: {
-        //    //                userID: 2,
-        //    //                firstName: "Rizwan",
-        //    //                lastName: "Mohammed",
-        //    //                isActive: true
-        //    //            },
-        //    //            3: {
-        //    //                userID: 3,
-        //    //                firstName: "Skylar",
-        //    //                lastName: "Olsen",
-        //    //                isActive: false
-        //    //            }
-        //    //        }
-        //    //    };
-        //    //} else if ($scope.courseID === "15") {
-        //    //    $scope.course = {
-        //    //        courseName: "CS 3750 Spring 2019 MW 7:30",
-        //    //        courseID: 15,
-        //    //        instructorName: "Brad Peterson",
-        //    //        isActive: 0,
-        //    //        projects: {
-        //    //            1: {
-        //    //                projectID: 7,
-        //    //                projectName: "PHP Game",
-        //    //                isActive: true
-        //    //            },
-        //    //            2: {
-        //    //                projectID: 8,
-        //    //                projectName: "Multiplayer Conway's Game of Life",
-        //    //                isActive: true
-        //    //            },
-        //    //            3: {
-        //    //                projectID: 1,
-        //    //                projectName: "Student Time Tracker",
-        //    //                isActive: true
-        //    //            }
-        //    //        },
-        //    //        users: {
-        //    //            1: {
-        //    //                userID: 1,
-        //    //                firstName: "Logan",
-        //    //                lastName: "Brown",
-        //    //                isActive: false
-        //    //            },
-        //    //            2: {
-        //    //                userID: 2,
-        //    //                firstName: "Rizwan",
-        //    //                lastName: "Mohammed",
-        //    //                isActive: true
-        //    //            },
-        //    //            3: {
-        //    //                userID: 3,
-        //    //                firstName: "Skylar",
-        //    //                lastName: "Olsen",
-        //    //                isActive: true
-        //    //            }
-        //    //        }
-        //    //    };
-        //    //} else {
-        //    //    toastr["info"]("No dummy data for this course.");
-        //    //    window.history.back();
-        //    //}
-        //} 
-        //End Dummy Data
-
         $scope.createProject = function () {
-            //TODO Enable CreateProject, disable info toast
-            //$http.post("/Home/CreateProject", $scope.course)
-            //    .then(function (response) {
-            //        $location.path('/project/'+response.data);
-            //    }, function () {
-            //        toastr["error"]("Failed to create project.");
-            //    });
-
-            toastr["info"]("Attempted to create project - enable REST endpoint.");
+            usSpinnerService.spin('spinner');
+            $http.post("/Home/AddProject", { courseID: $scope.course.courseID })
+                .then(function (response) {
+                    usSpinnerService.stop('spinner');
+                    $location.path('/project/'+response.data);
+                }, function (response) {
+                    usSpinnerService.stop('spinner');
+                    if (response.status === 401) toastr["error"]("Unauthorized to create a project on this course.");
+                    else toastr["error"]("Failed to create project, unknown error.");
+                });
         }
 
         $scope.saveCourse = function () {
-            //TODO Enable SaveCourse, disable info toast
-            $http.post("/Home/SaveCourse", $scope.course)
+            usSpinnerService.spin('spinner');
+            $http.post("/Home/SaveCourse",
+                {
+                    courseID: $scope.course.courseID,
+                    courseName: $scope.course.courseName,
+                    isActive: $scope.course.isActive,
+                    description: $scope.course.description,
+                    instructorID: $scope.course.instructorID
+                })
                 .then(function (response) {
+                    usSpinnerService.stop('spinner');
                     toastr["success"]("Saved course.");
                 }, function () {
+                    usSpinnerService.stop('spinner');
                     toastr["error"]("Failed saving course.");
                 });
+        }
 
-            //toastr["info"]("Attempted to save course - enable REST endpoint.");
+        $scope.saveUserInCourse = function (userID, isActive) {
+            usSpinnerService.spin('spinner');
+            $http.post("/Home/SaveUserInCourse", { userID: userID, courseID: $scope.courseID, isActive: isActive})
+                .then(function (response) {
+                    usSpinnerService.stop('spinner');
+                    toastr["success"]("Updated the user in this course.");
+                }, function (response) {
+                    usSpinnerService.stop('spinner');
+                    if (response.status === 500) toastr["error"]("Failed to update the user in this course, query error.");
+                    else if (response.status === 401) toastr["error"]("Unathorized to update the user in this course.");
+                    else toastr["error"]("Failed to update the user in this course, unknown error.");
+                });
         }
 
         $scope.joinCourse = function () {
-            //TODO Enable join course functionality, disable info toast
-            //$http.post("/Home/JoinCourse", $scope.courseID)
-            //    .then(function (response) {
-            //        $scope.course.users[$scope.$parent.user.userID] = {
-            //            userID: $scope.$parent.user.userID,
-            //            firstName: $scope.$parent.user.firstName,
-            //            lastName: $scope.$parent.user.lastName,
-            //            isActive: false
-            //        };
-            //        toastr["info"]("You've requested to join the course. The instructor must accept your request before you can join any groups.");
-            //    }, function () {
-            //        toastr["error"]("Failed to join course.");
-            //    });
-            toastr["info"]("Attempted to join course - enable REST endpoint.");
+            usSpinnerService.spin('spinner');
+            $http.post("/Home/JoinCourse", { courseID: $scope.courseID })
+                .then(function (response) {
+                    usSpinnerService.stop('spinner');
+                    $scope.course.users[$scope.$parent.user.userID] = {
+                        userID: $scope.$parent.user.userID,
+                        firstName: $scope.$parent.user.firstName,
+                        lastName: $scope.$parent.user.lastName,
+                        isActive: false
+                    };
+                    toastr["info"]("You've requested to join the course. The instructor must accept your request before you can join any groups.");
+                }, function () {
+                    usSpinnerService.stop('spinner');
+                    toastr["error"]("Failed to join course.");
+                });
         }
 
         $scope.leaveCourse = function () {
             if (confirm('Are you sure you want to leave this course? If you would like to rejoin the course later, you must contact the instructor to be added back into it.')) {
-                //TODO Enable leave course functionality, disable info toast
-                //$http.post("/Home/LeaveCourse", $scope.courseID)
-                //    .then(function (response) {
-                //        $scope.course.users[$scope.$parent.user.userID] = {
-                //            userID: $scope.$parent.user.userID,
-                //            firstName: $scope.$parent.user.firstName,
-                //            lastName: $scope.$parent.user.lastName,
-                //            isActive: false
-                //        };
-                //        toastr["info"]("You've requested to join the course. The instructor must accept your request before you can join any groups.");
-                //    }, function () {
-                //        toastr["error"]("Failed to join course.");
-                //    });
-                $scope.course.users[$scope.$parent.user.userID].isActive = false;
-                toastr["info"]("Attempted to leave course - enable REST endpoint.");
+                usSpinnerService.spin('spinner');
+                $http.post("/Home/LeaveCourse", { courseID: $scope.courseID })
+                    .then(function (response) {
+                        usSpinnerService.stop('spinner');
+                        $scope.course.users[$scope.$parent.user.userID].isActive = false;
+                        toastr["info"]("You've left the course. Contact the Instructor if you want to be reactivated in the course.");
+                    }, function (response) {
+                        usSpinnerService.stop('spinner');
+                        if (response.status === 500) toastr["error"]("Failed to leave the course, query error.");
+                        else if (response.status === 401) toastr["error"]("Failed to leave the course, user not in the course.");
+                        else toastr["error"]("Failed to leave the course, unknown error.");
+                    });
             } else {
                 // Do nothing!
             }
@@ -221,18 +118,18 @@
 
         $scope.deleteUserFromCourse = function (userID) {
             if (confirm('Are you sure you want to delete this user from the course?')) {
-                $http.post("/Home/DeleteUserCourse", { userID: userID, courseID: $scope.courseID })
+                usSpinnerService.spin('spinner');
+                $http.post("/Home/DeleteUserFromCourse", { userID: userID, courseID: $scope.courseID })
                     .then(function (response) {
+                        usSpinnerService.stop('spinner');
                         delete $scope.course.users[userID];
+                        toastr["info"]("Deleted the user from the course.");
                     }, function (response) {
-                        if (response.status === 500) {
-                            toastr["error"]("Failed to delete user from course, query error.");
-                        } else if (response.status === 401) {
-                            toastr["error"]("Unauthorized to delete this user from the course.");
-                        } else {
-                            toastr["error"]("Failed to delete user from course, unknown error.");
-                        }
-                        });
+                        usSpinnerService.stop('spinner');
+                        if (response.status === 500) toastr["error"]("Failed to delete user from course, query error.");
+                        else if (response.status === 401) toastr["error"]("Unauthorized to delete this user from the course.");
+                        else toastr["error"]("Failed to delete user from course, unknown error.");
+                    });
             } else {
                 // Do nothing!
             }
@@ -289,9 +186,6 @@
                 $location.path('/login');
             });
 
-        //Dummy data
-        //toastr["error"]("Not logged in - enable REST endpoint");
-        //$location.path('/login');
     } else {
         $scope.load();
     }

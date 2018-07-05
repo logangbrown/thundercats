@@ -14,10 +14,7 @@
                 return;
             }
 
-            //TODO Reenable hashing
             $scope.user.password = CryptoJS.SHA256($scope.password).toString(CryptoJS.enc.Hex);
-
-            //$scope.user.password = $scope.password;
 
             usSpinnerService.spin('spinner');
             $http.post("/Home/LoginUser", $scope.user)
@@ -36,18 +33,6 @@
                         toastr["error"]("User account has been deactivated.");
                     }
                 });
-
-            //Dummy data
-            //$scope.$parent.user = {
-            //    userID: '1',
-            //    username: 'test',
-            //    firstName: 'Test',
-            //    lastName: 'User',
-            //    type: 'S'
-            //};
-            //toastr["info"]("Simulated login - enable REST endpoint");
-            //$location.path('/dashboard');
-            //End Dummy Data
         };
 
         $scope.register = function () {

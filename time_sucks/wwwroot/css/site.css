@@ -35,6 +35,38 @@ nav a {
     margin: 15px;
 }
 
+/* lg+ */
+@media (min-width: 992px) {
+    .description-textarea{
+        height: 25px;
+    }
+
+    .hours-col {
+        width: 60px;
+    }
+
+    .edited-icon {
+        top: 4px;
+        right: 4px;
+    }
+}
+
+@media (max-width: 991px) {
+    .description-textarea {
+        height: 53px;
+        line-height: 1.2;
+    }
+
+    .hours-col {
+        width: 44px;
+    }
+
+    .edited-icon {
+        top: 33px;
+        left: 10px;
+    }
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */
@@ -191,8 +223,6 @@ nav a {
 
     .description-textarea {
         padding: 0px 3px;
-        line-height: 1.2;
-        height: 53px;
     }
 
     .form-control:disabled, .form-control[readonly] {
@@ -206,8 +236,6 @@ nav a {
 
     .edited-icon {
         position: absolute;
-        top: 33px;
-        left: 10px;
         color: gray;
     }
 

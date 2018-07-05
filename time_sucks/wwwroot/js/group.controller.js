@@ -8,7 +8,6 @@
         $scope.groupID = $routeParams.ID;
 
         if (!$scope.groupID) $location.path('/courses');
-
         
         //TODO Enable Group functionality, disable dummy data
         usSpinnerService.spin('spinner');
@@ -37,104 +36,15 @@
                 $scope.updateAllHours();
                 $scope.updateChart();
                 usSpinnerService.stop('spinner');
-            }, function () {
+            }, function (response) {
                 usSpinnerService.stop('spinner');
-                toastr["error"]("Failed to get group.");
+                if (response.status === 401) {
+                    toastr["error"]("Unauthorized to view this group.");
+                    window.history.back();
+                } else {
+                    toastr["error"]("Error getting group.");
+                }
             });
-
-        //Dummy data
-        //if ($scope.groupID === "1") {
-        //    $scope.group = {
-        //        groupID: 1,
-        //        groupName: "Group Awesome",
-        //        isActive: true,
-        //        users: {
-        //            1: {
-        //                userID: 1,
-        //                firstName: "Joe",
-        //                lastName: "Bob",
-        //                isActive: true,
-        //                timecards: {
-        //                    1: {
-        //                        timeslotID: 1,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    },
-        //                    9: {
-        //                        timeslotID: 9,
-        //                        hours: "",
-        //                        isEdited: true,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    },
-        //                    10: {
-        //                        timeslotID: 10,
-        //                        hours: "",
-        //                        isEdited: true,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    },
-        //                    11: {
-        //                        timeslotID: 11,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    },
-        //                    12: {
-        //                        timeslotID: 12,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    }
-        //                }
-        //            },
-        //            2: {
-        //                userID: 2,
-        //                firstName: "Joes",
-        //                lastName: "Bobs",
-        //                isActive: true,
-        //                timecards: {
-        //                    2: {
-        //                        timeslotID: 2,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    }
-        //                }
-        //            },
-        //            3: {
-        //                userID: 3,
-        //                firstName: "Skylar",
-        //                lastName: "Olsen",
-        //                isActive: false,
-        //                timecards: {
-        //                    3: {
-        //                        timeslotID: 3,
-        //                        hours: "",
-        //                        isEdited: false,
-        //                        timeIn: "04/05/2018 7:30 PM",
-        //                        timeOut: "04/05/2018 9:30 PM",
-        //                        description: "Description of things I did."
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    };
-        //} else {
-        //    toastr["info"]("No dummy data for this group.");
-        //    window.history.back();
-        //}
 
         $.each($scope.group.users, function (userID, user) {
             $scope.group.users[userID].blank = {
@@ -177,7 +87,7 @@
                 description: ""
             }
             $scope.newNumber++;
-            toastr["info"]("Create time for user: " + id);
+            toastr["info"]("Dummy: Created time for user: " + id);
         }
 
         $scope.createTimeFromBlank = function (id) {
@@ -186,7 +96,7 @@
                 groupID: $scope.groupID
             };
 
-            if ($scope.group.users[id].blank.timeIn === '' && $scope.group.users[id].blank.timeOut === '' && $scope.group.users[id].blank.desc === '')
+            if ($scope.group.users[id].blank.timeIn === '' && $scope.group.users[id].blank.timeOut === '' && $scope.group.users[id].blank.description === '')
                 return;
 
             //TODO Enable create time functionality, disable extra stuff below
@@ -209,70 +119,78 @@
                 isEdited: false,
                 timeIn: $scope.group.users[id].blank.timeIn,
                 timeOut: $scope.group.users[id].blank.timeOut,
-                description: $scope.group.users[id].blank.desc
+                description: $scope.group.users[id].blank.description
             };
             $scope.newNumber++;
             $scope.group.users[id].blank.timeIn = '';
             $scope.group.users[id].blank.timeOut = '';
-            $scope.group.users[id].blank.desc = '';
+            $scope.group.users[id].blank.description = '';
 
             toastr["info"]("Create time for user: " + id);
         }
 
         $scope.leaveGroup = function() {
             if (confirm('Are you sure you want to leave this group?')) {
-                //TODO Enable leave course functionality, disable info toast
-                //$http.post("/Home/LeaveGroup", $scope.groupID)
-                //    .then(function (response) {
-                //          $scope.group.users[$scope.$parent.user.userID].isActive = false;
-                //        };
-                //    }, function () {
-                //        toastr["error"]("Failed to leave the group.");
-                //    });
-                $scope.group.users[$scope.$parent.user.userID].isActive = false;
-                toastr["info"]("Attempted to leave group - enable REST endpoint.");
+                usSpinnerService.spin('spinner');
+                $http.post("/Home/LeaveGroup", { groupID: $scope.groupID })
+                    .then(function (response) {
+                        if (response.status === 204) {
+                            delete $scope.group.users[$scope.$parent.user.userID];
+                        } else {
+                            $scope.group.users[$scope.$parent.user.userID].isActive = false;
+                        }
+                        usSpinnerService.stop('spinner');
+                        toastr["success"]("You left the group.");
+                    }, function (response) {
+                        usSpinnerService.stop('spinner');
+                        if (response.status === 401) toastr["error"]("You are not part of this group.");
+                        else toastr["error"]("Failed to leave the group, unknown error.");
+                    });
             } else {
                 // Do nothing!
             }
         }
 
         $scope.joinGroup = function () {
-            //TODO Enable leave course functionality, disable info toast
-            //$http.post("/Home/JoinGroup", $scope.groupID)
-            //    .then(function (response) {
-            //          //TODO Give them a real response if they are blocked because they are part of another group
-            //        $scope.group.users[$scope.$parent.user.userID] = {
-            //            userID: $scope.$parent.user.userID,
-            //            firstName: $scope.$parent.user.firstName,
-            //            lastName: $scope.$parent.user.lastName,
-            //            isActive: true,
-            //            timecards: {}
-            //        };
-            //    }, function () {
-            //        toastr["error"]("Failed to leave the group.");
-            //    });
-            $scope.group.users[$scope.$parent.user.userID] = {
-                        userID: $scope.$parent.user.userID,
-                        firstName: $scope.$parent.user.firstName,
-                        lastName: $scope.$parent.user.lastName,
-                        isActive: true,
-                        timecards: {}
-                    };
-            toastr["info"]("Attempted to leave group - enable REST endpoint.");
+            usSpinnerService.spin('spinner');
+            $http.post("/Home/JoinGroup", { groupID: $scope.groupID })
+                .then(function (response) {
+                    if (response.status === 204) {
+                        $scope.group.users[$scope.$parent.user.userID].isActive = true;
+                    } else {
+                        $scope.group.users[$scope.$parent.user.userID] = {
+                            userID: $scope.$parent.user.userID,
+                            firstName: $scope.$parent.user.firstName,
+                            lastName: $scope.$parent.user.lastName,
+                            isActive: true,
+                            timecards: {}
+                        };
+                    }
+                    usSpinnerService.stop('spinner');
+                    toastr["success"]("You have joined the group.");
+                    
+                }, function (response) {
+                    usSpinnerService.stop('spinner');
+                    if (response.status === 401) toastr["error"]("You are not part of this course.");
+                    else if (response.status === 403) toastr["error"]("You are already active in a different group. Please leave that group before joining a new one.");
+                    else toastr["error"]("Failed to join the group, unknown error.");
+                });
         }
 
-
-
         $scope.saveGroup = function () {
-            //TODO Enable save group functionality, disable info toast
-            //$http.post("/Home/SaveGroup", $scope.group)
-            //    .then(function (response) {
-            //        toastr["success"]("Group saved.");
-            //    }, function () {
-            //        toastr["error"]("Failed to save group.");
-            //    });
-            toastr["info"]("Attempted to save group - enable REST endpoint");
-            $scope.updateChart();
+            $http.post("/Home/SaveGroup", {
+                groupID: $scope.group.groupID,
+                groupName: $scope.group.groupName,
+                isActive: $scope.group.isActive,
+                evalID: $scope.group.evalID,
+                projectID: $scope.group.projectID
+            })
+                .then(function (response) {
+                    toastr["success"]("Group saved.");
+                }, function (response) {
+                    if (response.status === 401) toastr["error"]("Unauthorized to change this group.");
+                    else toastr["error"]("Failed to save group, unknown error.");
+                });
         }
 
         $scope.userInGroup = function () {
@@ -283,6 +201,20 @@
             if (!$scope.group) return false;
             $.each($scope.group.users, function (index, user) {
                 if (Number(user.userID) === Number($scope.$parent.user.userID)) {
+                    inGroup = true;
+                }
+            });
+            return inGroup;
+        }
+
+        $scope.userActiveInGroup = function () {
+            //Checks that the current user is listed in the current group.
+            if (!$scope.$parent.user) return false;
+
+            var inGroup = false;
+            if (!$scope.group) return false;
+            $.each($scope.group.users, function (index, user) {
+                if (Number(user.userID) === Number($scope.$parent.user.userID) && user.isActive) {
                     inGroup = true;
                 }
             });
@@ -324,27 +256,27 @@
         }
 
         $scope.saveTime = function (userID, timeslotID) {
-            //$scope.formatTime(userID, timeslotID);
-            if ($scope.group.users[userID].timecards[timeslotID].timeIn === '' || $scope.group.users[userID].timecards[timeslotID].timeOut === ''){
-                $scope.group.users[userID].timecards[timeslotID].hours = 0;
-            } else {
-                $scope.group.users[userID].timecards[timeslotID].hours = moment.duration(
-                    moment($scope.group.users[userID].timecards[timeslotID].timeOut).diff(
-                        $scope.group.users[userID].timecards[timeslotID].timeIn)).asHours().toFixed(2);
-            }
-            $scope.updateChart();
-            //TODO Make a new call to save the time entry alone
+
+            $http.post("/Home/SaveTime", $scope.group.users[userID].timecards[timeslotID])
+                .then(function (response) {
+                    if ($scope.group.users[userID].timecards[timeslotID].timeIn === '' || $scope.group.users[userID].timecards[timeslotID].timeOut === '') {
+                        $scope.group.users[userID].timecards[timeslotID].hours = 0;
+                    } else {
+                        $scope.group.users[userID].timecards[timeslotID].hours = moment.duration(
+                            moment($scope.group.users[userID].timecards[timeslotID].timeOut).diff(
+                                $scope.group.users[userID].timecards[timeslotID].timeIn)).asHours().toFixed(2);
+                    }
+                    $scope.updateChart();
+                }, function (response) {
+                    if (response.status === 401) toastr["error"]("Unauthorized to edit this time entry.");
+                    else toastr["error"]("Failed to save time entry, unknown error.");
+                });
         }
 
         $scope.diffHours = function (timeIn, timeOut) {
             if (timeIn === '' || timeOut === '') return "0.00";
             return moment.duration(moment(timeOut).diff(timeIn)).asHours().toFixed(2);
         }
-
-        $scope.formatTime = function (userID, timeslotID) {
-            //if ($scope.group.users[userID].timecards[timeslotID].timeIn !== '') $scope.group.users[userID].timecards[timeslotID].timeIn = moment($scope.group.users[userID].timecards[timeslotID].timeIn).format('MM/DD/YY HH:mm');
-            //if ($scope.group.users[userID].timecards[timeslotID].timeOut !== '') $scope.group.users[userID].timecards[timeslotID].timeOut = moment($scope.group.users[userID].timecards[timeslotID].timeOut).format('MM/DD/YY HH:mm');
-        };
 
         //Used to check whether the currently logged in user is trying to change their own time, or is an instructor
         $scope.isUser = function (id) {
@@ -426,10 +358,6 @@
                 toastr["error"]("Not logged in.");
                 $location.path('/login');
             });
-
-        //Dummy data
-        //toastr["error"]("Not logged in - enable REST endpoint");
-        //$location.path('/login');
     } else {
         $scope.load();
     }
