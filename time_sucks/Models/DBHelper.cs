@@ -208,15 +208,17 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "INSERT INTO timeCards (timeIn, timeOut, isEdited, createdOn, userID, groupID, description)" +
-                                      " VALUES (@timeIn, @timeOut, 0, @createdOn, @userID, @groupID, @description);";
+                    cmd.CommandText = "INSERT INTO timeCards (timeIn, timeOut, isEdited, userID, groupID, description)" +
+                                      " VALUES (@timeIn, @timeOut, 0, @userID, @groupID, @description);";
 
-                    cmd.Parameters.AddWithValue("@timeIn", timeCard.timeIn);
-                    cmd.Parameters.AddWithValue("@timeOut", timeCard.timeOut);
-                    cmd.Parameters.AddWithValue("@createdOn", timeCard.createdOn);
+                    if(timeCard.timeIn == null || timeCard.timeIn == "") cmd.Parameters.AddWithValue("@timeIn", null);
+                    else cmd.Parameters.AddWithValue("@timeIn", Convert.ToDateTime(timeCard.timeIn));
+                    if(timeCard.timeOut == null || timeCard.timeOut == "") cmd.Parameters.AddWithValue("@timeOut", null);
+                    else cmd.Parameters.AddWithValue("@timeOut", Convert.ToDateTime(timeCard.timeOut));
                     cmd.Parameters.AddWithValue("@userID", timeCard.userID);
                     cmd.Parameters.AddWithValue("@groupID", timeCard.groupID);
-                    cmd.Parameters.AddWithValue("@description", timeCard.description);
+                    if(timeCard.description == null) cmd.Parameters.AddWithValue("@description", "");
+                    else cmd.Parameters.AddWithValue("@description", timeCard.description);
 
 
                     //Return the last inserted ID if successful
@@ -383,12 +385,12 @@ namespace time_sucks.Models
 
                                             if (user.timecards == null) user.timecards = new List<TimeCard>();
 
-                                            if (!reader.IsDBNull(13))
+                                            if (!reader.IsDBNull(12))
                                             {
                                                 user.timecards.Add(new TimeCard()
                                                 {
-                                                    timeIn = reader.GetString("timeIn"),
-                                                    timeOut = reader.GetString("timeOut"),
+                                                    timeIn = reader.IsDBNull(13) ? "" : reader.GetString("timeIn"),
+                                                    timeOut = reader.IsDBNull(14) ? "" : reader.GetString("timeOut"),
                                                     description = reader.GetString("description"),
                                                     groupID = reader.GetInt32("tgroupID"),
                                                     timeslotID = reader.GetInt32("timeID"),
@@ -402,12 +404,12 @@ namespace time_sucks.Models
                                     if (!foundUser)
                                     {
                                         List<TimeCard> timecardlist = new List<TimeCard>();
-                                        if (!reader.IsDBNull(13))
+                                        if (!reader.IsDBNull(12))
                                         {
                                             timecardlist.Add(new TimeCard()
                                             {
-                                                timeIn = reader.GetString("timeIn"),
-                                                timeOut = reader.GetString("timeOut"),
+                                                timeIn = reader.IsDBNull(13) ? "" : reader.GetString("timeIn"),
+                                                timeOut = reader.IsDBNull(14) ? "" : reader.GetString("timeOut"),
                                                 description = reader.GetString("description"),
                                                 groupID = reader.GetInt32("tgroupID"),
                                                 timeslotID = reader.GetInt32("timeID"),
@@ -417,7 +419,7 @@ namespace time_sucks.Models
                                         }
 
                                         //Add the user and then the time slot
-                                        if (!reader.IsDBNull(9))
+                                        if (!reader.IsDBNull(8))
                                         {
                                             group.users.Add(new User()
                                             {
@@ -435,12 +437,12 @@ namespace time_sucks.Models
                             if(!foundGroup)
                             {
                                 List<TimeCard> timecardlist = new List<TimeCard>();
-                                if (!reader.IsDBNull(13))
+                                if (!reader.IsDBNull(12))
                                 {
                                     timecardlist.Add(new TimeCard()
                                     {
-                                        timeIn = reader.GetString("timeIn"),
-                                        timeOut = reader.GetString("timeOut"),
+                                        timeIn = reader.IsDBNull(13) ? "" : reader.GetString("timeIn"),
+                                        timeOut = reader.IsDBNull(14) ? "" : reader.GetString("timeOut"),
                                         description = reader.GetString("timeDescription"),
                                         groupID = reader.GetInt32("tgroupID"),
                                         timeslotID = reader.GetInt32("timeID"),
@@ -449,7 +451,7 @@ namespace time_sucks.Models
                                 }
 
                                 List<User> users = new List<User>();
-                                if (!reader.IsDBNull(9))
+                                if (!reader.IsDBNull(8))
                                 {
                                     users.Add(new User()
                                     {
@@ -615,8 +617,8 @@ namespace time_sucks.Models
                                     {
                                         user.timecards.Add(new TimeCard()
                                         {
-                                            timeIn = reader.GetString("timeIn"),
-                                            timeOut = reader.GetString("timeOut"),
+                                            timeIn = reader.IsDBNull(10) ? "" : reader.GetString("timeIn"),
+                                            timeOut = reader.IsDBNull(11) ? "" : reader.GetString("timeOut"),
                                             description = reader.GetString("description"),
                                             groupID = reader.GetInt32("tgroupID"),
                                             timeslotID = reader.GetInt32("timeID"),
@@ -634,8 +636,8 @@ namespace time_sucks.Models
                                 {
                                     timecardlist.Add(new TimeCard()
                                     {
-                                        timeIn = reader.GetString("timeIn"),
-                                        timeOut = reader.GetString("timeOut"),
+                                        timeIn = reader.IsDBNull(10) ? "" : reader.GetString("timeIn"),
+                                        timeOut = reader.IsDBNull(11) ? "" : reader.GetString("timeOut"),
                                         description = reader.GetString("description"),
                                         groupID = reader.GetInt32("tgroupID"),
                                         timeslotID = reader.GetInt32("timeID"),
@@ -1232,9 +1234,6 @@ namespace time_sucks.Models
             DateTime before;
             DateTime after;
 
-            DateTime timeIn = Convert.ToDateTime(timecard.timeIn);
-            DateTime timeOut = Convert.ToDateTime(timecard.timeOut);
-
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -1258,17 +1257,27 @@ namespace time_sucks.Models
                     if (after < before)
                     {
                         cmd.CommandText = "UPDATE timeCards SET timeIn = @timeIn, timeOut = @timeOut, isEdited = 1, description = @description WHERE timeID = @timeID";
-                        cmd.Parameters.AddWithValue("@timeIn", timeIn);
-                        cmd.Parameters.AddWithValue("@timeOut", timeOut);
-                        cmd.Parameters.AddWithValue("@description", timecard.description);
+                        if(timecard.timeIn == null || timecard.timeIn == "") cmd.Parameters.AddWithValue("@timeIn", null);
+                        else cmd.Parameters.AddWithValue("@timeIn", Convert.ToDateTime(timecard.timeIn));
+
+                        if(timecard.timeOut == null || timecard.timeOut == "") cmd.Parameters.AddWithValue("@timeOut", null);
+                        else cmd.Parameters.AddWithValue("@timeOut", Convert.ToDateTime(timecard.timeOut));
+                        
+                        if (timecard.description == null) cmd.Parameters.AddWithValue("@description", "");
+                        else cmd.Parameters.AddWithValue("@description", timecard.description);
                         if (cmd.ExecuteNonQuery() > 0) return true;
                     }
                     else
                     {
                         cmd.CommandText = "UPDATE timeCards SET timeIn = @timeIn, timeOut = @timeOut, description = @description WHERE timeID = @timeID";
-                        cmd.Parameters.AddWithValue("@timeIn", timeIn);
-                        cmd.Parameters.AddWithValue("@timeOut", timeOut);
-                        cmd.Parameters.AddWithValue("@description", timecard.description);
+                        if (timecard.timeIn == "" || timecard.timeIn == "") cmd.Parameters.AddWithValue("@timeIn", null);
+                        else cmd.Parameters.AddWithValue("@timeIn", Convert.ToDateTime(timecard.timeIn));
+
+                        if (timecard.timeOut == "" || timecard.timeOut == "") cmd.Parameters.AddWithValue("@timeOut", null);
+                        else cmd.Parameters.AddWithValue("@timeOut", Convert.ToDateTime(timecard.timeOut));
+
+                        if (timecard.description == null) cmd.Parameters.AddWithValue("@description", "");
+                        else cmd.Parameters.AddWithValue("@description", timecard.description);
                         if (cmd.ExecuteNonQuery() > 0) return true;
                     }
                     return false;

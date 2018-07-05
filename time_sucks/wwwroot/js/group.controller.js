@@ -60,73 +60,60 @@
         $scope.createTime = function (id, startTime = '') {
             var data = {
                 userID: id,
-                groupID: $scope.groupID
-            };
-
-            //TODO Enable create time functionality, disable extra stuff below
-            //$http.post("/Home/CreateTime", data)
-            //    .then(function (response) {
-            //        $scope.group.users[id].timecards[response.data] = {
-            //            timeslotID: response.data,
-            //            hours: "",
-            //            isEdited: false,
-            //            timeIn: "",
-            //            timeOut: ""
-            //        }
-            //    }, function () {
-            //        toastr["error"]("Failed to create time.");
-            //    });
-
-
-            $scope.group.users[id].timecards[$scope.newNumber] = {
-                timeslotID: $scope.newNumber, 
-                hours: "",
-                isEdited: false,
+                groupID: $scope.groupID,
                 timeIn: startTime,
+                isEdited: false,
                 timeOut: "",
                 description: ""
-            }
-            $scope.newNumber++;
-            toastr["info"]("Dummy: Created time for user: " + id);
+            };
+            
+            $http.post("/Home/CreateTimeCard", data)
+                .then(function (response) {
+                    $scope.group.users[id].timecards[response.data] = {
+                        timeslotID: response.data,
+                        hours: "",
+                        isEdited: false,
+                        timeIn: startTime,
+                        timeOut: "",
+                        description: "",
+                        userID: id
+                    }
+                    toastr["success"]("Timeslot created.");
+                }, function () {
+                    toastr["error"]("Failed to create time.");
+                });
         }
 
         $scope.createTimeFromBlank = function (id) {
             var data = {
                 userID: id,
-                groupID: $scope.groupID
+                groupID: $scope.groupID,
+                timeIn: $scope.group.users[id].blank.timeIn,
+                timeOut: $scope.group.users[id].blank.timeOut,
+                description: $scope.group.users[id].blank.description,
+                isEdited: false
             };
 
             if ($scope.group.users[id].blank.timeIn === '' && $scope.group.users[id].blank.timeOut === '' && $scope.group.users[id].blank.description === '')
                 return;
 
-            //TODO Enable create time functionality, disable extra stuff below
-            //$http.post("/Home/CreateTime", data)
-            //    .then(function (response) {
-            //        $scope.group.users[id].timecards[response.data] = {
-            //            timeslotID: response.data,
-            //            hours: "",
-            //            isEdited: false,
-            //            timeIn: "",
-            //            timeOut: ""
-            //        }
-            //    }, function () {
-            //        toastr["error"]("Failed to create time.");
-            //    });
-
-            $scope.group.users[id].timecards[$scope.newNumber] = {
-                timeslotID: $scope.newNumber,
-                hours: '',
-                isEdited: false,
-                timeIn: $scope.group.users[id].blank.timeIn,
-                timeOut: $scope.group.users[id].blank.timeOut,
-                description: $scope.group.users[id].blank.description
-            };
-            $scope.newNumber++;
-            $scope.group.users[id].blank.timeIn = '';
-            $scope.group.users[id].blank.timeOut = '';
-            $scope.group.users[id].blank.description = '';
-
-            toastr["info"]("Create time for user: " + id);
+            $http.post("/Home/CreateTimeCard", data)
+                .then(function (response) {
+                    $scope.group.users[id].timecards[response.data] = {
+                        timeslotID: response.data,
+                        hours: '',
+                        isEdited: false,
+                        timeIn: $scope.group.users[id].blank.timeIn,
+                        timeOut: $scope.group.users[id].blank.timeOut,
+                        description: $scope.group.users[id].blank.description
+                    };
+                    $scope.group.users[id].blank.timeIn = '';
+                    $scope.group.users[id].blank.timeOut = '';
+                    $scope.group.users[id].blank.description = '';
+                    toastr["success"]("Timeslot created.");
+                }, function () {
+                    toastr["error"]("Failed to create time.");
+                });
         }
 
         $scope.leaveGroup = function() {
@@ -267,6 +254,7 @@
                                 $scope.group.users[userID].timecards[timeslotID].timeIn)).asHours().toFixed(2);
                     }
                     $scope.updateChart();
+                    toastr["success"]("Timeslot saved.");
                 }, function (response) {
                     if (response.status === 401) toastr["error"]("Unauthorized to edit this time entry.");
                     else toastr["error"]("Failed to save time entry, unknown error.");
