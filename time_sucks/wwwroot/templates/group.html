@@ -59,27 +59,27 @@
                                 <td class="col col-md-4 col-lg-3 pr-1 container">
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">In</span>
-                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{u.blank.timeID}}-in" data-target-input="nearest">
-                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{u.blank.timeID}}-in" ng-model="u.blank.timeIn"
+                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{u.blank.timeslotID}}-in" data-target-input="nearest">
+                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{u.blank.timeslotID}}-in" ng-model="u.blank.timeIn"
                                                    ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" />
-                                            <div class="input-group-append" data-target="#datetimepicker-{{u.blank.timeID}}-in" data-toggle="datetimepicker">
+                                            <div class="input-group-append" data-target="#datetimepicker-{{u.blank.timeslotID}}-in" data-toggle="datetimepicker">
                                                 <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">Out</span>
-                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{u.blank.timeID}}-out" data-target-input="nearest">
-                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{u.blank.timeID}}-out" ng-model="u.blank.timeOut"
+                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{u.blank.timeslotID}}-out" data-target-input="nearest">
+                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{u.blank.timeslotID}}-out" ng-model="u.blank.timeOut"
                                                    ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" />
-                                            <div class="input-group-append" data-target="#datetimepicker-{{u.blank.timeID}}-out" data-toggle="datetimepicker">
+                                            <div class="input-group-append" data-target="#datetimepicker-{{u.blank.timeslotID}}-out" data-toggle="datetimepicker">
                                                 <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="col pr-1 d-none d-sm-table-cell">
-                                    <textarea class="full-width form-control date-text description-textarea" ng-model="u.blank.desc" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
+                                    <textarea class="full-width form-control date-text description-textarea" ng-model="u.blank.description" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
                                               ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" placeholder="Description"></textarea>
                                 </td>
                                 <td class="pr-1" style="width: 44px; position:relative;">
@@ -89,38 +89,38 @@
                                 <td class="d-sm-none col-12 pr-4 mb-1">
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">Desc&nbsp;</span>
-                                        <textarea class="full-width form-control date-text description-textarea col" ng-model="u.blank.desc" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
+                                        <textarea class="full-width form-control date-text description-textarea col" ng-model="u.blank.description" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
                                                   ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" placeholder="Description"></textarea>
                                     </div>
                                 </td>
                             </tr>
 
-                            <tr ng-repeat="t in u.time | orderObjectBy :'timeID':true" class="row no-gutters pt-1" style="border-top: 1px lightgray solid;">
+                            <tr ng-repeat="t in u.timecards | orderObjectBy :'timeslotID':true" class="row no-gutters pt-1" style="border-top: 1px lightgray solid;">
                                 <td class="col col-md-4 col-lg-3 pr-1 container">
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">In</span>
-                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{t.timeID}}-in" data-target-input="nearest">
-                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeID}}-in" ng-model="t.timeIn"
-                                                   ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
-                                            <div class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-in" data-toggle="datetimepicker">
+                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{t.timeslotID}}-in" data-target-input="nearest">
+                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeslotID}}-in" ng-model="t.timeIn"
+                                                   ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)" />
+                                            <div class="input-group-append" data-target="#datetimepicker-{{t.timeslotID}}-in" data-toggle="datetimepicker">
                                                 <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">Out</span>
-                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{t.timeID}}-out" data-target-input="nearest">
-                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeID}}-out" ng-model="t.timeOut"
-                                                   ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
-                                            <div class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-out" data-toggle="datetimepicker">
+                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{t.timeslotID}}-out" data-target-input="nearest">
+                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeslotID}}-out" ng-model="t.timeOut"
+                                                   ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)" />
+                                            <div class="input-group-append" data-target="#datetimepicker-{{t.timeslotID}}-out" data-toggle="datetimepicker">
                                                 <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="col pr-1 d-none d-sm-table-cell">
-                                    <textarea class="full-width form-control date-text description-textarea" ng-model="t.desc" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
-                                              ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" placeholder="Description"></textarea>
+                                    <textarea class="full-width form-control date-text description-textarea" ng-model="t.description" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
+                                              ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)" placeholder="Description"></textarea>
                                 </td>
                                 <td class="pr-1" style="width: 44px; position:relative;">
                                     <span style="position: absolute;">{{t.hours = diffHours(t.timeIn, t.timeOut)}}</span>
@@ -129,8 +129,8 @@
                                 <td class="d-sm-none col-12 pr-4 mb-1">
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">Desc&nbsp;</span>
-                                        <textarea class="full-width form-control date-text description-textarea col" ng-model="t.desc" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
-                                                  ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" placeholder="Description"></textarea>
+                                        <textarea class="full-width form-control date-text description-textarea col" ng-model="t.description" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
+                                                  ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)" placeholder="Description"></textarea>
                                     </div>
                                 </td>
                             </tr>
@@ -160,27 +160,27 @@
                                 <td class="col col-md-4 col-lg-3 pr-1 container">
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">In</span>
-                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{u.blank.timeID}}-in" data-target-input="nearest">
-                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{u.blank.timeID}}-in" ng-model="u.blank.timeIn"
+                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{u.blank.timeslotID}}-in" data-target-input="nearest">
+                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{u.blank.timeslotID}}-in" ng-model="u.blank.timeIn"
                                                    ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" />
-                                            <div class="input-group-append" data-target="#datetimepicker-{{u.blank.timeID}}-in" data-toggle="datetimepicker">
+                                            <div class="input-group-append" data-target="#datetimepicker-{{u.blank.timeslotID}}-in" data-toggle="datetimepicker">
                                                 <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">Out</span>
-                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{u.blank.timeID}}-out" data-target-input="nearest">
-                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{u.blank.timeID}}-out" ng-model="u.blank.timeOut"
+                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{u.blank.timeslotID}}-out" data-target-input="nearest">
+                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{u.blank.timeslotID}}-out" ng-model="u.blank.timeOut"
                                                    ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" />
-                                            <div class="input-group-append" data-target="#datetimepicker-{{u.blank.timeID}}-out" data-toggle="datetimepicker">
+                                            <div class="input-group-append" data-target="#datetimepicker-{{u.blank.timeslotID}}-out" data-toggle="datetimepicker">
                                                 <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="col pr-1 d-none d-sm-table-cell">
-                                    <textarea class="full-width form-control date-text description-textarea" ng-model="u.blank.desc" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
+                                    <textarea class="full-width form-control date-text description-textarea" ng-model="u.blank.description" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
                                               ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" placeholder="Description"></textarea>
                                 </td>
                                 <td class="pr-1" style="width: 44px; position:relative;">
@@ -190,38 +190,38 @@
                                 <td class="d-sm-none col-12 pr-4 mb-1">
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">Desc&nbsp;</span>
-                                        <textarea class="full-width form-control date-text description-textarea col" ng-model="u.blank.desc" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
+                                        <textarea class="full-width form-control date-text description-textarea col" ng-model="u.blank.description" ng-readonly="!isUser(u.userID) || (!u.isActive && !($parent.user.type === 'A' || $parent.user.userID === course.instructorID))"
                                                   ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="createTimeFromBlank(u.userID)" placeholder="Description"></textarea>
                                     </div>
                                 </td>
                             </tr>
 
-                            <tr ng-repeat="t in u.time | orderObjectBy :'timeID':true" class="row no-gutters pt-1" style="border-top: 1px lightgray solid;">
+                            <tr ng-repeat="t in u.timecards | orderObjectBy :'timeslotID':true" class="row no-gutters pt-1" style="border-top: 1px lightgray solid;">
                                 <td class="col col-md-4 col-lg-3 pr-1 container">
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">In</span>
-                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{t.timeID}}-in" data-target-input="nearest">
-                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeID}}-in" ng-model="t.timeIn"
-                                                   ng-readonly="!isUser(u.userID)" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
-                                            <div class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-in" data-toggle="datetimepicker">
+                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{t.timeslotID}}-in" data-target-input="nearest">
+                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeslotID}}-in" ng-model="t.timeIn"
+                                                   ng-readonly="!isUser(u.userID)" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)" />
+                                            <div class="input-group-append" data-target="#datetimepicker-{{t.timeslotID}}-in" data-toggle="datetimepicker">
                                                 <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">Out</span>
-                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{t.timeID}}-out" data-target-input="nearest">
-                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeID}}-out" ng-model="t.timeOut"
-                                                   ng-readonly="!isUser(u.userID)" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="saveTime(u.userID, t.timeID)" />
-                                            <div class="input-group-append" data-target="#datetimepicker-{{t.timeID}}-out" data-toggle="datetimepicker">
+                                        <div class="input-group date timeslot col mb-1 pl-1" id="datetimepicker-{{t.timeslotID}}-out" data-target-input="nearest">
+                                            <input class="full-width form-control datetimepicker-input py-0 px-1 date-text" type="text" data-target="#datetimepicker-{{t.timeslotID}}-out" ng-model="t.timeOut"
+                                                   ng-readonly="!isUser(u.userID)" ng-model-options="{updateOn: 'blur', debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)" />
+                                            <div class="input-group-append" data-target="#datetimepicker-{{t.timeslotID}}-out" data-toggle="datetimepicker">
                                                 <div class="input-group-text px-2 py-1"><i class="fa fa-calendar"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="col pr-1 d-none d-sm-table-cell">
-                                    <textarea class="full-width form-control date-text description-textarea" ng-model="t.desc" ng-readonly="!isUser(u.userID)" placeholder="Description"
-                                              ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)"></textarea>
+                                    <textarea class="full-width form-control date-text description-textarea" ng-model="t.description" ng-readonly="!isUser(u.userID)" placeholder="Description"
+                                              ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)"></textarea>
                                 </td>
                                 <td class="pr-1" style="width: 44px; position:relative;">
                                     <span style="position: absolute;">{{t.hours = diffHours(t.timeIn, t.timeOut)}}</span>
@@ -230,8 +230,8 @@
                                 <td class="d-sm-none col-12 pr-4 mb-1">
                                     <div class="row">
                                         <span class="col-2 pr-0 text-right">Desc&nbsp;</span>
-                                        <textarea class="full-width form-control date-text description-textarea col" ng-model="t.desc" ng-readonly="!isUser(u.userID)" placeholder="Description"
-                                                  ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeID)"></textarea>
+                                        <textarea class="full-width form-control date-text description-textarea col" ng-model="t.description" ng-readonly="!isUser(u.userID)" placeholder="Description"
+                                                  ng-model-options="{debounce: 750}" ng-change="saveTime(u.userID, t.timeslotID)"></textarea>
                                     </div>
                                 </td>
                             </tr>
