@@ -22,7 +22,10 @@ namespace time_sucks
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddSession();
+            services.AddSession(options => 
+                                {
+                                    options.IdleTimeout = TimeSpan.FromHours(.1);   
+                                });
 
         }
 
