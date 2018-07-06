@@ -24,7 +24,7 @@ namespace time_sucks
             services.AddMvc();
             services.AddSession(options => 
                                 {
-                                    options.IdleTimeout = TimeSpan.FromHours(.1);   
+                                    options.IdleTimeout = TimeSpan.FromHours(.01);   
                                 });
 
         }
