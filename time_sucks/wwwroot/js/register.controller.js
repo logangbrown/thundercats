@@ -53,23 +53,26 @@
     };
 
     //Check if a user is logged in, if they are, redirect to appropriate page
-    if (!$scope.$parent.user || $scope.$parent.user === '') {
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                if (response.data === '') {
-                    $scope.load();
-                    return;
-                }
-                $scope.$parent.user = response.data;
-                $scope.$parent.loaded = true;
-                if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
-                else $location.path('/dashboard');
-            }, function () {
+    //if (!$scope.$parent.user || $scope.$parent.user === '') {
+    usSpinnerService.spin('spinner');
+    $http.get("/Home/CheckSession")
+        .then(function (response) {
+            usSpinnerService.stop('spinner');
+            if (response.data === '') {
                 $scope.load();
-            });
+                return;
+            }
+            $scope.$parent.user = response.data;
+            $scope.$parent.loaded = true;
+            if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
+            else $location.path('/dashboard');
+        }, function () {
+            usSpinnerService.stop('spinner');
+            $scope.load();
+        });
 
-    } else {
-        if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
-        else $location.path('/dashboard');
-    }
+    //} else {
+    //    if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
+    //    else $location.path('/dashboard');
+    //}
 }]);
