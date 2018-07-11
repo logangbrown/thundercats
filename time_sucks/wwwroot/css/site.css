@@ -7,6 +7,10 @@ a {
     text-decoration: underline;
 }
 
+.pretty input:checked ~ .state.p-primary label:after, .pretty.p-toggle .state.p-primary label:after {
+    background-color: #2c3e50 !important;
+}
+
 nav a {
     color: #18BC9C;
     text-decoration: none;
