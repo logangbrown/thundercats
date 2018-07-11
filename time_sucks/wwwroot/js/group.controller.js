@@ -66,9 +66,11 @@
                 timeOut: "",
                 description: ""
             };
-            
+
+            usSpinnerService.spin('spinner');
             $http.post("/Home/CreateTimeCard", data)
                 .then(function (response) {
+                    usSpinnerService.stop('spinner');
                     $scope.group.users[id].timecards[response.data] = {
                         timeslotID: response.data,
                         hours: "",
@@ -80,6 +82,7 @@
                     }
                     toastr["success"]("Timeslot created.");
                 }, function () {
+                    usSpinnerService.stop('spinner');
                     toastr["error"]("Failed to create time.");
                 });
         }
@@ -97,9 +100,12 @@
             if ($scope.group.users[id].blank.timeIn === '' && $scope.group.users[id].blank.timeOut === '' && $scope.group.users[id].blank.description === '')
                 return;
 
+            usSpinnerService.spin('spinner');
             $http.post("/Home/CreateTimeCard", data)
                 .then(function (response) {
+                    usSpinnerService.stop('spinner');
                     $scope.group.users[id].timecards[response.data] = {
+                        userID: id,
                         timeslotID: response.data,
                         hours: '',
                         isEdited: false,
@@ -112,6 +118,7 @@
                     $scope.group.users[id].blank.description = '';
                     toastr["success"]("Timeslot created.");
                 }, function () {
+                    usSpinnerService.stop('spinner');
                     toastr["error"]("Failed to create time.");
                 });
         }
