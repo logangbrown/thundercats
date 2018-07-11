@@ -42,23 +42,26 @@
         $("#username").focus(); //Focus on the username field for quicker login
     };
 
-    if (!$scope.$parent.user || $scope.$parent.user === '') {
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                if (response.data === '') {
-                    $scope.load();
-                    return;
-                }
-                $scope.$parent.user = response.data;
-                $scope.$parent.loaded = true;
-                if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
-                else $location.path('/dashboard');
-            }, function () {
-                $scope.$parent.loaded = true;
+    //if (!$scope.$parent.user || $scope.$parent.user === '') {
+    usSpinnerService.spin('spinner');
+    $http.get("/Home/CheckSession")
+        .then(function (response) {
+            usSpinnerService.stop('spinner');
+            if (response.data === '') {
                 $scope.load();
-            });
-    } else {
-        if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
-        else $location.path('/dashboard');
-    }
+                return;
+            }
+            $scope.$parent.user = response.data;
+            $scope.$parent.loaded = true;
+            if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
+            else $location.path('/dashboard');
+        }, function () {
+            usSpinnerService.stop('spinner');
+            $scope.$parent.loaded = true;
+            $scope.load();
+        });
+    //} else {
+    //    if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
+    //    else $location.path('/dashboard');
+    //}
 }]);

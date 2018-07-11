@@ -175,18 +175,21 @@
     }
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
-    if (!$scope.$parent.user || $scope.$parent.user === '') {
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                $scope.$parent.user = response.data;
-                $scope.$parent.loaded = true;
-                $scope.load();
-            }, function () {
-                toastr["error"]("Not logged in.");
-                $location.path('/login');
-            });
+    //if (!$scope.$parent.user || $scope.$parent.user === '') {
+    usSpinnerService.spin('spinner');
+    $http.get("/Home/CheckSession")
+        .then(function (response) {
+            usSpinnerService.stop('spinner');
+            $scope.$parent.user = response.data;
+            $scope.$parent.loaded = true;
+            $scope.load();
+        }, function () {
+            usSpinnerService.stop('spinner');
+            toastr["error"]("Not logged in.");
+            $location.path('/login');
+        });
 
-    } else {
-        $scope.load();
-    }
+    //} else {
+    //    $scope.load();
+    //}
 }]);

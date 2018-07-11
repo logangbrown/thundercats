@@ -39,24 +39,27 @@
     }
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
-    if (!$scope.$parent.user || $scope.$parent.user === '') {
-        $http.get("/Home/CheckSession")
-            .then(function (response) {
-                $scope.$parent.user = response.data;
-                if ($scope.$parent.user.type !== 'A') {
-                    toastr["error"]("Not Admin.");
-                    $location.path('/dashboard');
-                }
-                $scope.$parent.loaded = true;
-                $scope.load();
-            }, function () {
-                toastr["error"]("Not logged in.");
-                $location.path('/login');
-            });
-    } else if ($scope.$parent.user.type !== 'A') {
-        toastr["error"]("Not Admin.");
-        $location.path('/dashboard');
-    } else {
-        $scope.load();
-    }
+    //if (!$scope.$parent.user || $scope.$parent.user === '') {
+    usSpinnerService.spin('spinner');
+    $http.get("/Home/CheckSession")
+        .then(function (response) {
+            usSpinnerService.stop('spinner');
+            $scope.$parent.user = response.data;
+            if ($scope.$parent.user.type !== 'A') {
+                toastr["error"]("Not Admin.");
+                $location.path('/dashboard');
+            }
+            $scope.$parent.loaded = true;
+            $scope.load();
+        }, function () {
+            usSpinnerService.stop('spinner');
+            toastr["error"]("Not logged in.");
+            $location.path('/login');
+        });
+    //} else if ($scope.$parent.user.type !== 'A') {
+    //    toastr["error"]("Not Admin.");
+    //    $location.path('/dashboard');
+    //} else {
+    //    $scope.load();
+    //}
 }]);

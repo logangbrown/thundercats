@@ -19,6 +19,15 @@ nav a {
     padding-right: 15px;
 }
 
+.card-list-link {
+    display: block;
+    
+}
+
+.card-list-link:hover {
+    background-color: whitesmoke;
+}
+
 /* Carousel */
 .carousel-caption p {
     font-size: 20px;
