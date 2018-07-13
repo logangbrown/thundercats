@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System;
 
@@ -95,6 +96,8 @@ namespace time_sucks.Models
         //Normal version doesn't save type or isActive
         public static bool ChangeUser(User user)
         {
+            string edited = "";
+            DateTime before;
             if (user.username != null) user.username = user.username.ToLower();
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -180,7 +183,25 @@ namespace time_sucks.Models
             }
         }
 
+        //public static bool LeaveGroup(int userID, int groupID)
+        //{
+        //    using (var conn = new MySqlConnection(connstring.ToString()))
+        //    {
+        //        conn.Open();
+        //        using (MySqlCommand cmd = conn.CreateCommand())
+        //        {
+        //                cmd.CommandText = "DELETE FROM uGroups ug INNER JOIN groups g ON ug.groupID = g.groupID" +
+        //                    "WHERE userID = @userID AND groupID = @groupID ";
+        //                cmd.Parameters.AddWithValue("@userID", userID);
+        //                cmd.Parameters.AddWithValue("@groupID", groupID);
+        //                if (cmd.ExecuteNonQuery() > 0) return true;
+        //            return false;
+        //        }
+        //    }
+        //}
+
         public static long CreateGroup(int projectID)
+
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {

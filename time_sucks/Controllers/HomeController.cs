@@ -436,6 +436,25 @@ namespace time_sucks.Controllers
             return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
         }
 
+        //[HttpPost]
+        //public IActionResult LeaveGroup([FromBody]Object json)
+        //{
+        //    String JsonString = json.ToString();
+        //    uGroups uGroups = JsonConvert.DeserializeObject<uGroups>(JsonString);
+
+        //    User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+        //    if (IsStudentInCourse(GetCourseForGroup(uGroups.groupID)) && IsStudentInGroup(uGroups.groupID))
+        //    {
+        //        if (DBHelper.LeaveGroup(user.userID, uGroups.groupID)) return Ok();
+                               
+        //        return StatusCode(500); //Query failed
+        //    }
+
+        //    return Unauthorized(); //User not in Course
+        //}
+
+
         /// <summary>
         /// Get a course and its projects and users
         /// </summary>
