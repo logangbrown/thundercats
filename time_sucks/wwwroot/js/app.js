@@ -42,9 +42,9 @@ app.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "templates/user.html",
             controller: "UserCtrl"
         })
-        .when("/assignEvals/:ID", {
-            templateUrl: "templates/assignEvals.html",
-            controller: "AssignEvalsCtrl"
+        .when("/assignEval/:ID", {
+            templateUrl: "templates/assignEval.html",
+            controller: "AssignEvalCtrl"
         })
         .otherwise("/");
 }]);
