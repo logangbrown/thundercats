@@ -41,8 +41,7 @@
         $scope.loaded = true;
         $("#username").focus(); //Focus on the username field for quicker login
     };
-
-    //if (!$scope.$parent.user || $scope.$parent.user === '') {
+   
     usSpinnerService.spin('spinner');
     $http.get("/Home/CheckSession")
         .then(function (response) {
@@ -60,8 +59,4 @@
             $scope.$parent.loaded = true;
             $scope.load();
         });
-    //} else {
-    //    if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
-    //    else $location.path('/dashboard');
-    //}
 }]);

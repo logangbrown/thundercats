@@ -83,7 +83,6 @@
     }
 
     //Standard login check, if there is a user, load the page, if not, redirect to login
-    //if (!$scope.$parent.user || $scope.$parent.user === '') {
     usSpinnerService.spin('spinner');
     $http.get("/Home/CheckSession")
         .then(function (response) {
@@ -100,10 +99,4 @@
             toastr["error"]("Not logged in.");
             $location.path('/login');
         });
-    //} else if ($scope.$parent.user.type !== 'A' && $scope.$parent.user.userID !== Number($scope.userID)) {
-    //    toastr["error"]("Not Admin or the specified user.");
-    //    $location.path('/dashboard');
-    //} else {
-    //    $scope.load();
-    //}
 }]);

@@ -53,7 +53,6 @@
     };
 
     //Check if a user is logged in, if they are, redirect to appropriate page
-    //if (!$scope.$parent.user || $scope.$parent.user === '') {
     usSpinnerService.spin('spinner');
     $http.get("/Home/CheckSession")
         .then(function (response) {
@@ -70,9 +69,4 @@
             usSpinnerService.stop('spinner');
             $scope.load();
         });
-
-    //} else {
-    //    if ($scope.$parent.user.type === 'A' || $scope.$parent.user.type === 'I') $location.path('/courses');
-    //    else $location.path('/dashboard');
-    //}
 }]);
