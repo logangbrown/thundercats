@@ -101,6 +101,7 @@
         "outputFileName": "wwwroot/js/nonessentials.min.js",
         "inputFiles": [
             "wwwroot/js/assignEval.controller.js",
+            "wwwroot/js/viewEvals.controller.js",
             "wwwroot/js/group.controller.js",
             "wwwroot/js/course.controller.js",
             "wwwroot/js/courses.controller.js",
