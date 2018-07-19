@@ -263,3 +263,16 @@ nav a {
         top: 5px;
         color: #E74C3C;
     }
+
+    .sticky-column {
+        position: sticky;
+        left: 0px;
+        background-color: whitesmoke;
+    }
+
+    .response-text {
+        height: 100px;
+        width: 100%;
+        line-height: 1.2;
+        border:none;
+    }

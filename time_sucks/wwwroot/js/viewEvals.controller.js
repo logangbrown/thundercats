@@ -68,28 +68,28 @@
                                 evalTemplateQuestionID: 1,
                                 evalTemplatequestionCategoryID: 1,
                                 questionType: 'N',
-                                questionText: "Test question text, what do you think?",
+                                questionText: "Test question 1, what do you think?",
                                 number: 2
                             },
                             2: {
                                 evalTemplateQuestionID: 2,
                                 evalTemplatequestionCategoryID: 1,
                                 questionType: 'R',
-                                questionText: "Test question text, what do you think?",
+                                questionText: "Test question 2, what do you think?",
                                 number: 1
                             },
                             3: {
                                 evalTemplateQuestionID: 3,
                                 evalTemplatequestionCategoryID: 2,
                                 questionType: 'N',
-                                questionText: "Test question text, what do you think?",
+                                questionText: "Test question 3, what do you think?",
                                 number: 1
                             },
                             4: {
                                 evalTemplateQuestionID: 4,
                                 evalTemplatequestionCategoryID: 2,
                                 questionType: 'R',
-                                questionText: "Test question text, what do you think?",
+                                questionText: "Test question 4, what do you think?",
                                 number: 2
                             }
                         },
@@ -124,14 +124,14 @@
                                 evalResponseID: 3,
                                 evalID: 1,
                                 evalTemplateQuestionID: 2,
-                                response: "Hello!",
+                                response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
                                 userID: 2
                             },
                             4: {
                                 evalResponseID: 4,
                                 evalID: 2,
                                 evalTemplateQuestionID: 2,
-                                response: "World!",
+                                response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
                                 userID: 1
                             },
                             5: {
@@ -152,14 +152,14 @@
                                 evalResponseID: 7,
                                 evalID: 1,
                                 evalTemplateQuestionID: 4,
-                                response: "Hello!",
+                                response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
                                 userID: 2
                             },
                             8: {
                                 evalResponseID: 8,
                                 evalID: 2,
                                 evalTemplateQuestionID: 4,
-                                response: "World!",
+                                response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
                                 userID: 1
                             }
                         }
