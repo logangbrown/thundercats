@@ -770,7 +770,7 @@ namespace time_sucks.Models
             }
             return user;
         }
-        
+
         public static List<EvalResponses> EvalResponsesA(Evals evals)
 {
     List<EvalResponses> evalResponses = new List<EvalResponses>();
@@ -781,9 +781,9 @@ namespace time_sucks.Models
         {
             cmd.CommandText = "SELECT er.*, etqc.categoryName, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
             "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
-		    "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
+            "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
             "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-		    "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
+            "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
             "WHERE groupID = @groupID ORDER BY etqc.categoryName";
             cmd.Parameters.AddWithValue("@groupID", evals.groupID);
 
@@ -821,9 +821,9 @@ public static List<EvalResponses> EvalResponses(Evals evals)
         {
             cmd.CommandText = "SELECT er.*, etqc.categoryName, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
             "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
-		    "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
+            "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
             "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-		    "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
+            "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
             "WHERE groupID = @groupID ORDER BY etqc.categoryName";
             cmd.Parameters.AddWithValue("@groupID", evals.groupID);
 
@@ -1340,7 +1340,7 @@ public static List<EvalResponses> EvalResponses(Evals evals)
 
                         if(timecard.timeOut == null || timecard.timeOut == "") cmd.Parameters.AddWithValue("@timeOut", null);
                         else cmd.Parameters.AddWithValue("@timeOut", Convert.ToDateTime(timecard.timeOut));
-                        
+
                         if (timecard.description == null) cmd.Parameters.AddWithValue("@description", "");
                         else cmd.Parameters.AddWithValue("@description", timecard.description);
                         if (cmd.ExecuteNonQuery() > 0) return true;
