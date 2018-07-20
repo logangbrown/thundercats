@@ -771,83 +771,83 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static List<EvalResponses> EvalResponsesA(Evals evals)
-{
-    List<EvalResponses> evalResponses = new List<EvalResponses>();
-    using (var conn = new MySqlConnection(connstring.ToString()))
-    {
-        conn.Open();
-        using (MySqlCommand cmd = conn.CreateCommand())
-        {
-            cmd.CommandText = "SELECT er.*, etqc.categoryName, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
-            "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
-            "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
-            "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-            "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
-            "WHERE groupID = @groupID ORDER BY etqc.categoryName";
-            cmd.Parameters.AddWithValue("@groupID", evals.groupID);
+        //public static List<EvalResponses> EvalResponsesA(Evals evals)
+        //{
+        //    List<EvalResponses> evalResponses = new List<EvalResponses>();
+        //    using (var conn = new MySqlConnection(connstring.ToString()))
+        //    {
+        //        conn.Open();
+        //        using (MySqlCommand cmd = conn.CreateCommand())
+        //        {
+        //            cmd.CommandText = "SELECT er.*, etqc.categoryName, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
+        //            "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
+        //            "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
+        //            "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
+        //            "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
+        //            "WHERE groupID = @groupID ORDER BY etqc.categoryName";
+        //            cmd.Parameters.AddWithValue("@groupID", evals.groupID);
 
-            using (MySqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    evalResponses.Add(new EvalResponses()
-                    {
-                        userID = reader.GetInt32("er.userID");
-                        evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID");
-                        evalID = reader.GetInt32("er.evalID");
-                        firstName = reader.GetString("u.firstName");
-                        lastName = reader.GetString("u.lastName");
-                        response = reader.GetString("er.response");
-                        evalNumber = reader.GetInt32("evalNumber");
-                        questionNumber = reader.GetInt32("questionNumber");
-                        questionText = reader.GetString("etq.questionText");
-                        categoryName = reader.GetString("etqc.categoryName");
-                    });
-                }
-            }
-        }
-    }
-    return evalResponses;
-}
+        //            using (MySqlDataReader reader = cmd.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    evalResponses.Add(new EvalResponses()
+        //                    {
+        //                        userID = reader.GetInt32("er.userID");
+        //                        evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID");
+        //                        evalID = reader.GetInt32("er.evalID");
+        //                        firstName = reader.GetString("u.firstName");
+        //                        lastName = reader.GetString("u.lastName");
+        //                        response = reader.GetString("er.response");
+        //                        evalNumber = reader.GetInt32("evalNumber");
+        //                        questionNumber = reader.GetInt32("questionNumber");
+        //                        questionText = reader.GetString("etq.questionText");
+        //                        categoryName = reader.GetString("etqc.categoryName");
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return evalResponses;
+        //}
 
-public static List<EvalResponses> EvalResponses(Evals evals)
-{
-    List<EvalResponses> evalResponses = new List<EvalResponses>();
-    using (var conn = new MySqlConnection(connstring.ToString()))
-    {
-        conn.Open();
-        using (MySqlCommand cmd = conn.CreateCommand())
-        {
-            cmd.CommandText = "SELECT er.*, etqc.categoryName, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
-            "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
-            "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
-            "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-            "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
-            "WHERE groupID = @groupID ORDER BY etqc.categoryName";
-            cmd.Parameters.AddWithValue("@groupID", evals.groupID);
+        //public static List<EvalResponses> EvalResponses(Evals evals)
+        //{
+        //    List<EvalResponses> evalResponses = new List<EvalResponses>();
+        //    using (var conn = new MySqlConnection(connstring.ToString()))
+        //    {
+        //        conn.Open();
+        //        using (MySqlCommand cmd = conn.CreateCommand())
+        //        {
+        //            cmd.CommandText = "SELECT er.*, etqc.categoryName, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
+        //            "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
+        //            "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
+        //            "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
+        //            "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
+        //            "WHERE groupID = @groupID ORDER BY etqc.categoryName";
+        //            cmd.Parameters.AddWithValue("@groupID", evals.groupID);
 
-            using (MySqlDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    evalResponses.Add(new EvalResponses()
-                    {
-                        userID = reader.GetInt32("er.userID");
-                        evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID");
-                        evalID = reader.GetInt32("er.evalID");
-                        response = reader.GetString("er.response");
-                        evalNumber = reader.GetInt32("evalNumber");
-                        questionNumber = reader.GetInt32("questionNumber");
-                        questionText = reader.GetString("etq.questionText");
-                        categoryName = reader.GetString("etqc.categoryName");
-                    });
-                }
-            }
-        }
-    }
-    return evalResponses;
-}
+        //            using (MySqlDataReader reader = cmd.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    evalResponses.Add(new EvalResponses()
+        //                    {
+        //                        userID = reader.GetInt32("er.userID");
+        //                        evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID");
+        //                        evalID = reader.GetInt32("er.evalID");
+        //                        response = reader.GetString("er.response");
+        //                        evalNumber = reader.GetInt32("evalNumber");
+        //                        questionNumber = reader.GetInt32("questionNumber");
+        //                        questionText = reader.GetString("etq.questionText");
+        //                        categoryName = reader.GetString("etqc.categoryName");
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return evalResponses;
+        //}
 
         public static User GetUser(string username, string password)
         {
