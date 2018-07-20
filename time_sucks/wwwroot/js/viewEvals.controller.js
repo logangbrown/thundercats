@@ -1,5 +1,7 @@
 ﻿angular.module('time').controller('ViewEvalsCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
     $scope.loaded = false;
+    $scope.config = {};
+    $scope.currentEval = 0;
     $scope.group = {};
     $scope.group.users = {};
     $scope.group.evaulations = {};

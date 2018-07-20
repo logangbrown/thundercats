@@ -3,9 +3,9 @@
 
     <div class="input-group mb-3">
         <div class="input-group-prepend">
-            <label class="input-group-text" for="inputGroupSelect01">Student</label>
+            <label class="input-group-text" for="student">Student</label>
         </div>
-        <select class="custom-select" id="inputGroupSelect01">
+        <select class="custom-select" id="student">
             <option value="1" selected>Logan Brown</option>
             <option value="2">Tashi Aguilar</option>
             <option value="3">Steven Bate</option>
@@ -13,7 +13,16 @@
         </select>
     </div>
 
-    <div class="row mt-4 table-responsive">
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="evaluation">Evaluation</label>
+        </div>
+        <select class="custom-select" id="evaluation" ng-model="config.currentEval">
+            <option ng-repeat="e in group.evaluations" value="{{e.evalID}}">Evaluation {{e.number}}</option>
+        </select>
+    </div>
+
+    <div class="mt-4 table-responsive">
 
         <table ng-repeat="e in group.evaluations" class="table table-condensed">
             <thead class="thead-light">
