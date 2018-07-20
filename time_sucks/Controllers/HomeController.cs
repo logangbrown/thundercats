@@ -373,8 +373,8 @@ namespace time_sucks.Controllers
         public IActionResult EvalResponses([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            Evals evals = JsonConvert.DeserializeObject<Evals>(JsonString);
-            if (IsAdmin() || IsInstructorForCourse(evals.courseID))
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+            if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
             {
                 if (List<evalResponses> evalsResp = DBHelper.EvalResponsesA(evals)) return (evalsResp)
                 return StatusCode(500);
