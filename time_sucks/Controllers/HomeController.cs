@@ -368,6 +368,25 @@ namespace time_sucks.Controllers
             return Unauthorized();
         }
 
+
+        [HttpPost]
+        public IActionResult EvalResponses([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Evals evals = JsonConvert.DeserializeObject<Evals>(JsonString);
+            if (IsAdmin() || IsInstructorForCourse(evals.courseID))
+            {
+                if (List<evalResponses> evalsResp = DBHelper.EvalResponsesA(evals)) return (evalsResp)
+                return StatusCode(500);
+            }
+            if (evals.userID == GetUserID())
+            {
+                if (List<EvalResponses> evalsResp = DBHelper.EvalResponses(evals)) return (evalsResp)
+                return StatusCode(500);
+
+            }
+            return Unauthorized();
+        }
         /// <summary>
         /// Creates a TimeCard and returns the timeSlotID
         /// </summary>
