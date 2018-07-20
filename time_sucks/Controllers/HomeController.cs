@@ -369,24 +369,6 @@ namespace time_sucks.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult EvalResponses([FromBody]Object json)
-        {
-            String JsonString = json.ToString();
-            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
-            if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
-            {
-                if (List<evalResponses> evalsResp = DBHelper.EvalResponsesA(evals)) return (evalsResp)
-                return StatusCode(500);
-            }
-            if (evals.userID == GetUserID())
-            {
-                if (List<EvalResponses> evalsResp = DBHelper.EvalResponses(evals)) return (evalsResp)
-                return StatusCode(500);
-
-            }
-            return Unauthorized();
-        }
         /// <summary>
         /// Creates a TimeCard and returns the timeSlotID
         /// </summary>
@@ -454,6 +436,25 @@ namespace time_sucks.Controllers
 
             return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
         }
+
+        //[HttpPost]
+        //public IActionResult EvalResponses([FromBody]Object json)
+        //{
+        //    String JsonString = json.ToString();
+        //    Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+        //    if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
+        //    {
+        //        if (List<evalResponses> evalsResp = DBHelper.EvalResponsesA(evals)) return (evalsResp)
+        //        return StatusCode(500);
+        //    }
+        //    if (evals.userID == GetUserID())
+        //    {
+        //        if (List<EvalResponses> evalsResp = DBHelper.EvalResponses(evals)) return (evalsResp)
+        //        return StatusCode(500);
+
+        //    }
+        //    return Unauthorized();
+        //}
 
         /// <summary>
         /// Get a course and its projects and users
@@ -655,7 +656,7 @@ namespace time_sucks.Controllers
                     if (groupID > 0) return Ok(groupID);
                     return StatusCode(500); //Query failed
                 }
-                
+
             }
 
             return Unauthorized(); //User not in Course
