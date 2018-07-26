@@ -1389,5 +1389,44 @@ namespace time_sucks.Models
             }
             return isInCourse;
         }
+
+        public static List<Project> GetProjects(Project project)
+        {
+
+            List<Project> projects = new List<Project>();
+            int courseID = project.CourseID;
+            int projectID = project.projectID;
+
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT * FROM projects WHERE courseID = @courseID";
+                    cmd.Parameters.AddWithValue("@courseID", courseID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            project.projectID = reader.GetInt32("projectID");
+
+                            Project tempProject = GetProject(projectID);
+
+                            projects.Add(tempProject);
+
+
+
+                        }
+                    }
+                }
+            }
+            return projects;
+
+        }
+
+        
     }
 }

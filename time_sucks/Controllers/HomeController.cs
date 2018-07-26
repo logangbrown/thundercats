@@ -856,6 +856,26 @@ namespace time_sucks.Controllers
 
 
         }
+
+        [HttpPost]
+        public IActionResult GetProjects([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+
+           List<Project> projects = DBHelper.GetProjects(project);
+           return Ok(projects);
+        }
+
+        [HttpPost]
+        public IActionResult GetTemplateQuestions([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            
+        }
+
+
         #endregion
     }
 }

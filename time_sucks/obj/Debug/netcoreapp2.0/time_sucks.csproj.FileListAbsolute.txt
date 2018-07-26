@@ -36,7 +36,6 @@ C:\Users\netasha\Documents\GitHub\timecats\time_sucks\bin\Debug\netcoreapp2.0\ti
 C:\Users\netasha\Documents\GitHub\timecats\time_sucks\bin\Debug\netcoreapp2.0\time_sucks.runtimeconfig.dev.json
 C:\Users\netasha\Documents\GitHub\timecats\time_sucks\bin\Debug\netcoreapp2.0\time_sucks.dll
 C:\Users\netasha\Documents\GitHub\timecats\time_sucks\bin\Debug\netcoreapp2.0\time_sucks.pdb
-C:\Users\netasha\Documents\GitHub\timecats\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.csprojAssemblyReference.cache
 C:\Users\netasha\Documents\GitHub\timecats\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.csproj.CoreCompileInputs.cache
 C:\Users\netasha\Documents\GitHub\timecats\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.AssemblyInfoInputs.cache
 C:\Users\netasha\Documents\GitHub\timecats\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.AssemblyInfo.cs
@@ -53,3 +52,4 @@ C:\Users\loganb\Documents\GitHub\timecats\time_sucks\obj\Debug\netcoreapp2.0\tim
 C:\Users\loganb\Documents\GitHub\timecats\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.dll
 C:\Users\loganb\Documents\GitHub\timecats\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.pdb
 C:\Users\loganb\Documents\GitHub\timecats\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.csprojResolveAssemblyReference.cache
+C:\Users\netasha\Documents\GitHub\timecats\time_sucks\obj\Debug\netcoreapp2.0\time_sucks.csprojAssemblyReference.cache
