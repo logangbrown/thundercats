@@ -50,6 +50,14 @@ app.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "templates/viewEvals.html",
             controller: "ViewEvalsCtrl"
         })
+        .when("/eval/:ID", {
+            templateUrl: "templates/eval.html",
+            controller: "EvalCtrl"
+        })
+        .when("/manageEvals/:ID", {
+            templateUrl: "templates/manageEvals.html",
+            controller: "ManageEvalsCtrl"
+        })
         .otherwise("/");
 }]);
 
