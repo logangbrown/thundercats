@@ -263,18 +263,18 @@ namespace time_sucks.Controllers
             }
             return Unauthorized();
         }
-        
+
         [HttpPost]
         public IActionResult CreateTemplateQuestion([FromBody]Object json)
         {
             string JsonString = json.ToString();
             EvalTemplateQuestionCategory evalTemplateQuestionCategory = JsonConvert.DeserializeObject<EvalTemplateQuestionCategory>(JsonString);
             int evalTemplateID = evalTemplateQuestionCategory.evalTemplateID;
-            int evalTemplateQuestionCategoryID = EvalTemplateQuestionCategory.EvalTemplateQuestionCategoryID;
+            int evalTemplateQuestionCategoryID = evalTemplateQuestionCategory.evalTemplateQuestionCategoryID;
 
             if (GetUserType() == 'I' || IsAdmin())
             {
-                if (DBHelper.CreateCategory(evalTemplateQuestionCategoryID, evalTemplateID)) return Ok();
+                if (DBHelper.CreateTemplateQuestion(evalTemplateQuestionCategoryID, evalTemplateID)) return Ok();
                 return StatusCode(500);
             }
             return Unauthorized();
@@ -470,18 +470,18 @@ namespace time_sucks.Controllers
         }
 
         //[HttpPost]
-        //public IActionResult EvalResponses([FromBody]Object json)
+        //public IActionResult EvalResponse([FromBody]Object json)
         //{
         //    String JsonString = json.ToString();
         //    Group group = JsonConvert.DeserializeObject<Group>(JsonString);
         //    if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
         //    {
-        //        if (List<evalResponses> evalsResp = DBHelper.EvalResponsesA(evals)) return (evalsResp)
+        //        if (List<evalResponse> evalsResp = DBHelper.EvalResponseA(evals)) return (evalsResp)
         //        return StatusCode(500);
         //    }
         //    if (evals.userID == GetUserID())
         //    {
-        //        if (List<EvalResponses> evalsResp = DBHelper.EvalResponses(evals)) return (evalsResp)
+        //        if (List<EvalResponse> evalsResp = DBHelper.EvalResponse(evals)) return (evalsResp)
         //        return StatusCode(500);
 
         //    }

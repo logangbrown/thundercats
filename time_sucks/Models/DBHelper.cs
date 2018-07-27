@@ -664,7 +664,7 @@ namespace time_sucks.Models
             }
             return group;
         }
-        
+
         public static bool CreateCategory(int evalTemplateID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -709,7 +709,7 @@ namespace time_sucks.Models
             }
             return instructorID;
         }
-        
+
         public static bool CreateTemplateQuestion(int evalTemplateQuestionCategoryID, int evalTemplateID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -809,9 +809,9 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static List<EvalResponses> EvalResponsesA(Evals evals)
+        public static List<EvalResponse> EvalResponsesA(Evals evals)
         {
-            List<EvalResponses> evalResponses = new List<EvalResponses>();
+            List<EvalResponse> evalResponse = new List<EvalResponse>();
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -829,7 +829,7 @@ namespace time_sucks.Models
                     {
                         while (reader.Read())
                         {
-                            evalResponses.Add(new EvalResponses()
+                            evalResponse.Add(new EvalResponse()
                             {
                                 userID = reader.GetInt32("er.userID"),
                                 evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID"),
@@ -846,12 +846,12 @@ namespace time_sucks.Models
                     }
                 }
             }
-            return evalResponses;
+            return evalResponse;
         }
 
-        public static List<EvalResponses> EvalResponses(Evals evals)
+        public static List<EvalResponse> EvalResponses(Evals evals)
         {
-            List<EvalResponses> evalResponses = new List<EvalResponses>();
+            List<EvalResponse> evalResponse = new List<EvalResponse>();
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -869,7 +869,7 @@ namespace time_sucks.Models
                     {
                         while (reader.Read())
                         {
-                            evalResponses.Add(new EvalResponses()
+                            evalResponse.Add(new EvalResponse()
                             {
                                 userID = reader.GetInt32("er.userID"),
                             evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID"),
@@ -880,11 +880,11 @@ namespace time_sucks.Models
                             questionText = reader.GetString("etq.questionText"),
                             categoryName = reader.GetString("etqc.categoryName")
                             });
-                        }   
+                        }
                     }
                 }
             }
-            return evalResponses;
+            return evalResponse;
         }
 
         public static User GetUser(string username, string password)
