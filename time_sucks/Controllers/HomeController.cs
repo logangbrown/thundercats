@@ -263,6 +263,22 @@ namespace time_sucks.Controllers
             }
             return Unauthorized();
         }
+        
+        [HttpPost]
+        public IActionResult CreateTemplateQuestion([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            EvalTemplateQuestionCategory evalTemplateQuestionCategory = JsonConvert.DeserializeObject<EvalTemplateQuestionCategory>(JsonString);
+            int evalTemplateID = evalTemplateQuestionCategory.evalTemplateID;
+            int evalTemplateQuestionCategoryID = EvalTemplateQuestionCategory.EvalTemplateQuestionCategoryID;
+
+            if (GetUserType() == 'I' || IsAdmin())
+            {
+                if (DBHelper.CreateCategory(evalTemplateQuestionCategoryID, evalTemplateID)) return Ok();
+                return StatusCode(500);
+            }
+            return Unauthorized();
+        }
 
         [HttpPost]
         public IActionResult ChangePassword([FromBody]Object json)
@@ -316,6 +332,22 @@ namespace time_sucks.Controllers
                 return StatusCode(500); //Query failed
             }
             return Unauthorized(); //Not an Admin or the current user, Unauthorized (401)
+        }
+
+
+        [HttpPost]
+        public IActionResult CreateCategory([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            EvalTemplate evalTemplate = JsonConvert.DeserializeObject<EvalTemplate>(JsonString);
+            int helper = evalTemplate.evalTemplateID;
+
+            if (GetUserType() == 'I' || IsAdmin())
+            {
+                if (DBHelper.CreateCategory(helper)) return Ok();
+                return StatusCode(500);
+            }
+            return Unauthorized();
         }
 
         /// <summary>
