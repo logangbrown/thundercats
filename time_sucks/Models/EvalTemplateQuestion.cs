@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace time_sucks.Models
 {
-    public class EvalTemplateQuestions
+    public class EvalTemplateQuestion
     {
         public int evalTemplateQuestionID { get; set; }
         public int evalTemplateID { get; set; }

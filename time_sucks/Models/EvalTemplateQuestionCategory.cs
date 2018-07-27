@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace time_sucks.Models
 {
-    public class EvalTemplateQuestionCategories
+    public class EvalTemplateQuestionCategory
     {
-        public int evalTemplateQuestionID { get; set; }
+        public int evalTemplateQuestionCategoryID { get; set; }
         public int evalTemplateID { get; set; }
         public string categoryName { get; set; }
     }
