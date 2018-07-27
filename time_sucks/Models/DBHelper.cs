@@ -710,6 +710,30 @@ namespace time_sucks.Models
             return instructorID;
         }
 
+        public static int GetInstructorForEval(int evalTemplateID)
+        {
+            int instructorID = 0;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT userID FROM evalTemplates WHERE evalTemplateID = @evalTemplateID";
+                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            instructorID = reader.GetInt32("userID");
+                        }
+                    }
+                }
+            }
+            return instructorID;
+        }
+
         public static bool CreateTemplateQuestion(int evalTemplateQuestionCategoryID, int evalTemplateID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -1328,6 +1352,67 @@ namespace time_sucks.Models
                     cmd.Parameters.AddWithValue("@isActive", project.isActive);
                     cmd.Parameters.AddWithValue("@description", project.description);
                     cmd.Parameters.AddWithValue("@projectID", project.projectID);
+
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+
+        public static bool SaveCategory(EvalTemplateQuestionCategory category)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    // SQL and Parameters
+                    cmd.CommandText = "UPDATE evalTemplateQuestionCategories SET evalTemplateID = @evalTemplateID, " +
+                                      "categoryName = @categoryName WHERE evalTemplateQuestionCategoriesID = @evalTemplateQuestionCategoriesID";
+                    cmd.Parameters.AddWithValue("@evalTemplateID", category.evalTemplateID);
+                    cmd.Parameters.AddWithValue("@categoryName", category.categoryName);
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoriesID", category.evalTemplateQuestionCategoryID);
+
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+
+        public static bool SaveQuestion(EvalTemplateQuestion question)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    // SQL and Parameters
+                    cmd.CommandText = "UPDATE evalTemplateQuestions SET evalTemplateID = @evalTemplateID, " +
+                                      "evalTemplateQuestionCategoriesID = @evalTemplateQuestionCategoriesID, " +
+                                      "number = @number, questionType = @questionType, " +
+                                      "questionText = @questionText WHERE evalTemplateQuestionID = @evalTemplateQuestionID";
+                    cmd.Parameters.AddWithValue("@evalTemplateID", question.evalTemplateID);
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoriesID", question.evalTemplateQuestionCategoryID);
+                    cmd.Parameters.AddWithValue("@number", question.number);
+                    cmd.Parameters.AddWithValue("@questionType", question.questionType);
+                    cmd.Parameters.AddWithValue("@questionText", question.questionText);
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionID", question.evalTemplateQuestionID);
+
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+
+        public static bool DeleteQuestion(int evalTemplateQuestionID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM evalTemplateQuestions WHERE evalTemplateQuestionID = @evalTemplateQuestionID";
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionID", evalTemplateQuestionID);
 
                     if (cmd.ExecuteNonQuery() > 0) return true;
                     return false;

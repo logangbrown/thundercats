@@ -118,6 +118,22 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Returns true if the logged in user is the instructor for the passed evalTemplateID
+        /// </summary>
+        /// <returns></returns>
+        public bool IsInstructorForEval(int evalTemplateID)
+        {
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+
+            if (user != null)
+            {
+                return user.userID == DBHelper.GetInstructorForEval(evalTemplateID);
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Returns true if the logged in user is a student for the passed courseID
         /// </summary>
         /// <returns></returns>
@@ -810,6 +826,7 @@ namespace time_sucks.Controllers
 
             return Ok();
         }
+
         /// <summary>
         /// Updates a Course name
         /// </summary>
@@ -870,6 +887,66 @@ namespace time_sucks.Controllers
                 return StatusCode(500); // Query failed
             }
             return Unauthorized(); // Not an Admin or the Instructor for the course, Unauthorized (401)
+        }
+
+
+        /// <summary>
+        /// Updates a Category
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult SaveCategory([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            EvalTemplateQuestionCategory category = JsonConvert.DeserializeObject<EvalTemplateQuestionCategory>(JsonString);
+
+            if (IsAdmin() || IsInstructorForEval(category.evalTemplateID))
+            {
+                if (DBHelper.SaveCategory(category)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
+        }
+
+        /// <summary>
+        /// Updates a Question
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult SaveQuestion([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            EvalTemplateQuestion question = JsonConvert.DeserializeObject<EvalTemplateQuestion>(JsonString);
+
+            if (IsAdmin() || IsInstructorForEval(question.evalTemplateID))
+            {
+                if (DBHelper.SaveQuestion(question)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+            return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
+        }
+
+        /// <summary>
+        /// Delete a Question
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult DeleteQuestion([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            EvalTemplateQuestion question = JsonConvert.DeserializeObject<EvalTemplateQuestion>(JsonString);
+            if (IsAdmin() || IsInstructorForEval(question.evalTemplateID))
+            {
+                if (DBHelper.DeleteQuestion(question.evalTemplateQuestionID)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+
+            return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
         }
 
         [HttpPost]
