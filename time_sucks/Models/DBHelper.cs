@@ -709,6 +709,26 @@ namespace time_sucks.Models
             }
             return instructorID;
         }
+        
+        public static bool CreateTemplateQuestion(int evalTemplateQuestionCategoryID, int evalTemplateID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO evalTemplateQuestions (evalTemplateID, evalTemplateQuestionCategoryID, questionType, questionText, number) " +
+                        "VALUES (@evalTemplateID, @evalTemplateQuestionCategoryID, 'R', 'This is a test question', 0)";
+                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", evalTemplateQuestionCategoryID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
 
         public static List<Dashboard> GetDashboard(int userID)
         {
