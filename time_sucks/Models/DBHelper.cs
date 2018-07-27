@@ -664,6 +664,25 @@ namespace time_sucks.Models
             }
             return group;
         }
+        
+        public static bool CreateCategory(int evalTemplateID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO evalTemplateQuestionCategories (evalTemplateID, categoryName) " +
+                        "VALUES (@evalTemplateID, 'temp')";
+                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
 
         public static int GetInstructorForCourse(int courseID)
         {
