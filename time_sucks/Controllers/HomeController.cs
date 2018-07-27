@@ -263,6 +263,22 @@ namespace time_sucks.Controllers
             }
             return Unauthorized();
         }
+        
+        [HttpPost]
+        public IActionResult CreateTemplateQuestion([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            EvalTemplateQuestionCategory evalTemplateQuestionCategory = JsonConvert.DeserializeObject<EvalTemplateQuestionCategory>(JsonString);
+            int evalTemplateID = evalTemplateQuestionCategory.evalTemplateID;
+            int evalTemplateQuestionCategoryID = EvalTemplateQuestionCategory.EvalTemplateQuestionCategoryID;
+
+            if (GetUserType() == 'I' || IsAdmin())
+            {
+                if (DBHelper.CreateCategory(evalTemplateQuestionCategoryID, evalTemplateID)) return Ok();
+                return StatusCode(500);
+            }
+            return Unauthorized();
+        }
 
         [HttpPost]
         public IActionResult ChangePassword([FromBody]Object json)
