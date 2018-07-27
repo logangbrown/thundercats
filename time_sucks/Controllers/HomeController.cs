@@ -318,6 +318,22 @@ namespace time_sucks.Controllers
             return Unauthorized(); //Not an Admin or the current user, Unauthorized (401)
         }
 
+
+        [HttpPost]
+        public IActionResult CreateCategory([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            EvalTemplate evalTemplate = JsonConvert.DeserializeObject<EvalTemplate>(JsonString);
+            int helper = evalTemplate.evalTemplateID;
+
+            if (GetUserType() == 'I' || IsAdmin())
+            {
+                if (DBHelper.CreateCategory(helper)) return Ok();
+                return StatusCode(500);
+            }
+            return Unauthorized();
+        }
+
         /// <summary>
         /// Returns the logged in user if there is one.
         /// </summary>
