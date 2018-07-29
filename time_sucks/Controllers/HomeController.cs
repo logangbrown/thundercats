@@ -862,17 +862,37 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
 
-            Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-           List<Project> projects = DBHelper.GetProjects(project);
-           return Ok(projects);
+           List<Project> projects = DBHelper.GetProjects(course.courseID);
+
+            if (projects.Count > 0) return Ok(projects);
+            return NoContent();
         }
 
         [HttpPost]
-        public IActionResult GetTemplateQuestions([FromBody]Object json)
+        public IActionResult GetTemplates([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            
+
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+            List<EvalTemplates> templates = DBHelper.GetTemplates(course.instructorID);
+
+            if (templates.Count > 0) return Ok(templates);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public IActionResult GetGroups([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+
+            List<int> projectIDs = new List<int>();
+
+            //not sure how to get evalTemplateID
         }
 
 

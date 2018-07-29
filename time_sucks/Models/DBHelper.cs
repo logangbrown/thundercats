@@ -1380,13 +1380,11 @@ namespace time_sucks.Models
             return isInCourse;
         }
 
-        public static List<Project> GetProjects(Project project)
+        public static List<Project> GetProjects(int courseID)
         {
 
             List<Project> projects = new List<Project>();
-            int courseID = project.CourseID;
-            int projectID = project.projectID;
-
+           
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -1401,14 +1399,14 @@ namespace time_sucks.Models
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
-                            project.projectID = reader.GetInt32("projectID");
 
-                            Project tempProject = GetProject(projectID);
+                            projects.Add(new Project()
+                            {
+                                projectID = reader.GetInt32("projectID"),
+                                projectName = reader.GetString("projectName")
 
-                            projects.Add(tempProject);
-
-
-
+                            });
+                           
                         }
                     }
                 }
@@ -1417,6 +1415,110 @@ namespace time_sucks.Models
 
         }
 
-        
+        public static List<EvalTemplates> GetTemplates(int instructorID)
+        {
+            List<EvalTemplates> templates = new List<EvalTemplates>();
+
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Select * From evalTemplates e Where e.userID = @userID ";
+                       
+                    cmd.Parameters.AddWithValue("@userID", instructorID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            templates.Add(new EvalTemplates()
+                            {
+                                evalTemplateID = reader.GetInt32("evalTemplateID"),
+                                templateName = reader.GetString("templateName"),
+                                inUse = reader.GetBoolean("inUse"),
+                                userID = reader.GetInt32("userID"),
+                            });
+                        }
+                    }
+                }
+            }
+            return templates;
+        }
+
+
+        public static List<int> GetGroups(List<int> projectIDs)
+        {
+            foreach (int projectID in projectIDs)
+            {
+                Group tempGroup = new Group();
+
+                using (var conn = new MySqlConnection(connstring.ToString()))
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = conn.CreateCommand())
+                    {
+                        //SQL and Parameters
+                        cmd.CommandText = "Select * From groups g Inner Join uGroups ug On g.groupID = ug.groupID " +
+                            "Inner Join users u On ug.userID = u.userID Where projectID = @projectID ";
+
+                        cmd.Parameters.AddWithValue("@projectID", projectID);
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            List<User> users = new List<User>();
+
+                            //Runs once per record retrieved
+                            while (reader.Read())
+                            {
+                                tempGroup.groupID = reader.GetInt32("groupID"); 
+
+                                tempGroup = GetGroup(tempGroup.groupID); //get all the users in group
+
+                                AssignEvals(tempGroup);
+                                
+
+                               
+                            }
+                        }
+                    }
+                }
+            } //end foreach
+
+        }
+
+        public static long AssignEvals(Group group)
+        {
+            foreach (User user in group.users)
+            {
+                int userID = user.userID;
+                int groupID = group.groupID;
+
+
+                using (var conn = new MySqlConnection(connstring.ToString()))
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = conn.CreateCommand())
+                    {
+                        //SQL and Parameters
+                        cmd.CommandText = "INSERT INTO evals (evalTemplateID, groupID, userID, number, isComplete) " +
+                        "VALUES (@evalTemplateID, @groupID, @userID, @number, 0) ";
+
+                       // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                        cmd.Parameters.AddWithValue("@groupID", groupID);
+                        cmd.Parameters.AddWithValue("@userID", userID);
+
+                        //Return the last inserted ID if successful
+                        if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+
+                        return 0;
+
+
+                    }
+                }
+            }
+        }
     }
 }

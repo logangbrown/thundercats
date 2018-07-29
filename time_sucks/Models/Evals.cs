@@ -13,6 +13,6 @@ namespace time_sucks.Models
         public int userID { get; set; }
 
         public int number { get; set; }
-        public  bool isComplete { get; set; }
+        public bool isComplete { get; set; }
     }
 }
