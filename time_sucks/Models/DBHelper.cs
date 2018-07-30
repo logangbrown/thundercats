@@ -1449,8 +1449,9 @@ namespace time_sucks.Models
         }
 
 
-        public static List<int> GetGroups(List<int> projectIDs)
+        public static bool AssignEvals(List<int> projectIDs)
         {
+            int temp = 0;
             foreach (int projectID in projectIDs)
             {
                 Group tempGroup = new Group();
@@ -1468,7 +1469,6 @@ namespace time_sucks.Models
 
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            List<User> users = new List<User>();
 
                             //Runs once per record retrieved
                             while (reader.Read())
@@ -1477,25 +1477,24 @@ namespace time_sucks.Models
 
                                 tempGroup = GetGroup(tempGroup.groupID); //get all the users in group
 
-                                AssignEvals(tempGroup);
-                                
+                                if (AssignEvalsForGroup(tempGroup))
+                                    temp++;
 
-                               
                             }
                         }
                     }
                 }
             } //end foreach
-
+            return (temp > 0);
         }
 
-        public static long AssignEvals(Group group)
+        public static bool AssignEvalsForGroup(Group group)
         {
+            int temp = 0;
             foreach (User user in group.users)
             {
                 int userID = user.userID;
                 int groupID = group.groupID;
-
 
                 using (var conn = new MySqlConnection(connstring.ToString()))
                 {
@@ -1511,14 +1510,12 @@ namespace time_sucks.Models
                         cmd.Parameters.AddWithValue("@userID", userID);
 
                         //Return the last inserted ID if successful
-                        if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
-
-                        return 0;
-
-
+                        if (cmd.ExecuteNonQuery() > 0)  temp++;
                     }
                 }
             }
+            return (temp > 0) ;
+                 
         }
     }
 }

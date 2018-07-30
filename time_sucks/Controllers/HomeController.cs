@@ -884,15 +884,20 @@ namespace time_sucks.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetGroups([FromBody]Object json)
+        public IActionResult AssignEvals([FromBody]Object json)
         {
             String JsonString = json.ToString();
 
-            Project project = JsonConvert.DeserializeObject<Project>(JsonString);
+            Project project = JsonConvert.DeserializeObject<Project>(JsonString); //don't know how getting multiple project ids??
 
             List<int> projectIDs = new List<int>();
 
-            //not sure how to get evalTemplateID
+            //not sure how to get evalTemplateID???
+            projectIDs.Add(project.projectID);
+
+            if (DBHelper.AssignEvals(projectIDs)) return Ok();
+            return StatusCode(500);
+
         }
 
 
