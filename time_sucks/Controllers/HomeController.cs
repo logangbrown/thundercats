@@ -986,7 +986,7 @@ namespace time_sucks.Controllers
 
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-            List<EvalTemplates> templates = DBHelper.GetTemplates(course.instructorID);
+            List<EvalTemplate> templates = DBHelper.GetTemplates(course.instructorID);
 
             if (templates.Count > 0) return Ok(templates);
             return NoContent();

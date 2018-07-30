@@ -1539,9 +1539,9 @@ namespace time_sucks.Models
 
         }
 
-        public static List<EvalTemplates> GetTemplates(int instructorID)
+        public static List<EvalTemplate> GetTemplates(int instructorID)
         {
-            List<EvalTemplates> templates = new List<EvalTemplates>();
+            List<EvalTemplate> templates = new List<EvalTemplate>();
 
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -1558,7 +1558,7 @@ namespace time_sucks.Models
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
-                            templates.Add(new EvalTemplates()
+                            templates.Add(new EvalTemplate()
                             {
                                 evalTemplateID = reader.GetInt32("evalTemplateID"),
                                 templateName = reader.GetString("templateName"),
