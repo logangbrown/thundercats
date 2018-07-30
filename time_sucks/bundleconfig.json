@@ -12,75 +12,9 @@
         ]
     },
     {
-        "outputFileName": "wwwroot/js/group.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/group.controller.js"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/course.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/course.controller.js"
-        ]
-    },
-    {
         "outputFileName": "wwwroot/lib/angular-spinner/spin.min.css",
         "inputFiles": [
             "wwwroot/lib/angular-spinner/spin.css"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/app.min.js",
-        "inputFiles": [
-            "wwwroot/js/app.js"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/courses.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/courses.controller.js"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/dashboard.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/dashboard.controller.js"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/login.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/login.controller.js"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/master.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/master.controller.js"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/project.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/project.controller.js"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/register.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/register.controller.js"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/user.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/user.controller.js"
-        ]
-    },
-    {
-        "outputFileName": "wwwroot/js/users.controller.min.js",
-        "inputFiles": [
-            "wwwroot/js/users.controller.js"
         ]
     },
     {

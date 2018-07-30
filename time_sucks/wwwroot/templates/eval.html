@@ -2,24 +2,22 @@
     <h3 class="mt-3">Complete Evaluation</h3>
 
     <div class="mt-4 table-responsive">
-        <table ng-repeat="e in group.evaluations" class="table table-condensed">
+        <table class="table table-condensed">
             <thead class="thead-light">
                 <tr>
                     <th class="sticky-column" style="width: 225px; min-width: 150px;">Evaluation {{e.number}}</th>
-                    <th style="min-width: 150px;" ng-repeat="ev in e.evals">{{ev.firstName}} {{ev.lastName}}</th>
+                    <th style="min-width: 150px;" ng-repeat="u in users">{{u.firstName}} {{u.lastName}}</th>
                 </tr>
             </thead>
-            <tbody ng-repeat="c in e.categories">
+            <tbody ng-repeat="c in evaluation.categories">
                 <tr>
                     <th class="sticky-column">{{c.categoryName}}</th>
-                    <td ng-repeat="ev in e.evals">
-                        Category Total
-                    </td>
+                    <td ng-repeat="u in users"></td>
                 </tr>
-                <tr ng-repeat="tq in e.templateQuestions | orderObjectBy : 'number' | filter: {evalTemplateQuestionCategoryID: c.evalTemplateQuestionCategoryID}">
+                <tr ng-repeat="tq in evaluation.templateQuestions | orderObjectBy : 'number' | filter: {evalTemplateQuestionCategoryID: c.evalTemplateQuestionCategoryID}">
                     <td class="pl-3 sticky-column">{{tq.questionText}}</td>
-                    <td class="p-0" ng-repeat="ev in e.evals">
-                        <textarea class="response-text">{{getResponse(e.evalID, ev.evalID, tq.evalTemplateQuestionID)}}</textarea>
+                    <td class="p-0" ng-repeat="u in users">
+                        <textarea class="response-text" ng-model="getResponse(tq.evalTemplateQuestionID, u.userID).response"></textarea>
                     </td>
                 </tr>
             </tbody>
