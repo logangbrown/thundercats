@@ -273,6 +273,16 @@ nav a {
     .response-text {
         height: 100px;
         width: 100%;
-        line-height: 1.2;
+        line-height: 1.1;
         border:none;
+    }
+
+    .response-select {
+        height: 70px;
+        width: 100%;
+        border: none;
+    }
+
+    .select-placeholder {
+        color: whitesmoke;
     }

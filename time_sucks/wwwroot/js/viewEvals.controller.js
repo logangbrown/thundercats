@@ -68,31 +68,38 @@
                         templateQuestions: {
                             1: {
                                 evalTemplateQuestionID: 1,
-                                evalTemplatequestionCategoryID: 1,
+                                evalTemplateQuestionCategoriesID: 1,
                                 questionType: 'N',
                                 questionText: "Test question 1, what do you think?",
                                 number: 2
                             },
                             2: {
                                 evalTemplateQuestionID: 2,
-                                evalTemplatequestionCategoryID: 1,
+                                evalTemplateQuestionCategoriesID: 1,
                                 questionType: 'R',
-                                questionText: "Test question 2, what do you think?",
+                                questionText: "Test question 2 (should be first), what do you think?",
                                 number: 1
                             },
                             3: {
                                 evalTemplateQuestionID: 3,
-                                evalTemplatequestionCategoryID: 2,
+                                evalTemplateQuestionCategoriesID: 2,
                                 questionType: 'N',
                                 questionText: "Test question 3, what do you think?",
                                 number: 1
                             },
                             4: {
                                 evalTemplateQuestionID: 4,
-                                evalTemplatequestionCategoryID: 2,
+                                evalTemplateQuestionCategoriesID: 2,
                                 questionType: 'R',
                                 questionText: "Test question 4, what do you think?",
                                 number: 2
+                            },
+                            5: {
+                                evalTemplateQuestionID: 5,
+                                evalTemplateQuestionCategoriesID: 0,
+                                questionType: 'N',
+                                questionText: "Test question 4, what do you think?",
+                                number: 1
                             }
                         },
                         evals: {

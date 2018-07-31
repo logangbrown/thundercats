@@ -23,8 +23,8 @@
                     groupName: 'Test Group'
                 }
                 $scope.users = {
-                    1: {
-                        userID: 1,
+                    67: {
+                        userID: 67,
                         firstName: 'Logan',
                         lastName: 'Brown',
                         isActive: true
@@ -33,6 +33,18 @@
                         userID: 2,
                         firstName: 'Tashi',
                         lastName: 'Aguilar',
+                        isActive: true
+                    },
+                    3: {
+                        userID: 3,
+                        firstName: 'Steven',
+                        lastName: 'Bate',
+                        isActive: true
+                    },
+                    4: {
+                        userID: 4,
+                        firstName: 'Jeff',
+                        lastName: 'Garcia',
                         isActive: true
                     }
                 }
@@ -53,31 +65,38 @@
                     templateQuestions: {
                         1: {
                             evalTemplateQuestionID: 1,
-                            evalTemplatequestionCategoryID: 1,
+                            evalTemplateQuestionCategoriesID: 1,
                             questionType: 'N',
                             questionText: "Test question 1, what do you think?",
                             number: 2
                         },
                         2: {
                             evalTemplateQuestionID: 2,
-                            evalTemplatequestionCategoryID: 1,
+                            evalTemplateQuestionCategoriesID: 1,
                             questionType: 'R',
-                            questionText: "Test question 2, what do you think?",
+                            questionText: "Test question 2 (should be first), what do you think?",
                             number: 1
                         },
                         3: {
                             evalTemplateQuestionID: 3,
-                            evalTemplatequestionCategoryID: 2,
+                            evalTemplateQuestionCategoriesID: 2,
                             questionType: 'N',
                             questionText: "Test question 3, what do you think?",
                             number: 1
                         },
                         4: {
                             evalTemplateQuestionID: 4,
-                            evalTemplatequestionCategoryID: 2,
+                            evalTemplateQuestionCategoriesID: 2,
                             questionType: 'R',
                             questionText: "Test question 4, what do you think?",
                             number: 2
+                        },
+                        5: {
+                            evalTemplateQuestionID: 4,
+                            evalTemplateQuestionCategoriesID: 0,
+                            questionType: 'N',
+                            questionText: "Test question 5, what do you think?",
+                            number: 1
                         }
                     },
                     responses: {
@@ -85,7 +104,7 @@
                             evalResponseID: 1,
                             evalID: 1,
                             evalTemplateQuestionID: 1,
-                            response: "5",
+                            response: "",
                             userID: 2
                         },
                         2: {
@@ -93,13 +112,13 @@
                             evalID: 2,
                             evalTemplateQuestionID: 1,
                             response: "4",
-                            userID: 1
+                            userID: 67
                         },
                         3: {
                             evalResponseID: 3,
                             evalID: 1,
                             evalTemplateQuestionID: 2,
-                            response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
+                            response: "",
                             userID: 2
                         },
                         4: {
@@ -107,13 +126,13 @@
                             evalID: 2,
                             evalTemplateQuestionID: 2,
                             response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
-                            userID: 1
+                            userID: 67
                         },
                         5: {
                             evalResponseID: 5,
                             evalID: 1,
                             evalTemplateQuestionID: 3,
-                            response: "5",
+                            response: "",
                             userID: 2
                         },
                         6: {
@@ -121,13 +140,13 @@
                             evalID: 2,
                             evalTemplateQuestionID: 3,
                             response: "4",
-                            userID: 1
+                            userID: 67
                         },
                         7: {
                             evalResponseID: 7,
                             evalID: 1,
                             evalTemplateQuestionID: 4,
-                            response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
+                            response: "",
                             userID: 2
                         },
                         8: {
@@ -135,7 +154,91 @@
                             evalID: 2,
                             evalTemplateQuestionID: 4,
                             response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
-                            userID: 1
+                            userID: 67
+                        },
+                        9: {
+                            evalResponseID: 9,
+                            evalID: 1,
+                            evalTemplateQuestionID: 1,
+                            response: "",
+                            userID: 3
+                        },
+                        10: {
+                            evalResponseID: 10,
+                            evalID: 1,
+                            evalTemplateQuestionID: 2,
+                            response: "",
+                            userID: 3
+                        },
+                        11: {
+                            evalResponseID: 11,
+                            evalID: 1,
+                            evalTemplateQuestionID: 3,
+                            response: "",
+                            userID: 3
+                        },
+                        12: {
+                            evalResponseID: 12,
+                            evalID: 1,
+                            evalTemplateQuestionID: 4,
+                            response: "",
+                            userID: 3
+                        },
+                        13: {
+                            evalResponseID: 13,
+                            evalID: 1,
+                            evalTemplateQuestionID: 1,
+                            response: "",
+                            userID: 4
+                        },
+                        14: {
+                            evalResponseID: 14,
+                            evalID: 1,
+                            evalTemplateQuestionID: 2,
+                            response: "",
+                            userID: 4
+                        },
+                        15: {
+                            evalResponseID: 15,
+                            evalID: 1,
+                            evalTemplateQuestionID: 3,
+                            response: "",
+                            userID: 4
+                        },
+                        16: {
+                            evalResponseID: 16,
+                            evalID: 1,
+                            evalTemplateQuestionID: 4,
+                            response: "",
+                            userID: 4
+                        },
+                        17: {
+                            evalResponseID: 17,
+                            evalID: 1,
+                            evalTemplateQuestionID: 5,
+                            response: "",
+                            userID: 4
+                        },
+                        18: {
+                            evalResponseID: 18,
+                            evalID: 1,
+                            evalTemplateQuestionID: 5,
+                            response: "",
+                            userID: 3
+                        },
+                        19: {
+                            evalResponseID: 19,
+                            evalID: 1,
+                            evalTemplateQuestionID: 5,
+                            response: "",
+                            userID: 2
+                        },
+                        20: {
+                            evalResponseID: 20,
+                            evalID: 1,
+                            evalTemplateQuestionID: 5,
+                            response: "",
+                            userID: 67
                         }
                     }
                 }

@@ -31,17 +31,33 @@
                     <th style="min-width: 150px;" ng-repeat="ev in e.evals">{{ev.firstName}} {{ev.lastName}}</th>
                 </tr>
             </thead>
+            <tbody id="noCategoryQuestions">
+                <tr ng-repeat="tq in e.templateQuestions | orderObjectBy : 'number' | filter: {evalTemplateQuestionCategoriesID: 0}">
+                    <td class="sticky-column">{{tq.questionText}}</td>
+                    <td class="p-0 align-middle border-right" ng-repeat="ev in e.evals">
+                        <textarea ng-if="tq.questionType === 'R'" class="response-text" readonly>{{getResponse(e.evalID, ev.evalID, tq.evalTemplateQuestionID)}}</textarea>
+                        <input class="text-center w-100 border-0" ng-if="tq.questionType === 'N'" value="{{getResponse(e.evalID, ev.evalID, tq.evalTemplateQuestionID)}}" readonly />
+                    </td>
+                </tr>
+                <!--<tr>
+                    <th class="sticky-column">Totals</th>
+                    <td class="border-right" ng-repeat="ev in e.evals">
+                        Category Total
+                    </td>
+                </tr>-->
+            </tbody>
             <tbody ng-repeat="c in e.categories">
                 <tr>
                     <th class="sticky-column">{{c.categoryName}}</th>
-                    <td ng-repeat="ev in e.evals">
+                    <td class="border-right" ng-repeat="ev in e.evals">
                         Category Total
                     </td>
                 </tr>
-                <tr ng-repeat="tq in e.templateQuestions | orderObjectBy : 'number' | filter: {evalTemplateQuestionCategoryID: c.evalTemplateQuestionCategoryID}">
+                <tr ng-repeat="tq in e.templateQuestions | orderObjectBy : 'number' | filter: {evalTemplateQuestionCategoriesID: c.evalTemplateQuestionCategoriesID}">
                     <td class="pl-3 sticky-column">{{tq.questionText}}</td>
-                    <td class="p-0" ng-repeat="ev in e.evals">
-                        <textarea class="response-text">{{getResponse(e.evalID, ev.evalID, tq.evalTemplateQuestionID)}}</textarea>
+                    <td class="p-0 align-middle border-right" ng-repeat="ev in e.evals">
+                        <textarea ng-if="tq.questionType === 'R'" class="response-text" readonly>{{getResponse(e.evalID, ev.evalID, tq.evalTemplateQuestionID)}}</textarea>
+                        <input class="text-center w-100 border-0" ng-if="tq.questionType === 'N'" value="{{getResponse(e.evalID, ev.evalID, tq.evalTemplateQuestionID)}}" readonly />
                     </td>
                 </tr>
             </tbody>

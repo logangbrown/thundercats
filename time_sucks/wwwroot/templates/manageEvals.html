@@ -3,9 +3,9 @@
 
     <div class="input-group mb-3">
         <div class="input-group-prepend">
-            <label class="input-group-text" for="student">Student</label>
+            <label class="input-group-text" for="template">Template</label>
         </div>
-        <select class="custom-select" id="student">
+        <select class="custom-select" id="template">
             <option value="1" selected>Template 1</option>
             <option value="2">Template 2</option>
             <option value="3">Template 3</option>
@@ -15,24 +15,46 @@
 
     <div class="mt-4 table-responsive">
 
-        <table ng-repeat="e in group.evaluations" class="table table-condensed">
+        <table class="table table-condensed">
             <thead class="thead-light">
                 <tr>
-                    <th class="sticky-column" style="width: 225px; min-width: 150px;"></th>
-                    <th style="min-width: 150px;" ng-repeat="ev in e.evals">{{ev.firstName}} {{ev.lastName}}</th>
+                    <th style="width: 225px; min-width: 150px;">Category/Question</th>
+                    <th style="min-width: 150px;">Options</th>
                 </tr>
             </thead>
-            <tbody ng-repeat="c in e.categories">
-                <tr>
-                    <th class="sticky-column">{{c.categoryName}}</th>
-                    <td ng-repeat="ev in e.evals">
-                        Category Total
+            <tbody id="noCategoryQuestions">
+                <tr ng-repeat="tq in evaluation.templateQuestions | orderObjectBy : 'number' | filter: {evalTemplateQuestionCategoriesID: 0}">
+                    <td class="border-right"><textarea class="h-100 w-100" placeholder="Question Text" ng-model="tq.questionText"></textarea></td>
+                    <td class="p-1 align-middle border-right">
+                        <select ng-model="tq.questionType">
+                            <option value="N">Number 0-5</option>
+                            <option value="R">Short Reponse</option>
+                        </select>
+                        <input type="number" ng-model="tq.number"/>
+                        <select ng-model="tq.evalTemplateQuestionCategoriesID">
+                            <option value="0">No Category</option>
+                            <option ng-repeat="c in evaluation.categories" value="{{c.evalTemplateQuestionCategoriesID}}">{{c.categoryName}}</option>
+                        </select>
                     </td>
                 </tr>
-                <tr ng-repeat="tq in e.templateQuestions | orderObjectBy : 'number' | filter: {evalTemplateQuestionCategoryID: c.evalTemplateQuestionCategoryID}">
-                    <td class="pl-3 sticky-column">{{tq.questionText}}</td>
-                    <td class="p-0" ng-repeat="ev in e.evals">
-                        <textarea class="response-text">{{getResponse(e.evalID, ev.evalID, tq.evalTemplateQuestionID)}}</textarea>
+            </tbody>
+            <tbody ng-repeat="c in evaluation.categories">
+                <tr>
+                    <th class="border-right"><input type="text" ng-model="c.categoryName"/></th>
+                    <td></td>
+                </tr>
+                <tr ng-repeat="tq in evaluation.templateQuestions | orderObjectBy : 'number' | filter: {evalTemplateQuestionCategoriesID: c.evalTemplateQuestionCategoriesID}">
+                    <td class="border-right"><textarea class="h-100 w-100" placeholder="Question Text" ng-model="tq.questionText"></textarea></td>
+                    <td class="p-1 align-middle border-right">
+                        <select ng-model="tq.questionType">
+                            <option value="N">Number 0-5</option>
+                            <option value="R">Short Reponse</option>
+                        </select>
+                        <input type="number" name="order" ng-model="tq.number" />
+                        <select ng-model="tq.evalTemplateQuestionCategoriesID">
+                            <option value="0">No Category</option>
+                            <option ng-repeat="c in evaluation.categories" value="{{c.evalTemplateQuestionCategoriesID}}">{{c.categoryName}}</option>
+                        </select>
                     </td>
                 </tr>
             </tbody>
