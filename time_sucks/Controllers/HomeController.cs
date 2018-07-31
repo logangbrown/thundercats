@@ -965,6 +965,51 @@ namespace time_sucks.Controllers
 
 
         }
+
+        [HttpPost]
+        public IActionResult GetProjects([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+           List<Project> projects = DBHelper.GetProjects(course.courseID);
+
+            if (projects.Count > 0) return Ok(projects);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public IActionResult GetTemplates([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Course course = JsonConvert.DeserializeObject<Course>(JsonString);
+
+            List<EvalTemplate> templates = DBHelper.GetTemplates(course.instructorID);
+
+            if (templates.Count > 0) return Ok(templates);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public IActionResult AssignEvals([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Project project = JsonConvert.DeserializeObject<Project>(JsonString); //don't know how getting multiple project ids??
+
+            List<int> projectIDs = new List<int>();
+
+            //not sure how to get evalTemplateID???
+            projectIDs.Add(project.projectID);
+
+            if (DBHelper.AssignEvals(projectIDs)) return Ok();
+            return StatusCode(500);
+
+        }
+
+
         #endregion
     }
 }
