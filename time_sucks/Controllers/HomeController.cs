@@ -1020,11 +1020,11 @@ namespace time_sucks.Controllers
             Project project = JsonConvert.DeserializeObject<Project>(JsonString); //don't know how getting multiple project ids??
 
             List<int> projectIDs = new List<int>();
-
+            int evalTemplateID = 0;
             //not sure how to get evalTemplateID???
             projectIDs.Add(project.projectID);
 
-            if (DBHelper.AssignEvals(projectIDs)) return Ok();
+            if (DBHelper.AssignEvals(projectIDs, evalTemplateID)) return Ok();
             return StatusCode(500);
 
         }
