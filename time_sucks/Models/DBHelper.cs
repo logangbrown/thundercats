@@ -980,7 +980,7 @@ namespace time_sucks.Models
         }
         
         
-        public static int CreateTemplate(int userID)
+        public static long CreateTemplate(int userID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -1032,7 +1032,7 @@ namespace time_sucks.Models
                     //Return the last inserted ID if successful
                     cmd.ExecuteNonQuery();
                     string higher = "0";
-                    cmd.Parameters.AddWithValue("@questionType", reader.GetString("ETQ.questionType"));
+                    cmd.Parameters.AddWithValue("@questionType", higher);
                     cmd.Parameters.AddWithValue("@questionText", higher);
                     cmd.Parameters.AddWithValue("@number", higher);
                     cmd.CommandText = "SELECT * FROM evalTemplateQuestions AS 'ETQ' INNER JOIN evalTemplateQuestionCategories AS 'ETC' "
@@ -1040,8 +1040,10 @@ namespace time_sucks.Models
                     + "@evalTemplateID ORDER BY ETC.categoryName";
                     cmd.Parameters.AddWithValue("@evalTemplateID", cmd.LastInsertedId);
                     cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", higher);
-                    using (reader = cmd.ExecuteReader)
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
+                        int catNum = 0;
                         while (reader.Read())
                         {
                             catName = reader.GetString("ETC.categoryName");
@@ -1058,9 +1060,9 @@ namespace time_sucks.Models
                             cmd.CommandText = "INSERT INTO evalTemplateQuestions (evalTemplateID, evalTemplateQuestionCategoryID, "
                             + "questionType, questionText, number) VALUES (@evalTemplateID, @evalTemplateQuestionCategoryID, "
                             + "@questionType, @questionText, @number)";
-                            cmd.Parameters.AddWithValue["@questionType"].Value = reader.GetString("ETQ.questionType"));
-                            cmd.Parameters.AddWithValue["@questionText"].Value = reader.GetString("ETQ.questionText"));
-                            cmd.Parameters.AddWithValue["@number"].Value = reader.GetString("ETQ.number"));
+                            cmd.Parameters["@questionType"].Value = reader.GetString("ETQ.questionType");
+                            cmd.Parameters["@questionText"].Value = reader.GetString("ETQ.questionText");
+                            cmd.Parameters["@number"].Value = reader.GetString("ETQ.number");
 
                             cmd.ExecuteNonQuery();
                         }
