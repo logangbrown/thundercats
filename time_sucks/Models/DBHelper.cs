@@ -1641,5 +1641,49 @@ namespace time_sucks.Models
             return (temp > 0) ;
                  
         }
+
+        public static bool SetInUse(int evalTemplateID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Update evalTemplates Set inUse = 0 Where evalTemplateID = @evalTemplateID";
+
+                    // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+
+
+
+            
+        }
+
+        public static bool GetEvaluation(int evalTemplateID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Select * From evalTemplateQuestions Where evalTemplateID = @evalTemplateID";
+
+                    // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
     }
 }
