@@ -978,6 +978,119 @@ namespace time_sucks.Models
             }
             return user;
         }
+        
+        
+        public static int CreateTemplate(int userID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO evalTemplates (userID, templateName) " +
+                        "VALUES (@userID, 'TempName')";
+                    cmd.Parameters.AddWithValue("@userID", userID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+                    return 0;
+                }
+            }
+        }
+
+        public static bool CreateTemplateCopy(int userID, int evalTemplateID)
+        {
+            string templateName = "";
+            string catName = "";
+            string qText = "";
+            string temp = "";
+
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT templateName FROM evalTemplates WHERE evalTemplateID = @evalTemplateID";
+                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            templateName = reader.GetString("templateName");
+                        }
+                    }
+
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO evalTemplates (userID, templateName) " +
+                        "VALUES (@userID, '@TempName')";
+                    cmd.Parameters.AddWithValue("@userID", userID);
+                    cmd.Parameters.AddWithValue("@TempName", templateName);
+
+                    //Return the last inserted ID if successful
+                    cmd.ExecuteNonQuery();
+                    string higher = "0";
+                    cmd.Parameters.AddWithValue("@questionType", reader.GetString("ETQ.questionType"));
+                    cmd.Parameters.AddWithValue("@questionText", higher);
+                    cmd.Parameters.AddWithValue("@number", higher);
+                    cmd.CommandText = "SELECT * FROM evalTemplateQuestions AS 'ETQ' INNER JOIN evalTemplateQuestionCategories AS 'ETC' "
+                    + "ON ETC.evalTemplateQuestionCategoriesID = ETQ.evalTemplateQuestionCategoriesID WHERE ETQ.evalTemplateID = " 
+                    + "@evalTemplateID ORDER BY ETC.categoryName";
+                    cmd.Parameters.AddWithValue("@evalTemplateID", cmd.LastInsertedId);
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", higher);
+                    using (reader = cmd.ExecuteReader)
+                    {
+                        while (reader.Read())
+                        {
+                            catName = reader.GetString("ETC.categoryName");
+                            if (catName != temp)
+                            {
+                                cmd.CommandText = "INSERT INTO evalTemplateQuestionCategory (evalTemplateID, categoryName) "
+                                + "VALUES (@evalTemplateID, @categoryName)";
+                                cmd.ExecuteNonQuery();
+                                cmd.Parameters["@evalTemplateQuestionCategoryID"].Value = cmd.LastInsertedId;
+                            }
+                            temp = catName;
+                            catNum = reader.GetInt32("ETQ.evalTemplateQuestionCategoryID");
+
+                            cmd.CommandText = "INSERT INTO evalTemplateQuestions (evalTemplateID, evalTemplateQuestionCategoryID, "
+                            + "questionType, questionText, number) VALUES (@evalTemplateID, @evalTemplateQuestionCategoryID, "
+                            + "@questionType, @questionText, @number)";
+                            cmd.Parameters.AddWithValue["@questionType"].Value = reader.GetString("ETQ.questionType"));
+                            cmd.Parameters.AddWithValue["@questionText"].Value = reader.GetString("ETQ.questionText"));
+                            cmd.Parameters.AddWithValue["@number"].Value = reader.GetString("ETQ.number"));
+
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        public static bool SaveResponse(int userID, int evalID, int evalTemplateQuestionID, string response)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "INSERT INTO evalResponses (evalID, evalTemplateQuestionID, userID, response) " +
+                        "VALUES (@evalID, @evalTemplateQuestionID, @userID, @response)";
+                    cmd.Parameters.AddWithValue("@userID", userID);
+                    cmd.Parameters.AddWithValue("@evalID", evalID);
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionID", evalTemplateQuestionID);
+                    cmd.Parameters.AddWithValue("@response", response);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
 
         public static List<User> GetUsers()
         {
