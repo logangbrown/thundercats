@@ -350,6 +350,34 @@ namespace time_sucks.Controllers
             return Unauthorized(); //Not an Admin or the current user, Unauthorized (401)
         }
 
+        [HttpPost]
+        public IActionResult CreateTemplate([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            
+            if (GetUserType() == 'I' || IsAdmin())
+            {
+                return DBHelper.CreateTemplate(user.userID);
+            }
+            return Unauthorized();
+        }
+        
+        [HttpPost]
+        public IActionResult CreateTemplateCopy([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            EvalTemplate evalTemplate = JsonConvert.DeserializeObject<EvalTemplate>(JsonString);
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            
+            if (GetUserType() == 'I' || IsAdmin())
+            {
+                if (DBHelper.CreateTemplateCopy(user.userID, evalTemplate.evalTemplateID)) return Ok();
+                return StatusCode(500);
+            }
+            return Unauthorized();
+        }
 
         [HttpPost]
         public IActionResult CreateCategory([FromBody]Object json)
@@ -1020,11 +1048,11 @@ namespace time_sucks.Controllers
             Project project = JsonConvert.DeserializeObject<Project>(JsonString); //don't know how getting multiple project ids??
 
             List<int> projectIDs = new List<int>();
-
+            int evalTemplateID = 0;
             //not sure how to get evalTemplateID???
             projectIDs.Add(project.projectID);
 
-            if (DBHelper.AssignEvals(projectIDs)) return Ok();
+            if (DBHelper.AssignEvals(projectIDs, evalTemplateID)) return Ok();
             return StatusCode(500);
 
         }

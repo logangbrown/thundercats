@@ -1711,7 +1711,7 @@ namespace time_sucks.Models
         }
 
 
-        public static bool AssignEvals(List<int> projectIDs)
+        public static bool AssignEvals(List<int> projectIDs, int evalTemplateID)
         {
             int temp = 0;
             foreach (int projectID in projectIDs)
