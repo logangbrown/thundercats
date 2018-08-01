@@ -1368,15 +1368,38 @@ namespace time_sucks.Models
                 {
                     // SQL and Parameters
                     cmd.CommandText = "UPDATE evalTemplateQuestionCategories SET evalTemplateID = @evalTemplateID, " +
-                                      "categoryName = @categoryName WHERE evalTemplateQuestionCategoriesID = @evalTemplateQuestionCategoriesID";
+                                      "categoryName = @categoryName WHERE evalTemplateQuestionCategoryID = @evalTemplateQuestionCategoryID";
                     cmd.Parameters.AddWithValue("@evalTemplateID", category.evalTemplateID);
                     cmd.Parameters.AddWithValue("@categoryName", category.categoryName);
-                    cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoriesID", category.evalTemplateQuestionCategoryID);
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", category.evalTemplateQuestionCategoryID);
 
                     if (cmd.ExecuteNonQuery() > 0) return true;
                     return false;
                 }
             }
+        }
+
+        public static bool DeleteCategory(int evalTemplateQuestionCategoryID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM evalTemplateQuestionCategories " +
+                                      "WHERE evalTemplateQuestionCategoryID = @evalTemplateQuestionCategoryID";
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", evalTemplateQuestionCategoryID);
+
+                    if (cmd.ExecuteNonQuery() > 0)
+                    {
+                        cmd.CommandText = "UPDATE evalTemplateQuestions SET evalTemplateQuestionCategoryID = 0 " +
+                                          "WHERE evalTemplateQuestionCategoryID = @evalTemplateQuestionCategoryID";
+                        cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", evalTemplateQuestionCategoryID);
+
+                        return true;
+                    }
+                }
+                return false;}
         }
 
         public static bool SaveQuestion(EvalTemplateQuestion question)
@@ -1508,7 +1531,7 @@ namespace time_sucks.Models
         {
 
             List<Project> projects = new List<Project>();
-           
+
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -1530,7 +1553,7 @@ namespace time_sucks.Models
                                 projectName = reader.GetString("projectName")
 
                             });
-                           
+
                         }
                     }
                 }
@@ -1550,7 +1573,7 @@ namespace time_sucks.Models
                 {
                     //SQL and Parameters
                     cmd.CommandText = "Select * From evalTemplates e Where e.userID = @userID ";
-                       
+
                     cmd.Parameters.AddWithValue("@userID", instructorID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -1597,7 +1620,7 @@ namespace time_sucks.Models
                             //Runs once per record retrieved
                             while (reader.Read())
                             {
-                                tempGroup.groupID = reader.GetInt32("groupID"); 
+                                tempGroup.groupID = reader.GetInt32("groupID");
 
                                 tempGroup = GetGroup(tempGroup.groupID); //get all the users in group
 
@@ -1639,7 +1662,7 @@ namespace time_sucks.Models
                 }
             }
             return (temp > 0) ;
-                 
+
         }
     }
 }

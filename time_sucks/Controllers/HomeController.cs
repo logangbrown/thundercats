@@ -911,6 +911,26 @@ namespace time_sucks.Controllers
         }
 
         /// <summary>
+        /// Delete a Category
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult DeleteCategory([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            EvalTemplateQuestionCategory category = JsonConvert.DeserializeObject<EvalTemplateQuestionCategory>(JsonString);
+            if (IsAdmin() || IsInstructorForEval(category.evalTemplateID))
+            {
+                if (DBHelper.DeleteCategory(category.evalTemplateQuestionCategoryID)) return Ok();
+                return StatusCode(500); //Query failed
+            }
+
+            return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
+        }
+
+
+        /// <summary>
         /// Updates a Question
         /// </summary>
         /// <param name="json"></param>
