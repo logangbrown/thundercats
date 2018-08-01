@@ -350,6 +350,34 @@ namespace time_sucks.Controllers
             return Unauthorized(); //Not an Admin or the current user, Unauthorized (401)
         }
 
+        [HttpPost]
+        public IActionResult CreateTemplate([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            
+            if (GetUserType() == 'I' || IsAdmin())
+            {
+                return DBHelper.CreateTemplate(user.userID);
+            }
+            return Unauthorized();
+        }
+        
+        [HttpPost]
+        public IActionResult CreateTemplateCopy([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            EvalTemplate evalTemplate = JsonConvert.DeserializeObject<EvalTemplate>(JsonString);
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            
+            if (GetUserType() == 'I' || IsAdmin())
+            {
+                if (DBHelper.CreateTemplateCopy(user.userID, evalTemplate.evalTemplateID)) return Ok();
+                return StatusCode(500);
+            }
+            return Unauthorized();
+        }
 
         [HttpPost]
         public IActionResult CreateCategory([FromBody]Object json)
