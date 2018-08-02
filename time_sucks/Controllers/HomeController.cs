@@ -1007,8 +1007,6 @@ namespace time_sucks.Controllers
                 projectIDs.Add(project.projectID);
             }
             
-
-
             //call and set the inUse flag with another query 
 
             if (DBHelper.AssignEvals(projectIDs, evalTemplateID))
@@ -1026,6 +1024,9 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
 
+            //how to get evalTemplateID?
+
+            DBHelper.GetEvaluation(evalTemplateID);
 
         }
 
