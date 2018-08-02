@@ -15,18 +15,19 @@
                 <h5>Projects</h5>
                 <i class="fa fa-plus mt-2 mr-2 my-auto small-button" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID" ng-click="createProject()" title="Create a new project."></i>
                 <div class="float-right mt-4 mr-5 pretty p-switch p-slim top-right-checkbox" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">
-                    <input type="checkbox" ng-model="config.showInactiveProjects"/>
+                    <input type="checkbox" ng-model="config.showInactiveProjects" />
                     <div class="float-left mr-3 mt-2 state">
                         <label>Show Inactive</label>
                     </div>
                 </div>
             </div>
-            
+
             <div class="card" ng-if="hasProjects()">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0" ng-repeat="p in course.projects | orderObjectBy :'projectName'" ng-if="p.isActive || config.showInactiveProjects"><a class="card-list-link p-2" href="/#!/project/{{p.projectID}}">{{p.projectName}}</a></li>
                 </ul>
             </div>
+            <button class="btn btn-primary mt-2" ng-click="assignEval()" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">Assign Evaluation</button>
         </div>
 
         <div class="col-sm col-12">

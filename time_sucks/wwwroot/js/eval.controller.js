@@ -54,51 +54,51 @@
                     number: 1,
                     categories: {
                         1: {
-                            evalTemplateQuestionCategoriesID: 1,
+                            evalTemplateQuestionCategoryID: 1,
                             categoryName: "Category 1"
                         },
                         2: {
-                            evalTemplateQuestionCategoriesID: 2,
+                            evalTemplateQuestionCategoryID: 2,
                             categoryName: "Category 2"
                         }
                     },
                     templateQuestions: {
                         1: {
                             evalTemplateQuestionID: 1,
-                            evalTemplateQuestionCategoriesID: 1,
+                            evalTemplateQuestionCategoryID: 1,
                             questionType: 'N',
                             questionText: "Test question 1, what do you think?",
                             number: 2
                         },
                         2: {
                             evalTemplateQuestionID: 2,
-                            evalTemplateQuestionCategoriesID: 1,
+                            evalTemplateQuestionCategoryID: 1,
                             questionType: 'R',
                             questionText: "Test question 2 (should be first), what do you think?",
                             number: 1
                         },
                         3: {
                             evalTemplateQuestionID: 3,
-                            evalTemplateQuestionCategoriesID: 2,
+                            evalTemplateQuestionCategoryID: 2,
                             questionType: 'N',
                             questionText: "Test question 3, what do you think?",
                             number: 1
                         },
                         4: {
                             evalTemplateQuestionID: 4,
-                            evalTemplateQuestionCategoriesID: 2,
+                            evalTemplateQuestionCategoryID: 2,
                             questionType: 'R',
                             questionText: "Test question 4, what do you think?",
                             number: 2
                         },
                         5: {
                             evalTemplateQuestionID: 4,
-                            evalTemplateQuestionCategoriesID: 0,
+                            evalTemplateQuestionCategoryID: 0,
                             questionType: 'N',
                             questionText: "Test question 5, what do you think?",
                             number: 1
                         }
-                    },
+                    }/*,
                     responses: {
                         1: {
                             evalResponseID: 1,
@@ -241,8 +241,23 @@
                             userID: 67
                         }
                     }
+                    */
                 }
 
+                //create empty responses
+                tempID = 1;
+                $scope.evaluation.responses = {};
+                for (questionID in $scope.evaluation.templateQuestions) {
+                    for (userID in $scope.users) {
+                        $scope.evaluation.responses[tempID] = {
+                            evalID: $scope.evaluation.evalID,
+                            evalTemplateQuestionID: $scope.evaluation.templateQuestions[questionID].evalTemplateQuestionID,
+                            response: "",
+                            userID: $scope.users[userID].userID
+                        }
+                        tempID++;
+                    }
+                }
             });
 
         $scope.getResponse = function (evalTemplateQuestionID, userID) {
@@ -253,6 +268,21 @@
             }
             return '';
         };
+
+        $scope.completeEvaluation = function () {
+            if (confirm('Are you sure you want to submit this evaluation?')) {
+                usSpinnerService.spin('spinner');
+                $http.post("/Home/CompleteEval", { responses: $scope.evaluation.responses })
+                    .then(function (response) {
+                        usSpinnerService.stop('spinner');
+                    }, function () {
+                        usSpinnerService.stop('spinner');
+                        toastr["error"]("Failed to complete evaluation. Endpoint undefined.");
+                    });
+            } else {
+                // Do nothing!
+            }
+        }
 
         $scope.loaded = true;
     };

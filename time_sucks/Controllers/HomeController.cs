@@ -355,11 +355,9 @@ namespace time_sucks.Controllers
         {
             string JsonString = json.ToString();
             
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            
             if (GetUserType() == 'I' || IsAdmin())
             {
-                return DBHelper.CreateTemplate(user.userID);
+                return Ok(DBHelper.CreateTemplate(GetUserID()));
             }
             return Unauthorized();
         }

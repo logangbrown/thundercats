@@ -845,7 +845,7 @@ namespace time_sucks.Models
                     "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
                     "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
                     "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-                    "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
+                    "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoryID = etq.evalTemplateQuestionCategoryID " +
                     "WHERE groupID = @groupID ORDER BY etqc.categoryName";
                     cmd.Parameters.AddWithValue("@groupID", evals.groupID);
 
@@ -885,7 +885,7 @@ namespace time_sucks.Models
                     "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
                     "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
                     "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-                    "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoriesID = etq.evalTemplateQuestionCategoryID " +
+                    "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoryID = etq.evalTemplateQuestionCategoryID " +
                     "WHERE groupID = @groupID ORDER BY etqc.categoryName";
                     cmd.Parameters.AddWithValue("@groupID", evals.groupID);
 
@@ -1036,7 +1036,7 @@ namespace time_sucks.Models
                     cmd.Parameters.AddWithValue("@questionText", higher);
                     cmd.Parameters.AddWithValue("@number", higher);
                     cmd.CommandText = "SELECT * FROM evalTemplateQuestions AS 'ETQ' INNER JOIN evalTemplateQuestionCategories AS 'ETC' "
-                    + "ON ETC.evalTemplateQuestionCategoriesID = ETQ.evalTemplateQuestionCategoriesID WHERE ETQ.evalTemplateID = " 
+                    + "ON ETC.evalTemplateQuestionCategoryID = ETQ.evalTemplateQuestionCategoryID WHERE ETQ.evalTemplateID = " 
                     + "@evalTemplateID ORDER BY ETC.categoryName";
                     cmd.Parameters.AddWithValue("@evalTemplateID", cmd.LastInsertedId);
                     cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", higher);
@@ -1526,11 +1526,11 @@ namespace time_sucks.Models
                 {
                     // SQL and Parameters
                     cmd.CommandText = "UPDATE evalTemplateQuestions SET evalTemplateID = @evalTemplateID, " +
-                                      "evalTemplateQuestionCategoriesID = @evalTemplateQuestionCategoriesID, " +
+                                      "evalTemplateQuestionCategoryID = @evalTemplateQuestionCategoryID, " +
                                       "number = @number, questionType = @questionType, " +
                                       "questionText = @questionText WHERE evalTemplateQuestionID = @evalTemplateQuestionID";
                     cmd.Parameters.AddWithValue("@evalTemplateID", question.evalTemplateID);
-                    cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoriesID", question.evalTemplateQuestionCategoryID);
+                    cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", question.evalTemplateQuestionCategoryID);
                     cmd.Parameters.AddWithValue("@number", question.number);
                     cmd.Parameters.AddWithValue("@questionType", question.questionType);
                     cmd.Parameters.AddWithValue("@questionText", question.questionText);

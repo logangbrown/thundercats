@@ -104,14 +104,20 @@
                 return;
             }
 
-            $http.post("/Home/AssignEvaluation", { projectIDs: projectIDs })
-                .then(function (response) {
-                    usSpinnerService.stop('spinner');
-                }, function () {
-                    usSpinnerService.stop('spinner');
-                    toastr["error"]("Failed to assign the evaluation, endpoint not defined.");
-                });
-
+            if (confirm('Are you sure you want to assign this evaluation?')) {
+                usSpinnerService.spin('spinner');
+                $http.post("/Home/AssignEvaluation", { projectIDs: projectIDs })
+                    .then(function (response) {
+                        usSpinnerService.stop('spinner');
+                        toastr["success"]("Evaluation assigned.");
+                        $location.path('/course/' + $scope.courseID);
+                    }, function () {
+                        usSpinnerService.stop('spinner');
+                        toastr["error"]("Failed to assign the evaluation, endpoint not defined.");
+                    });
+            } else {
+                // Do nothing!
+            }
         }
         
         $scope.loaded = true;

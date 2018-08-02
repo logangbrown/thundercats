@@ -291,6 +291,13 @@
             });
         }
 
+        $scope.completeEval = function () {
+            $location.path('/eval/' + $scope.groupID);
+        }
+
+        $scope.viewEvals = function () {
+            $location.path('/viewEvals/' + $scope.groupID);
+        }
 
         var data = { //Data and labels are set in the setData function
             datasets: [{

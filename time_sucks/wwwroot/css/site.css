@@ -286,3 +286,7 @@ nav a {
     .select-placeholder {
         color: whitesmoke;
     }
+
+pretty .state .check-label label:after, .pretty .state .check-label label:before {
+    top: 0px !important;    
+}

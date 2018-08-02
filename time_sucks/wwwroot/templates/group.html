@@ -31,7 +31,10 @@
                     <li class="list-group-item p-2" ng-repeat="u in group.users | orderObjectBy :'firstName'" ng-if="u.userID !== $parent.user.userID || !userInGroup()">{{u.firstName}} {{u.lastName}} <span ng-if="!u.isActive" class="text-danger">(Left Group)</span></li>
                 </ul>
             </div>
-            
+            <div>
+                <button class="btn btn-primary mt-2" ng-click="completeEval()">Complete Eval</button>
+                <button class="btn btn-primary mt-2" ng-click="viewEvals()">View Evals</button>
+            </div>
         </div>
     </div>
 

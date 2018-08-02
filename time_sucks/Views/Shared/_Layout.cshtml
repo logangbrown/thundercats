@@ -73,14 +73,17 @@
         </button>
         <div class="collapse navbar-collapse invisible" id="navbarSupportedContent" ng-cloak ng-if="userExists()">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item" ng-class="{active: location.path === '/dashboard'}">
+                <li class="nav-item">
                     <a class="nav-link" href="/#!/dashboard" ng-click="collapse()" data-target="#navbarSupportedContent">Dashboard</a>
                 </li>
-                <li class="nav-item" ng-class="{active: location.path === '/courses'}">
+                <li class="nav-item">
                     <a class="nav-link" href="/#!/courses" ng-click="collapse()" data-target="#navbarSupportedContent">Courses</a>
                 </li>
-                <li class="nav-item" ng-class="{active: location.path === '/users'}" ng-cloak ng-if="user.type === 'A'">
+                <li class="nav-item" ng-cloak ng-if="user.type === 'A'">
                     <a class="nav-link" href="/#!/users" ng-click="collapse()" data-target="#navbarSupportedContent">Users</a>
+                </li>
+                <li class="nav-item" ng-cloak ng-if="user.type === 'A' || user.type === 'I'">
+                    <a class="nav-link" href="/#!/manageEvals/{{user.userID}}" ng-click="collapse()" data-target="#navbarSupportedContent">Evals</a>
                 </li>
             </ul>
             <div class="my-2 my-lg-0" ng-cloak ng-if="user">

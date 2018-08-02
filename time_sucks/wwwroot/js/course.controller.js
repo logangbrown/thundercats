@@ -171,6 +171,10 @@
             return false;
         };
 
+        $scope.assignEval = function () {
+            if ($scope.$parent.user.type === 'A' || $scope.$parent.user.userID === $course.instructorID) $location.path('/assignEval/' + $scope.courseID);
+        };
+
         $scope.loaded = true;
     }
 
