@@ -211,13 +211,13 @@ namespace time_sucks.Models
                     cmd.CommandText = "INSERT INTO timeCards (timeIn, timeOut, isEdited, userID, groupID, description)" +
                                       " VALUES (@timeIn, @timeOut, 0, @userID, @groupID, @description);";
 
-                    if(timeCard.timeIn == null || timeCard.timeIn == "") cmd.Parameters.AddWithValue("@timeIn", null);
+                    if (timeCard.timeIn == null || timeCard.timeIn == "") cmd.Parameters.AddWithValue("@timeIn", null);
                     else cmd.Parameters.AddWithValue("@timeIn", Convert.ToDateTime(timeCard.timeIn));
-                    if(timeCard.timeOut == null || timeCard.timeOut == "") cmd.Parameters.AddWithValue("@timeOut", null);
+                    if (timeCard.timeOut == null || timeCard.timeOut == "") cmd.Parameters.AddWithValue("@timeOut", null);
                     else cmd.Parameters.AddWithValue("@timeOut", Convert.ToDateTime(timeCard.timeOut));
                     cmd.Parameters.AddWithValue("@userID", timeCard.userID);
                     cmd.Parameters.AddWithValue("@groupID", timeCard.groupID);
-                    if(timeCard.description == null) cmd.Parameters.AddWithValue("@description", "");
+                    if (timeCard.description == null) cmd.Parameters.AddWithValue("@description", "");
                     else cmd.Parameters.AddWithValue("@description", timeCard.description);
 
 
@@ -357,10 +357,10 @@ namespace time_sucks.Models
 
                             bool foundGroup = false;
 
-                            foreach(Group group in project.groups)
+                            foreach (Group group in project.groups)
                             {
 
-                                if(group.groupID == reader.GetInt32("groupID"))
+                                if (group.groupID == reader.GetInt32("groupID"))
                                 {
                                     foundGroup = true;
 
@@ -368,7 +368,7 @@ namespace time_sucks.Models
 
                                     if (group.users == null) group.users = new List<User>();
 
-                                    if(group.groupID == 0)
+                                    if (group.groupID == 0)
                                     {
                                         group.groupName = reader.GetString("groupName");
                                         group.groupID = reader.GetInt32("groupID");
@@ -434,7 +434,7 @@ namespace time_sucks.Models
                                 }
                             }
 
-                            if(!foundGroup)
+                            if (!foundGroup)
                             {
                                 List<TimeCard> timecardlist = new List<TimeCard>();
                                 if (!reader.IsDBNull(12))
@@ -896,13 +896,13 @@ namespace time_sucks.Models
                             evalResponse.Add(new EvalResponse()
                             {
                                 userID = reader.GetInt32("er.userID"),
-                            evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID"),
-                            evalID = reader.GetInt32("er.evalID"),
-                            response = reader.GetString("er.response"),
-                            evalNumber = reader.GetInt32("evalNumber"),
-                            questionNumber = reader.GetInt32("questionNumber"),
-                            questionText = reader.GetString("etq.questionText"),
-                            categoryName = reader.GetString("etqc.categoryName")
+                                evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID"),
+                                evalID = reader.GetInt32("er.evalID"),
+                                response = reader.GetString("er.response"),
+                                evalNumber = reader.GetInt32("evalNumber"),
+                                questionNumber = reader.GetInt32("questionNumber"),
+                                questionText = reader.GetString("etq.questionText"),
+                                categoryName = reader.GetString("etqc.categoryName")
                             });
                         }
                     }
@@ -1003,7 +1003,6 @@ namespace time_sucks.Models
         {
             string templateName = "";
             string catName = "";
-            string qText = "";
             string temp = "";
 
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -1587,10 +1586,10 @@ namespace time_sucks.Models
                     if (after < before)
                     {
                         cmd.CommandText = "UPDATE timeCards SET timeIn = @timeIn, timeOut = @timeOut, isEdited = 1, description = @description WHERE timeID = @timeID";
-                        if(timecard.timeIn == null || timecard.timeIn == "") cmd.Parameters.AddWithValue("@timeIn", null);
+                        if (timecard.timeIn == null || timecard.timeIn == "") cmd.Parameters.AddWithValue("@timeIn", null);
                         else cmd.Parameters.AddWithValue("@timeIn", Convert.ToDateTime(timecard.timeIn));
 
-                        if(timecard.timeOut == null || timecard.timeOut == "") cmd.Parameters.AddWithValue("@timeOut", null);
+                        if (timecard.timeOut == null || timecard.timeOut == "") cmd.Parameters.AddWithValue("@timeOut", null);
                         else cmd.Parameters.AddWithValue("@timeOut", Convert.ToDateTime(timecard.timeOut));
 
                         if (timecard.description == null) cmd.Parameters.AddWithValue("@description", "");
@@ -1767,17 +1766,101 @@ namespace time_sucks.Models
                         cmd.CommandText = "INSERT INTO evals (evalTemplateID, groupID, userID, number, isComplete) " +
                         "VALUES (@evalTemplateID, @groupID, @userID, @number, 0) ";
 
-                       // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                        // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
                         cmd.Parameters.AddWithValue("@groupID", groupID);
                         cmd.Parameters.AddWithValue("@userID", userID);
 
                         //Return the last inserted ID if successful
-                        if (cmd.ExecuteNonQuery() > 0)  temp++;
+                        if (cmd.ExecuteNonQuery() > 0) temp++;
                     }
                 }
             }
-            return (temp > 0) ;
+            return (temp > 0);
 
+        }
+
+        public static bool SetInUse(int evalTemplateID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Update evalTemplates Set inUse = 0 Where evalTemplateID = @evalTemplateID";
+
+                    // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+
+
+
+
+        }
+
+        public static EmptyEval GetEvaluation(int evalTemplateID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                EmptyEval eval = new EmptyEval();
+                eval.templateQuestions = new List<EvalTemplateQuestion>();
+                eval.categories = new List<EvalTemplateQuestionCategory>();
+
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Select * From evalTemplateQuestions Where evalTemplateID = @evalTemplateID";
+
+                    // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            eval.evalID = reader.GetInt32("evalID");
+                           
+                            eval.templateQuestions.Add(new EvalTemplateQuestion()
+                            {
+                                questionText = reader.GetString("questionText"),
+                                questionType = reader.GetChar("questionType"),
+                                evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                number = reader.GetInt32("number"),
+                            });
+                            
+                        }                        
+                    }
+
+                    cmd.CommandText = "Select * From evalTemplateQuestionCategories Where evalTemplateID = @evalTemplateID";
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            eval.evalTemplateID = reader.GetInt32("evalTemplateID");
+
+                            eval.categories.Add(new EvalTemplateQuestionCategory()
+                            {
+                                categoryName = reader.GetString("categoryName"),
+                                evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID")
+                            });
+
+                        }
+
+                    }
+                    return eval;
+                }
+            }
         }
     }
 }

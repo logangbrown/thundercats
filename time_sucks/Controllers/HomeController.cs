@@ -359,7 +359,7 @@ namespace time_sucks.Controllers
             
             if (GetUserType() == 'I' || IsAdmin())
             {
-                return DBHelper.CreateTemplate(user.userID);
+                return Ok(DBHelper.CreateTemplate(user.userID));
             }
             return Unauthorized();
         }
@@ -1049,11 +1049,33 @@ namespace time_sucks.Controllers
 
             List<int> projectIDs = new List<int>();
             int evalTemplateID = 0;
-            //not sure how to get evalTemplateID???
-            projectIDs.Add(project.projectID);
 
-            if (DBHelper.AssignEvals(projectIDs, evalTemplateID)) return Ok();
+            foreach(int projectID in projectIDs)
+            {
+                projectIDs.Add(project.projectID);
+            }
+            
+            //call and set the inUse flag with another query 
+
+            if (DBHelper.AssignEvals(projectIDs, evalTemplateID))
+            {
+                DBHelper.SetInUse(evalTemplateID);
+                return Ok();
+            }
+
             return StatusCode(500);
+
+        }
+
+        [HttpPost]
+        public IActionResult GetEvaluation([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            //how to get evalTemplateID?
+            int evalTemplateID = 0;
+
+            return Ok(DBHelper.GetEvaluation(evalTemplateID));
 
         }
 
