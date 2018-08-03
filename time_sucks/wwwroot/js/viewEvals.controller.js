@@ -2,6 +2,7 @@
     $scope.loaded = false;
     $scope.config = {};
     $scope.currentEval = 0;
+    $scope.currentUser = 0;
     $scope.group = {};
     $scope.group.users = {};
     $scope.group.evaulations = {};
@@ -174,6 +175,9 @@
                         }
                     }
                 }
+
+                $scope.currentUser = 1;
+                $scope.currentEval = 1;
             });
 
         $scope.getResponse = function (evaluationID, evalID, evalTemplateQuestionID) {
@@ -182,6 +186,10 @@
                     $scope.group.evaluations[evaluationID].responses[responseID].evalTemplateQuestionID === evalTemplateQuestionID)
                     return $scope.group.evaluations[evaluationID].responses[responseID].response;
             }
+            return '';
+        };
+
+        $scope.calculateCategoryTotal = function (categoryID, evalID) {
             return '';
         };
 

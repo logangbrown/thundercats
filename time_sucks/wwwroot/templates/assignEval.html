@@ -7,7 +7,7 @@
                 <h5>Projects</h5>
             </div>
 
-            <div class="card" ng-if="hasProjects()">
+            <div class="card">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item" style="height: 40px">
                         <div class="pretty p-svg p-curve float-left w-100">
@@ -20,7 +20,7 @@
                             </div>
                         </div>
                     </li>
-                    <li class="list-group-item" style="height: 40px" ng-repeat="p in course.projects | orderObjectBy :'projectName'" ng-if="p.isActive || config.showInactiveProjects">
+                    <li class="list-group-item" style="height: 40px" ng-repeat="p in course.projects | orderObjectBy :'projectName'">
                         <div class="pretty p-svg p-curve float-left w-100">
                             <input type="checkbox" ng-model="p.isSelected" title="Select this project." ng-change="uncheckSelectAll(p.isSelected)" />
                             <div class="state p-primary">

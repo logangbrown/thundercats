@@ -11,5 +11,8 @@ namespace time_sucks.Models
         public int userID { get; set; }
         public string templateName { get; set; }
         public bool inUse { get; set; }
+
+        public List<EvalTemplateQuestionCategory> categories { get; set; }
+        public List<EvalTemplateQuestion> templateQuestions { get; set; }
     }
 }

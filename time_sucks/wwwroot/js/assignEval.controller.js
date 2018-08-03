@@ -10,11 +10,15 @@
         $scope.courseID = $routeParams.ID;
 
         if (!$scope.courseID) window.history.back();
+        $scope.course.courseID = $scope.courseID;
 
         usSpinnerService.spin('spinner');
-        $http.post("/Home/GetCourseForEvals", { courseID: $scope.courseID })
+        $http.post("/Home/GetProjects", { courseID: $scope.courseID })
             .then(function (response) {
                 usSpinnerService.stop('spinner');
+                $.each(response.data, function (index, project) {
+                    $scope.course.projects[project.projectID] = project;
+                });
             }, function () {
                 usSpinnerService.stop('spinner');
                 toastr["error"]("Failed to retrieve course. Using Dummy Data.");
@@ -63,8 +67,20 @@
                 }
             });
 
+        usSpinnerService.spin('spinner');
+        $http.post("/Home/GetTemplates", { courseID: $scope.courseID })
+            .then(function (response) {
+                usSpinnerService.stop('spinner');
+                $.each(response.data, function (index, eval) {
+                    $scope.course.evaluations[eval.evalTemplateID] = eval;
+                });
+            }, function () {
+                usSpinnerService.stop('spinner');
+                toastr["error"]("Failed to retrieve evaluations.");
+            });
+
         $scope.hasProjects = function () {
-            if ($scope.course) return !angular.equals([], $scope.course.projects);
+            if ($scope.course.projects) return !angular.equals([], $scope.course.projects);
             return false;
         };
 
@@ -105,15 +121,26 @@
             }
 
             if (confirm('Are you sure you want to assign this evaluation?')) {
+                var projectIDs = [];
+                var evalTemplateID = 0;
+                for (projectID in $scope.course.projects) {
+                    if ($scope.course.projects[projectID].isSelected) projectIDs.push(projectID);
+                }
+                for (templateID in $scope.course.evaluations) {
+                    if ($scope.course.evaluations[templateID].isSelected) {
+                        evalTemplateID = templateID;
+                        break;
+                    }
+                }
                 usSpinnerService.spin('spinner');
-                $http.post("/Home/AssignEvaluation", { projectIDs: projectIDs })
+                $http.post("/Home/AssignEvaluation", { projectIDs: projectIDs, evalTemplateID: evalTemplateID })
                     .then(function (response) {
                         usSpinnerService.stop('spinner');
                         toastr["success"]("Evaluation assigned.");
                         $location.path('/course/' + $scope.courseID);
                     }, function () {
                         usSpinnerService.stop('spinner');
-                        toastr["error"]("Failed to assign the evaluation, endpoint not defined.");
+                        toastr["error"]("Failed to assign the evaluation.");
                     });
             } else {
                 // Do nothing!

@@ -5,11 +5,8 @@
         <div class="input-group-prepend">
             <label class="input-group-text" for="student">Student</label>
         </div>
-        <select class="custom-select" id="student">
-            <option value="1" selected>Logan Brown</option>
-            <option value="2">Tashi Aguilar</option>
-            <option value="3">Steven Bate</option>
-            <option value="4">Jeff Garcia</option>
+        <select class="custom-select" id="student" ng-model="currentUser"
+                ng-options="u.userID as (u.firstName + ' ' + u.lastName) for u in group.users">
         </select>
     </div>
 
@@ -17,8 +14,8 @@
         <div class="input-group-prepend">
             <label class="input-group-text" for="evaluation">Evaluation</label>
         </div>
-        <select class="custom-select" id="evaluation" ng-model="config.currentEval">
-            <option ng-repeat="e in group.evaluations" value="{{e.evalID}}">Evaluation {{e.number}}</option>
+        <select class="custom-select" id="evaluation" ng-model="currentEval"
+                ng-options="e.evalID as ('Evaluation ' + e.number) for e in group.evaluations">
         </select>
     </div>
 
@@ -48,7 +45,7 @@
                 <tr>
                     <th class="sticky-column">{{c.categoryName}}</th>
                     <td class="border-right" ng-repeat="ev in e.evals">
-                        Category Total
+                        {{calculateCategoryTotal(c.evalTemplateQuestionCategoryID, e.evalID)}}
                     </td>
                 </tr>
                 <tr ng-repeat="tq in e.templateQuestions | orderObjectBy : 'number' | filter: {evalTemplateQuestionCategoryID: c.evalTemplateQuestionCategoryID}">

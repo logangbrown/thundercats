@@ -285,12 +285,11 @@ namespace time_sucks.Controllers
         {
             string JsonString = json.ToString();
             EvalTemplateQuestionCategory evalTemplateQuestionCategory = JsonConvert.DeserializeObject<EvalTemplateQuestionCategory>(JsonString);
-            int evalTemplateID = evalTemplateQuestionCategory.evalTemplateID;
-            int evalTemplateQuestionCategoryID = evalTemplateQuestionCategory.evalTemplateQuestionCategoryID;
 
-            if (GetUserType() == 'I' || IsAdmin())
+            if (IsInstructorForEval(evalTemplateQuestionCategory.evalTemplateID) || IsAdmin())
             {
-                if (DBHelper.CreateTemplateQuestion(evalTemplateQuestionCategoryID, evalTemplateID)) return Ok();
+                long questionID = DBHelper.CreateTemplateQuestion(evalTemplateQuestionCategory.evalTemplateQuestionCategoryID, evalTemplateQuestionCategory.evalTemplateID);
+                if (questionID > 0) return Ok(questionID);
                 return StatusCode(500);
             }
             return Unauthorized();
@@ -354,14 +353,31 @@ namespace time_sucks.Controllers
         public IActionResult CreateTemplate([FromBody]Object json)
         {
             string JsonString = json.ToString();
-            
-            if (GetUserType() == 'I' || IsAdmin())
+            User user = JsonConvert.DeserializeObject<User>(JsonString);
+
+            if (GetUserType() == 'I')
             {
                 return Ok(DBHelper.CreateTemplate(GetUserID()));
+            } else if (IsAdmin())
+            {
+                return Ok(DBHelper.CreateTemplate(user.userID));
             }
             return Unauthorized();
         }
-        
+
+        [HttpPost]
+        public IActionResult SaveTemplateName([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            EvalTemplate evalTemplate = JsonConvert.DeserializeObject<EvalTemplate>(JsonString);
+
+            if (GetUserType() == 'I' || IsAdmin())
+            {
+                return Ok(DBHelper.SaveTemplateName(evalTemplate));
+            }
+            return Unauthorized();
+        }
+
         [HttpPost]
         public IActionResult CreateTemplateCopy([FromBody]Object json)
         {
@@ -382,11 +398,11 @@ namespace time_sucks.Controllers
         {
             string JsonString = json.ToString();
             EvalTemplate evalTemplate = JsonConvert.DeserializeObject<EvalTemplate>(JsonString);
-            int helper = evalTemplate.evalTemplateID;
 
-            if (GetUserType() == 'I' || IsAdmin())
+            if (IsInstructorForEval(evalTemplate.evalTemplateID) || IsAdmin())
             {
-                if (DBHelper.CreateCategory(helper)) return Ok();
+                long categoryID = DBHelper.CreateCategory(evalTemplate.evalTemplateID);
+                if (categoryID > 0) return Ok(categoryID);
                 return StatusCode(500);
             }
             return Unauthorized();
@@ -1035,6 +1051,21 @@ namespace time_sucks.Controllers
             List<EvalTemplate> templates = DBHelper.GetTemplates(course.instructorID);
 
             if (templates.Count > 0) return Ok(templates);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public IActionResult GetTemplatesForInstructor([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            User user = JsonConvert.DeserializeObject<User>(JsonString);
+
+            if(IsAdmin() || GetUserID() == user.userID)
+            {
+                List<EvalTemplate> templates = DBHelper.GetFullTemplatesForInstructor(user.userID);
+                if (templates.Count > 0) return Ok(templates);
+            }
+
             return NoContent();
         }
 

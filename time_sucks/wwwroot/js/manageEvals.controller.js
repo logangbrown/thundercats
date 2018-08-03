@@ -1,23 +1,40 @@
-﻿angular.module('time').controller('ManageEvalsCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', function ($scope, $http, $routeParams, $location, usSpinnerService) {
+﻿angular.module('time').controller('ManageEvalsCtrl', ['$scope', '$http', '$routeParams', '$location', 'usSpinnerService', '$route', function ($scope, $http, $routeParams, $location, usSpinnerService, $route) {
     $scope.loaded = false;
     $scope.config = {};
     $scope.config.currentTemplate = 0;
-    $scope.group = {};
-    $scope.group.users = {};
-    $scope.group.evaulations = {};
+    $scope.config.instructorID = 0;
+    $scope.evaulations = {};
     $scope.instructors = {};
-    $scope.evaluations = {};
 
     $scope.load = function () {
         $scope.userID = $routeParams.ID;
-
+        $scope.config.instructorID = $scope.userID;
         if (!$scope.userID) window.history.back();
         
         $scope.loadTemplates = function () {
+            $scope.evaluations = {};
+            $scope.config.currentTemplate = 0;
             usSpinnerService.spin('spinner');
-            $http.post("/Home/GetInstructorEvalTemplates", { userID: $scope.userID })
+            $http.post("/Home/GetTemplatesForInstructor", { userID: $scope.config.instructorID })
                 .then(function (response) {
                     usSpinnerService.stop('spinner');
+                    $.each(response.data, function (index, template) {
+                        if ($scope.config.currentTemplate === 0) $scope.config.currentTemplate = template.evalTemplateID;
+                        $scope.evaluations[template.evalTemplateID] = {
+                            evalTemplateID: template.evalTemplateID,
+                            templateName: template.templateName,
+                            userID: template.userID,
+                            inUse: template.inUse
+                        };
+                        $scope.evaluations[template.evalTemplateID].categories = {};
+                        $scope.evaluations[template.evalTemplateID].templateQuestions = {};
+                        $.each(template.categories, function (index, category) {
+                            $scope.evaluations[template.evalTemplateID].categories[category.evalTemplateQuestionCategoryID] = category;
+                        });
+                        $.each(template.templateQuestions, function (index, templateQuestion) {
+                            $scope.evaluations[template.evalTemplateID].templateQuestions[templateQuestion.evalTemplateQuestionID] = templateQuestion;
+                        });
+                    });
                 }, function () {
                     usSpinnerService.stop('spinner');
                     toastr["error"]("Failed to retrieve instructor's evaluations. Using Dummy Data.");
@@ -134,8 +151,6 @@
                             }
                         }
                     }
-
-                    $scope.config.currentTemplate = 1;
                 });
         }
 
@@ -176,8 +191,95 @@
             return '';
         };
 
-        $scope.saveTemplate = function () {
+        $scope.saveTemplateName = function (evalTemplate) {
+            usSpinnerService.spin('spinner');
+            $http.post("/Home/SaveTemplateName", { evalTemplateID: evalTemplate.evalTemplateID, templateName: evalTemplate.templateName })
+                .then(function (response) {
+                    usSpinnerService.stop('spinner');
+                    toastr["success"]("Saved template name.");
+                }, function () {
+                    usSpinnerService.stop('spinner');
+                    toastr["error"]("Failed to save template name.");
+                });
+        }
 
+        $scope.createBlankEvaluation = function () {
+            if (confirm('Are you sure you want to create a new template?')) {
+                usSpinnerService.spin('spinner');
+                $http.post("/Home/CreateTemplate", { userID: $scope.config.instructorID })
+                    .then(function (response) {
+                        usSpinnerService.stop('spinner');
+                        toastr["success"]("Created evaluation.");
+                        $route.reload();
+                    }, function () {
+                        usSpinnerService.stop('spinner');
+                        toastr["error"]("Failed to create a new evaluation.");
+                    });
+            } else {
+                // Do nothing!
+            }
+        }
+
+        $scope.createCategory = function () {
+            usSpinnerService.spin('spinner');
+            $http.post("/Home/CreateCategory", { evalTemplateID: $scope.config.currentTemplate })
+                .then(function (response) {
+                    usSpinnerService.stop('spinner');
+                    toastr["success"]("Created category.");
+                    $scope.evaluations[$scope.config.currentTemplate].categories[response.data] = {
+                        evalTemplateQuestionCategoryID: response.data,
+                        categoryName: "New Category",
+                        evalTemplateID: $scope.config.currentTemplate
+                    };
+                }, function () {
+                    usSpinnerService.stop('spinner');
+                    toastr["error"]("Failed to create a new category.");
+                });
+        }
+
+        $scope.deleteCategory = function (category) {
+            if (confirm('Are you sure you want to delete this category?')) {
+                usSpinnerService.spin('spinner');
+                $http.post("/Home/DeleteCategory", { evalTemplateQuestionCategoryID: category.evalTemplateQuestionCategoryID })
+                    .then(function (response) {
+                        usSpinnerService.stop('spinner');
+                        toastr["success"]("Category deleted.");
+                        delete $scope.evaluations[$scope.config.currentTemplate].categories[category.evalTemplateQuestionCategoryID];
+                    }, function () {
+                        usSpinnerService.stop('spinner');
+                        toastr["error"]("Failed to delete the category.");
+                    });
+            } else {
+                // Do nothing!
+            }
+        }
+
+        $scope.saveCategory = function (category) {
+            $http.post("/Home/SaveCategory", category)
+                .then(function (response) {
+                    toastr["success"]("Category saved.");
+                }, function () {
+                    toastr["error"]("Failed to save the category.");
+                });
+        }
+
+        $scope.addQuestion = function (categoryID) {
+            $http.post("/Home/CreateTemplateQuestion", { evalTemplateID: $scope.config.currentTemplate, evalTemplateQuestionCategoryID: categoryID })
+                .then(function (response) {
+                    usSpinnerService.stop('spinner');
+                    toastr["success"]("Created question.");
+                    $scope.evaluations[$scope.config.currentTemplate].templateQuestions[response.data] = {
+                        evalTemplateQuestionCategoryID: categoryID,
+                        evalTemplateID: $scope.config.currentTemplate,
+                        evalTemplateQuestionID: response.data,
+                        questionType: 'N',
+                        questionText: '',
+                        number: 0
+                    };
+                }, function () {
+                    usSpinnerService.stop('spinner');
+                    toastr["error"]("Failed to create a new question.");
+                });
         }
 
         $scope.loaded = true;

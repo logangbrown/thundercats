@@ -10,5 +10,6 @@ namespace time_sucks.Models
         public int evalTemplateQuestionCategoryID { get; set; }
         public int evalTemplateID { get; set; }
         public string categoryName { get; set; }
+        public int number { get; set; }
     }
 }

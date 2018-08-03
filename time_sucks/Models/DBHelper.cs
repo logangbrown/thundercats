@@ -665,7 +665,7 @@ namespace time_sucks.Models
             return group;
         }
 
-        public static bool CreateCategory(int evalTemplateID)
+        public static long CreateCategory(int evalTemplateID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -674,12 +674,12 @@ namespace time_sucks.Models
                 {
                     //SQL and Parameters
                     cmd.CommandText = "INSERT INTO evalTemplateQuestionCategories (evalTemplateID, categoryName) " +
-                        "VALUES (@evalTemplateID, 'temp')";
+                        "VALUES (@evalTemplateID, 'New Category')";
                     cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
 
                     //Return the last inserted ID if successful
-                    if (cmd.ExecuteNonQuery() > 0) return true;
-                    return false;
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+                    return 0;
                 }
             }
         }
@@ -734,7 +734,7 @@ namespace time_sucks.Models
             return instructorID;
         }
 
-        public static bool CreateTemplateQuestion(int evalTemplateQuestionCategoryID, int evalTemplateID)
+        public static long CreateTemplateQuestion(int evalTemplateQuestionCategoryID, int evalTemplateID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -743,13 +743,13 @@ namespace time_sucks.Models
                 {
                     //SQL and Parameters
                     cmd.CommandText = "INSERT INTO evalTemplateQuestions (evalTemplateID, evalTemplateQuestionCategoryID, questionType, questionText, number) " +
-                        "VALUES (@evalTemplateID, @evalTemplateQuestionCategoryID, 'R', 'This is a test question', 0)";
+                        "VALUES (@evalTemplateID, @evalTemplateQuestionCategoryID, 'N', '', 0)";
                     cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
                     cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", evalTemplateQuestionCategoryID);
 
                     //Return the last inserted ID if successful
-                    if (cmd.ExecuteNonQuery() > 0) return true;
-                    return false;
+                    if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
+                    return 0;
                 }
             }
         }
@@ -995,6 +995,24 @@ namespace time_sucks.Models
                     //Return the last inserted ID if successful
                     if (cmd.ExecuteNonQuery() > 0) return cmd.LastInsertedId;
                     return 0;
+                }
+            }
+        }
+
+        public static bool SaveTemplateName(EvalTemplate evalTemplate)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "UPDATE evalTemplates SET templateName = @templateName " +
+                        "WHERE evalTemplateID = @evalTemplateID";
+                    cmd.Parameters.AddWithValue("@templateName", evalTemplate.templateName);
+                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplate.evalTemplateID);
+                    
+                    return cmd.ExecuteNonQuery() > 0;
                 }
             }
         }
@@ -1508,7 +1526,6 @@ namespace time_sucks.Models
                     {
                         cmd.CommandText = "UPDATE evalTemplateQuestions SET evalTemplateQuestionCategoryID = 0 " +
                                           "WHERE evalTemplateQuestionCategoryID = @evalTemplateQuestionCategoryID";
-                        cmd.Parameters.AddWithValue("@evalTemplateQuestionCategoryID", evalTemplateQuestionCategoryID);
 
                         return true;
                     }
@@ -1709,6 +1726,75 @@ namespace time_sucks.Models
             return templates;
         }
 
+        public static List<EvalTemplate> GetFullTemplatesForInstructor(int instructorID)
+        {
+            List<EvalTemplate> templates = new List<EvalTemplate>();
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT eT.*, eTQC.evalTemplateQuestionCategoryID, eTQC.categoryName, eTQC.number AS categoryNumber, " +
+                                        "eTQ.evalTemplateQuestionID, eTQ.evalTemplateQuestionCategoryID AS qevalTemplateQuestionCategoryID, " +
+                                        "eTQ.questionType, eTQ.questionText, eTQ.number AS questionNumber " +
+                                    "FROM evalTemplates eT " +
+                                    "LEFT JOIN evalTemplateQuestionCategories eTQC on eT.evalTemplateID = eTQC.evalTemplateID " +
+                                    "LEFT JOIN evalTemplateQuestions eTQ on eT.evalTemplateID = eTQ.evalTemplateID " +
+                                    "WHERE eT.userID = @userID ";
+                    cmd.Parameters.AddWithValue("@userID", instructorID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        EvalTemplate template = new EvalTemplate();
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            if(template.evalTemplateID != reader.GetInt32("evalTemplateID"))
+                            {
+                                if (template.evalTemplateID > 0) templates.Add(template); //Adds the previous template before making a new one
+
+                                template = new EvalTemplate() {
+                                    evalTemplateID = reader.GetInt32("evalTemplateID"),
+                                    templateName = reader.GetString("templateName"),
+                                    inUse = reader.GetBoolean("inUse"),
+                                    userID = reader.GetInt32("userID"),
+                                    categories = new List<EvalTemplateQuestionCategory>(),
+                                    templateQuestions = new List<EvalTemplateQuestion>()
+                                };
+                            }
+
+                            if(!reader.IsDBNull(4))//column 4 = evalTemplateQuestionCategoryID
+                            {
+                                template.categories.Add(new EvalTemplateQuestionCategory()
+                                {
+                                    evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                    evalTemplateID = reader.GetInt32("evalTemplateID"),
+                                    categoryName = reader.GetString("categoryName"),
+                                    number = reader.GetInt32("categoryNumber")
+                                });
+                            }
+
+                            if (!reader.IsDBNull(7))//column 8 = 
+                            {
+                                template.templateQuestions.Add(new EvalTemplateQuestion()
+                                {
+                                    evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                    evalTemplateID = reader.GetInt32("evalTemplateID"),
+                                    evalTemplateQuestionCategoryID = reader.GetInt32("qevalTemplateQuestionCategoryID"),
+                                    questionType = reader.GetChar("questionType"),
+                                    questionText = reader.GetString("questionText"),
+                                    number = reader.GetInt32("questionNumber")
+                                });
+                            }
+
+                        }
+                        if (template.evalTemplateID > 0) templates.Add(template); //Adds the last template because it wouldn't have been added previously
+                    }
+                }
+            }
+            return templates;
+        }
 
         public static bool AssignEvals(List<int> projectIDs, int evalTemplateID)
         {
@@ -1724,7 +1810,7 @@ namespace time_sucks.Models
                     {
                         //SQL and Parameters
                         cmd.CommandText = "Select * From groups g Inner Join uGroups ug On g.groupID = ug.groupID " +
-                            "Inner Join users u On ug.userID = u.userID Where projectID = @projectID ";
+                            "LEFT Join users u On ug.userID = u.userID Where projectID = @projectID AND g.isActive = 1 AND ug.isActive = 1";
 
                         cmd.Parameters.AddWithValue("@projectID", projectID);
 

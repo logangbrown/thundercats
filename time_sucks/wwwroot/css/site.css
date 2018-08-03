@@ -287,6 +287,14 @@ nav a {
         color: whitesmoke;
     }
 
-pretty .state .check-label label:after, .pretty .state .check-label label:before {
-    top: 0px !important;    
-}
+    pretty .state .check-label label:after, .pretty .state .check-label label:before {
+        top: 0px !important;    
+    }
+
+    .input-group-text {
+        color: black;
+    }
+
+    .custom-select {
+        color: black;
+    }
