@@ -511,24 +511,26 @@ namespace time_sucks.Controllers
             return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
         }
 
-        //[HttpPost]
-        //public IActionResult EvalResponse([FromBody]Object json)
-        //{
-        //    String JsonString = json.ToString();
-        //    Group group = JsonConvert.DeserializeObject<Group>(JsonString);
-        //    if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
-        //    {
-        //        if (List<evalResponse> evalsResp = DBHelper.EvalResponseA(evals)) return (evalsResp)
-        //        return StatusCode(500);
-        //    }
-        //    if (evals.userID == GetUserID())
-        //    {
-        //        if (List<EvalResponse> evalsResp = DBHelper.EvalResponse(evals)) return (evalsResp)
-        //        return StatusCode(500);
+        [HttpPost]
+        public IActionResult EvalResponse([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            List<evalResponse> evalsResp = new List<evalResponse>;
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+            User user = HttpContext.Session.GetObjectFromJson<User>("user");
+            if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
+            {
+                if (evalsResp = DBHelper.EvalResponseA(group.groupID, user.userID)) return (evalsResp)
+                return StatusCode(500);
+            }
+            if (evals.userID == GetUserID())
+            {
+                if (evalsResp = DBHelper.EvalResponse(group.groupID, user.userID)) return (evalsResp)
+                return StatusCode(500);
 
-        //    }
-        //    return Unauthorized();
-        //}
+            }
+            return Unauthorized();
+        }
 
         /// <summary>
         /// Get a course and its projects and users
