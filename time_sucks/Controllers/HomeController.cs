@@ -511,24 +511,31 @@ namespace time_sucks.Controllers
             return Unauthorized(); //Not an Admin or the Instructor for the course, Unauthorized (401)
         }
 
-        //[HttpPost]
-        //public IActionResult EvalResponse([FromBody]Object json)
-        //{
-        //    String JsonString = json.ToString();
-        //    Group group = JsonConvert.DeserializeObject<Group>(JsonString);
-        //    if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
-        //    {
-        //        if (List<evalResponse> evalsResp = DBHelper.EvalResponseA(evals)) return (evalsResp)
-        //        return StatusCode(500);
-        //    }
-        //    if (evals.userID == GetUserID())
-        //    {
-        //        if (List<EvalResponse> evalsResp = DBHelper.EvalResponse(evals)) return (evalsResp)
-        //        return StatusCode(500);
+        [HttpPost]
+        public IActionResult EvalResponses([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+            if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
 
-        //    }
-        //    return Unauthorized();
-        //}
+                List<EvalResponse> evalsResp = new List<EvalResponse>();
+                evalsResp = DBHelper.EvalResponseA(group.groupID));
+
+
+                    
+
+            {
+                if ( return (evalsResp)
+                return StatusCode(500);
+            }
+            if (evals.userID == GetUserID())
+            {
+                if (List < EvalResponse > evalsResp = DBHelper.EvalResponse(evals)) return (evalsResp)
+                return StatusCode(500);
+
+            }
+            return Unauthorized();
+        }
 
         /// <summary>
         /// Get a course and its projects and users
@@ -1070,10 +1077,25 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
 
-            //how to get evalTemplateID?
             int evalTemplateID = 0;
 
             return Ok(DBHelper.GetEvaluation(evalTemplateID));
+
+        }
+
+        [HttpPost]
+        public IActionResult GetAllCompleteEvaluations([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+
+            int groupID = group.groupID;
+            int userID = GetUserID();
+
+            return Ok(DBHelper.GetAllCompleteEvaluations(groupID, userID));
+
+
 
         }
 
