@@ -254,7 +254,7 @@ namespace time_sucks.Controllers
             if (GetUserType() == 'I' || IsAdmin())
             {
                 int courseID = (int)DBHelper.CreateCourse(GetUserID());
-                if(courseID > 0) return Ok(courseID);
+                if (courseID > 0) return Ok(courseID);
                 return StatusCode(500); //Query Error
             }
             return Unauthorized();
@@ -423,10 +423,12 @@ namespace time_sucks.Controllers
             {
                 if (GetUserType() == 'S')
                 {
-                    if (!IsStudentInGroupForProject(project.projectID)) {
+                    if (!IsStudentInGroupForProject(project.projectID))
+                    {
                         groupID = (int)DBHelper.CreateGroup(project.projectID);
-                        if(groupID > 0) DBHelper.JoinGroup(GetUserID(), groupID);
-                    } else
+                        if (groupID > 0) DBHelper.JoinGroup(GetUserID(), groupID);
+                    }
+                    else
                     {
                         return StatusCode(403); //Student already part of group, unable to create a new one.
                     }
@@ -512,17 +514,6 @@ namespace time_sucks.Controllers
         }
 
         [HttpPost]
-<<<<<<< HEAD
-        public IActionResult EvalResponse([FromBody]Object json)
-        {
-            String JsonString = json.ToString();
-            List<evalResponse> evalsResp = new List<evalResponse>;
-            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
-            User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
-            {
-                if (evalsResp = DBHelper.EvalResponseA(group.groupID, user.userID)) return (evalsResp)
-=======
         public IActionResult EvalResponses([FromBody]Object json)
         {
             String JsonString = json.ToString();
@@ -530,23 +521,18 @@ namespace time_sucks.Controllers
             if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
 
                 List<EvalResponse> evalsResp = new List<EvalResponse>();
-                evalsResp = DBHelper.EvalResponseA(group.groupID));
+            evalsResp = DBHelper.EvalResponseA(group.groupID));
 
 
-                    
+
 
             {
                 if ( return (evalsResp)
->>>>>>> Tashi1
                 return StatusCode(500);
             }
             if (evals.userID == GetUserID())
             {
-<<<<<<< HEAD
-                if (evalsResp = DBHelper.EvalResponse(group.groupID, user.userID)) return (evalsResp)
-=======
                 if (List < EvalResponse > evalsResp = DBHelper.EvalResponse(evals)) return (evalsResp)
->>>>>>> Tashi1
                 return StatusCode(500);
 
             }
@@ -724,7 +710,7 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
             uCourse uCourse = JsonConvert.DeserializeObject<uCourse>(JsonString);
 
-            if((IsAdmin() || IsInstructorForCourse(uCourse.courseID)) && UserIsStudentInCourse(uCourse.userID, uCourse.courseID))
+            if ((IsAdmin() || IsInstructorForCourse(uCourse.courseID)) && UserIsStudentInCourse(uCourse.userID, uCourse.courseID))
             {
                 if (DBHelper.DeleteFromCourse(uCourse.courseID, uCourse.userID)) return Ok();
                 return StatusCode(500); //Query failed
@@ -746,9 +732,11 @@ namespace time_sucks.Controllers
             {
                 if (IsStudentInGroup(uGroups.groupID))
                 {
-                    if(DBHelper.ReJoinGroup(user.userID, uGroups.groupID)) return NoContent();
+                    if (DBHelper.ReJoinGroup(user.userID, uGroups.groupID)) return NoContent();
                     return StatusCode(500); //Query failed
-                } else {
+                }
+                else
+                {
                     long groupID = DBHelper.JoinGroup(user.userID, uGroups.groupID);
                     if (groupID > 0) return Ok(groupID);
                     return StatusCode(500); //Query failed
@@ -771,7 +759,8 @@ namespace time_sucks.Controllers
                 {   //Mark the user as inactive in the group if they have existing time entries
                     if (DBHelper.LeaveGroup(GetUserID(), group.groupID)) return Ok();
                     return StatusCode(500); //Query failed
-                } else
+                }
+                else
                 {   //Actually remove the user from the group if they don't have any time entries yet.
                     if (DBHelper.DeleteFromGroup(GetUserID(), group.groupID)) return NoContent();
                     return StatusCode(500); //Query failed
@@ -1027,8 +1016,8 @@ namespace time_sucks.Controllers
 
             if (IsAdmin() || GetUserID() == timecard.userID || IsInstructorForCourse(GetCourseForGroup(timecard.groupID)))
             {
-               if (DBHelper.SaveTime(timecard)) return Ok();
-               return StatusCode(500);
+                if (DBHelper.SaveTime(timecard)) return Ok();
+                return StatusCode(500);
             }
             return Unauthorized();
 
@@ -1042,7 +1031,7 @@ namespace time_sucks.Controllers
 
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
 
-           List<Project> projects = DBHelper.GetProjects(course.courseID);
+            List<Project> projects = DBHelper.GetProjects(course.courseID);
 
             if (projects.Count > 0) return Ok(projects);
             return NoContent();
@@ -1071,12 +1060,12 @@ namespace time_sucks.Controllers
             List<int> projectIDs = new List<int>();
             int evalTemplateID = 0;
 
-            foreach(int projectID in projectIDs)
+            foreach (int projectID in projectIDs)
             {
                 projectIDs.Add(project.projectID);
             }
 
-            //call and set the inUse flag with another query
+            //call and set the inUse flag with another query 
 
             if (DBHelper.AssignEvals(projectIDs, evalTemplateID))
             {
@@ -1099,20 +1088,6 @@ namespace time_sucks.Controllers
 
         }
 
-<<<<<<< HEAD
-                [HttpPost]
-        public IActionResult CompleteEval([FromBody]Object json)
-        {
-            String JsonString = json.ToString();
-
-            List<EvalResponse> responses = JsonConvert.DeserializeObject<List<EvalResponse>>(JsonString);
-            foreach (EvalResponse response in responses)
-            {
-                int userID = response.userID;
-                int evalID = response.evalID;
-                int evalTemplateQuestionID = response.evalTemplateQuestionID;
-                string responseA = response.response;
-=======
         [HttpPost]
         public IActionResult GetAllCompleteEvaluations([FromBody]Object json)
         {
@@ -1129,20 +1104,7 @@ namespace time_sucks.Controllers
 
         }
 
->>>>>>> Tashi1
 
-                if (DBHelper.SaveResponse(userID, evalID, evalTemplateQuestionID, responseA))
-                {
-                    continue;
-                }
-                else
-                {
-                    return StatusCode(500);
-                }
-            }
-            if (responses.Count > 0) return Ok(responses);
-            return NoContent();
-        }
         #endregion
     }
 }
