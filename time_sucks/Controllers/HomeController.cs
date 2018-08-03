@@ -354,23 +354,23 @@ namespace time_sucks.Controllers
         public IActionResult CreateTemplate([FromBody]Object json)
         {
             string JsonString = json.ToString();
-            
+
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            
+
             if (GetUserType() == 'I' || IsAdmin())
             {
                 return DBHelper.CreateTemplate(user.userID);
             }
             return Unauthorized();
         }
-        
+
         [HttpPost]
         public IActionResult CreateTemplateCopy([FromBody]Object json)
         {
             string JsonString = json.ToString();
             EvalTemplate evalTemplate = JsonConvert.DeserializeObject<EvalTemplate>(JsonString);
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            
+
             if (GetUserType() == 'I' || IsAdmin())
             {
                 if (DBHelper.CreateTemplateCopy(user.userID, evalTemplate.evalTemplateID)) return Ok();
@@ -1057,7 +1057,31 @@ namespace time_sucks.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult CompleteEval([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
 
+            List<EvalResponse> responses = JsonConvert.DeserializeObject<List<EvalResponse>>(JsonString);
+            foreach (EvalResponse response in responses)
+            {
+                int userID = response.userID;
+                int evalID = response.evalID;
+                int evalTemplateQuestionID = response.evalTemplateQuestionID;
+                string responseA = response.response;
+
+                if (DBHelper.SaveResponse(userID, evalID, evalTemplateQuestionID, responseA))
+                {
+                    continue;
+                }
+                else
+                {
+                    return StatusCode(500);
+                }
+            }
+            if (responses.Count > 0) return Ok(responses);
+            return NoContent();
+        }
         #endregion
     }
 }
