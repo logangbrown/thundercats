@@ -515,17 +515,17 @@ namespace time_sucks.Controllers
         public IActionResult EvalResponse([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            List<evalResponse> evalsResp = new List<evalResponse>;
-            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+            List<EvalResponse> evalsResp = new List<EvalResponse>();
+            Evals eval = JsonConvert.DeserializeObject<Evals>(JsonString);
             User user = HttpContext.Session.GetObjectFromJson<User>("user");
-            if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
+            if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(eval.groupID)))
             {
-                if (evalsResp = DBHelper.EvalResponseA(group.groupID, user.userID)) return (evalsResp)
+                if (evalsResp = DBHelper.EvalResponsesA(eval.groupID, eval.userID)) return Ok(evalsResp);
                 return StatusCode(500);
             }
-            if (evals.userID == GetUserID())
+            if (eval.userID == GetUserID())
             {
-                if (evalsResp = DBHelper.EvalResponse(group.groupID, user.userID)) return (evalsResp)
+                if (evalsResp = DBHelper.EvalResponses(eval.groupID, eval.userID)) return Ok(evalsResp);
                 return StatusCode(500);
 
             }
