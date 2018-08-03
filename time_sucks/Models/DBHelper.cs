@@ -833,7 +833,7 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static List<EvalResponse> EvalResponsesA(Evals evals)
+        public static List<EvalResponse> EvalResponsesA(int groupID, int userID)
         {
             List<EvalResponse> evalResponse = new List<EvalResponse>();
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -847,7 +847,7 @@ namespace time_sucks.Models
                     "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
                     "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoryID = etq.evalTemplateQuestionCategoryID " +
                     "WHERE groupID = @groupID ORDER BY etqc.categoryName";
-                    cmd.Parameters.AddWithValue("@groupID", evals.groupID);
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -873,7 +873,7 @@ namespace time_sucks.Models
             return evalResponse;
         }
 
-        public static List<EvalResponse> EvalResponses(Evals evals)
+        public static List<EvalResponse> EvalResponses(int groupID, int userID)
         {
             List<EvalResponse> evalResponse = new List<EvalResponse>();
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -887,7 +887,7 @@ namespace time_sucks.Models
                     "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
                     "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoryID = etq.evalTemplateQuestionCategoryID " +
                     "WHERE groupID = @groupID ORDER BY etqc.categoryName";
-                    cmd.Parameters.AddWithValue("@groupID", evals.groupID);
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -902,7 +902,8 @@ namespace time_sucks.Models
                                 evalNumber = reader.GetInt32("evalNumber"),
                                 questionNumber = reader.GetInt32("questionNumber"),
                                 questionText = reader.GetString("etq.questionText"),
-                                categoryName = reader.GetString("etqc.categoryName")
+                                categoryName = reader.GetString("etqc.categoryName"),
+                                firstName = "Team Member",
                             });
                         }
                     }
@@ -1861,6 +1862,28 @@ namespace time_sucks.Models
                     return eval;
                 }
             }
+        }
+
+        public static EvalResponse GetAllCompleteEvaluations(int groupID, int userID)
+        {
+            Group usersGroup = GetGroup(groupID);
+
+            foreach(User user in usersGroup.users)
+            {
+                List<EvalResponse> userEvalResponses = new List<EvalResponse>();
+
+                userEvalResponses.AddRange(EvalResponses(groupID, user.userID));
+
+
+            }
+
+           
+
+
+            
+
+
+
         }
     }
 }

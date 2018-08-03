@@ -512,6 +512,7 @@ namespace time_sucks.Controllers
         }
 
         [HttpPost]
+<<<<<<< HEAD
         public IActionResult EvalResponse([FromBody]Object json)
         {
             String JsonString = json.ToString();
@@ -521,11 +522,31 @@ namespace time_sucks.Controllers
             if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
             {
                 if (evalsResp = DBHelper.EvalResponseA(group.groupID, user.userID)) return (evalsResp)
+=======
+        public IActionResult EvalResponses([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+            if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
+
+                List<EvalResponse> evalsResp = new List<EvalResponse>();
+                evalsResp = DBHelper.EvalResponseA(group.groupID));
+
+
+                    
+
+            {
+                if ( return (evalsResp)
+>>>>>>> Tashi1
                 return StatusCode(500);
             }
             if (evals.userID == GetUserID())
             {
+<<<<<<< HEAD
                 if (evalsResp = DBHelper.EvalResponse(group.groupID, user.userID)) return (evalsResp)
+=======
+                if (List < EvalResponse > evalsResp = DBHelper.EvalResponse(evals)) return (evalsResp)
+>>>>>>> Tashi1
                 return StatusCode(500);
 
             }
@@ -1072,13 +1093,13 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
 
-            //how to get evalTemplateID?
             int evalTemplateID = 0;
 
             return Ok(DBHelper.GetEvaluation(evalTemplateID));
 
         }
 
+<<<<<<< HEAD
                 [HttpPost]
         public IActionResult CompleteEval([FromBody]Object json)
         {
@@ -1091,6 +1112,24 @@ namespace time_sucks.Controllers
                 int evalID = response.evalID;
                 int evalTemplateQuestionID = response.evalTemplateQuestionID;
                 string responseA = response.response;
+=======
+        [HttpPost]
+        public IActionResult GetAllCompleteEvaluations([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+
+            int groupID = group.groupID;
+            int userID = GetUserID();
+
+            return Ok(DBHelper.GetAllCompleteEvaluations(groupID, userID));
+
+
+
+        }
+
+>>>>>>> Tashi1
 
                 if (DBHelper.SaveResponse(userID, evalID, evalTemplateQuestionID, responseA))
                 {
