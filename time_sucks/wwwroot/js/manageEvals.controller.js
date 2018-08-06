@@ -26,7 +26,12 @@
                             userID: template.userID,
                             inUse: template.inUse
                         };
-                        $scope.evaluations[template.evalTemplateID].categories = {};
+                        $scope.evaluations[template.evalTemplateID].categories = {
+                            0: {
+                                evalTemplateQuestionCategoryID: 0,
+                                categoryName: "No Category"
+                            }
+                        };
                         $scope.evaluations[template.evalTemplateID].templateQuestions = {};
                         $.each(template.categories, function (index, category) {
                             $scope.evaluations[template.evalTemplateID].categories[category.evalTemplateQuestionCategoryID] = category;
@@ -245,9 +250,31 @@
                         usSpinnerService.stop('spinner');
                         toastr["success"]("Category deleted.");
                         delete $scope.evaluations[$scope.config.currentTemplate].categories[category.evalTemplateQuestionCategoryID];
+                        for (evalTemplateQuestionID in $scope.evaluations[$scope.config.currentTemplate].templateQuestions) {
+                            if ($scope.evaluations[$scope.config.currentTemplate].templateQuestions[evalTemplateQuestionID].evalTemplateQuestionCategoryID === category.evalTemplateQuestionCategoryID) {
+                                $scope.evaluations[$scope.config.currentTemplate].templateQuestions[evalTemplateQuestionID].evalTemplateQuestionCategoryID = 0;
+                            }
+                        }
                     }, function () {
                         usSpinnerService.stop('spinner');
                         toastr["error"]("Failed to delete the category.");
+                    });
+            } else {
+                // Do nothing!
+            }
+        }
+
+        $scope.deleteQuestion = function (question) {
+            if (confirm('Are you sure you want to delete this question?')) {
+                usSpinnerService.spin('spinner');
+                $http.post("/Home/DeleteQuestion", { evalTemplateQuestionID: question.evalTemplateQuestionID })
+                    .then(function (response) {
+                        usSpinnerService.stop('spinner');
+                        toastr["success"]("Question deleted.");
+                        delete $scope.evaluations[$scope.config.currentTemplate].templateQuestions[question.evalTemplateQuestionID];
+                    }, function () {
+                        usSpinnerService.stop('spinner');
+                        toastr["error"]("Failed to delete the question.");
                     });
             } else {
                 // Do nothing!
@@ -260,6 +287,15 @@
                     toastr["success"]("Category saved.");
                 }, function () {
                     toastr["error"]("Failed to save the category.");
+                });
+        }
+
+        $scope.saveQuestion = function (question) {
+            $http.post("/Home/SaveQuestion", question)
+                .then(function (response) {
+                    toastr["success"]("Question saved.");
+                }, function () {
+                    toastr["error"]("Failed to save the question.");
                 });
         }
 

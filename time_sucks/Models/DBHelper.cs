@@ -1527,7 +1527,7 @@ namespace time_sucks.Models
                     {
                         cmd.CommandText = "UPDATE evalTemplateQuestions SET evalTemplateQuestionCategoryID = 0 " +
                                           "WHERE evalTemplateQuestionCategoryID = @evalTemplateQuestionCategoryID";
-
+                        cmd.ExecuteNonQuery();
                         return true;
                     }
                 }
