@@ -21,7 +21,7 @@
                 <label class="input-group-text" for="template">Template</label>
             </div>
             <select class="custom-select" id="template" ng-model="config.currentTemplate"
-                    ng-options="t.evalTemplateID as t.templateName for t in evaluations">
+                    ng-options="t.evalTemplateID as t.templateName for t in evaluations | orderObjectBy : 'templateName'">
             </select>
         </div>
     </div>

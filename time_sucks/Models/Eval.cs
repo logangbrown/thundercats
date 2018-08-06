@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace time_sucks.Models
 {
-    public class Evals
+    public class Eval
     {
         public int evalID { get; set; }
         public int evalTemplateID { get; set; }
@@ -14,5 +14,10 @@ namespace time_sucks.Models
 
         public int number { get; set; }
         public bool isComplete { get; set; }
+
+        public List<EvalTemplateQuestionCategory> categories { get; set; }
+        public List<EvalTemplateQuestion> templateQuestions { get; set; }
+        public List<EvalResponse> responses { get; set; }
+        public List<User> users { get; set; }
     }
 }

@@ -1112,6 +1112,24 @@ namespace time_sucks.Models
             }
         }
 
+        public static bool CompleteEval(int evalID)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "UPDATE evals SET isComplete = 1 WHERE evalID = @evalID";
+                    cmd.Parameters.AddWithValue("@evalID", evalID);
+
+                    //Return the last inserted ID if successful
+                    if (cmd.ExecuteNonQuery() > 0) return true;
+                    return false;
+                }
+            }
+        }
+
         public static List<User> GetUsers()
         {
             List<User> user = new List<User>();
@@ -1670,7 +1688,7 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "SELECT * FROM projects WHERE courseID = @courseID";
+                    cmd.CommandText = "SELECT * FROM projects WHERE courseID = @courseID AND isActive = true";
                     cmd.Parameters.AddWithValue("@courseID", courseID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -1810,8 +1828,9 @@ namespace time_sucks.Models
                     using (MySqlCommand cmd = conn.CreateCommand())
                     {
                         //SQL and Parameters
-                        cmd.CommandText = "Select * From groups g Inner Join uGroups ug On g.groupID = ug.groupID " +
-                            "LEFT Join users u On ug.userID = u.userID Where projectID = @projectID AND g.isActive = 1 AND ug.isActive = 1";
+                        cmd.CommandText = "Select g.groupID From groups g Inner Join uGroups ug On g.groupID = ug.groupID " +
+                            "INNER Join users u On ug.userID = u.userID Where projectID = @projectID AND g.isActive = 1 AND ug.isActive = 1 " +
+                            "GROUP BY g.groupID";
 
                         cmd.Parameters.AddWithValue("@projectID", projectID);
 
@@ -1825,7 +1844,7 @@ namespace time_sucks.Models
 
                                 tempGroup = GetGroup(tempGroup.groupID); //get all the users in group
 
-                                if (AssignEvalsForGroup(tempGroup))
+                                if (AssignEvalsForGroup(tempGroup, evalTemplateID, GetLastEvalNumber(tempGroup.groupID)+1))
                                     temp++;
 
                             }
@@ -1836,7 +1855,7 @@ namespace time_sucks.Models
             return (temp > 0);
         }
 
-        public static bool AssignEvalsForGroup(Group group)
+        public static bool AssignEvalsForGroup(Group group, int evalTemplateID, int number)
         {
             int temp = 0;
             foreach (User user in group.users)
@@ -1853,9 +1872,10 @@ namespace time_sucks.Models
                         cmd.CommandText = "INSERT INTO evals (evalTemplateID, groupID, userID, number, isComplete) " +
                         "VALUES (@evalTemplateID, @groupID, @userID, @number, 0) ";
 
-                        // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                        cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
                         cmd.Parameters.AddWithValue("@groupID", groupID);
                         cmd.Parameters.AddWithValue("@userID", userID);
+                        cmd.Parameters.AddWithValue("@number", number);
 
                         //Return the last inserted ID if successful
                         if (cmd.ExecuteNonQuery() > 0) temp++;
@@ -1866,6 +1886,33 @@ namespace time_sucks.Models
 
         }
 
+        public static int GetLastEvalNumber(int groupID)
+        {
+            int number = 0;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Select MAX(number) AS number From evals e WHERE groupID = @groupID";
+
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            if(!reader.IsDBNull(0)) number = reader.GetInt32("number");
+                        }
+                    }
+                }
+            }
+            return number;
+        }
+
         public static bool SetInUse(int evalTemplateID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
@@ -1874,7 +1921,7 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "Update evalTemplates Set inUse = 0 Where evalTemplateID = @evalTemplateID";
+                    cmd.CommandText = "Update evalTemplates Set inUse = 1 Where evalTemplateID = @evalTemplateID";
 
                     // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
                     cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
@@ -1890,39 +1937,87 @@ namespace time_sucks.Models
 
         }
 
-        public static EmptyEval GetEvaluation(int evalTemplateID)
+        public static int GetLatestIncompleteEvaluationID(int groupID, int userID)
+        {
+            int evalID = 0;
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "Select evalID From evals WHERE groupID = @groupID AND userID = @userID AND isComplete = 0 ORDER BY number DESC";
+
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
+                    cmd.Parameters.AddWithValue("@userID", userID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            if (evalID == 0)
+                            {
+                                evalID = reader.GetInt32("evalID");
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return evalID;
+        }
+
+        public static Eval GetEvaluation(int evalID)
         {
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
-                EmptyEval eval = new EmptyEval();
+
+                Eval eval = new Eval();
                 eval.templateQuestions = new List<EvalTemplateQuestion>();
                 eval.categories = new List<EvalTemplateQuestionCategory>();
+                eval.users = new List<User>();
 
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     //SQL and Parameters
-                    cmd.CommandText = "Select * From evalTemplateQuestions Where evalTemplateID = @evalTemplateID";
+                    cmd.CommandText = "Select * From evals Where evalID = @evalID";
 
                     // cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
-                    cmd.Parameters.AddWithValue("@evalTemplateID", evalTemplateID);
+                    cmd.Parameters.AddWithValue("@evalID", evalID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         //Runs once per record retrieved
                         while (reader.Read())
                         {
+                            eval.number = reader.GetInt32("number");
                             eval.evalID = reader.GetInt32("evalID");
-                           
+                            eval.evalTemplateID = reader.GetInt32("evalTemplateID");
+                            eval.groupID = reader.GetInt32("groupID");
+                            eval.isComplete = reader.GetBoolean("isComplete");
+                        }
+                    }
+
+
+                    //SQL and Parameters
+                    cmd.CommandText = "Select * From evalTemplateQuestions Where evalTemplateID = @evalTemplateID";
+                    cmd.Parameters.AddWithValue("@evalTemplateID", eval.evalTemplateID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {                           
                             eval.templateQuestions.Add(new EvalTemplateQuestion()
                             {
                                 questionText = reader.GetString("questionText"),
                                 questionType = reader.GetChar("questionType"),
                                 evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
                                 evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
-                                number = reader.GetInt32("number"),
+                                number = reader.GetInt32("number")
                             });
-                            
                         }                        
                     }
 
@@ -1930,27 +2025,37 @@ namespace time_sucks.Models
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-
-                        //Runs once per record retrieved
                         while (reader.Read())
                         {
-                            eval.evalTemplateID = reader.GetInt32("evalTemplateID");
-
                             eval.categories.Add(new EvalTemplateQuestionCategory()
                             {
                                 categoryName = reader.GetString("categoryName"),
                                 evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID")
                             });
-
                         }
+                    }
 
+                    cmd.CommandText = "Select * From uGroups uG LEFT JOIN users u on uG.userID = u.userID WHERE uG.groupID = @groupID AND uG.isActive = 1 AND u.isActive";
+                    cmd.Parameters.AddWithValue("@groupID", eval.groupID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            eval.users.Add(new User()
+                            {
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                                userID = reader.GetInt32("userID")
+                            });
+                        }
                     }
                     return eval;
                 }
             }
         }
 
-        public static EvalResponse GetAllCompleteEvaluations(int groupID, int userID)
+        public static List<Eval> GetAllCompleteEvaluations(int groupID, int userID)
         {
             Group usersGroup = GetGroup(groupID);
 
@@ -1964,7 +2069,7 @@ namespace time_sucks.Models
             }
 
             //Temporary so it'll build
-            return new EvalResponse();
+            return new List<Eval>();
         }
     }
 }

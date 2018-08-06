@@ -530,7 +530,7 @@ namespace time_sucks.Controllers
         public IActionResult EvalResponses([FromBody]Object json)
         {
             String JsonString = json.ToString();
-            Evals eval = JsonConvert.DeserializeObject<Evals>(JsonString);
+            Eval eval = JsonConvert.DeserializeObject<Eval>(JsonString);
             List<EvalResponse> evalsResp = new List<EvalResponse>();
             if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(eval.groupID)))
             {
@@ -1049,8 +1049,7 @@ namespace time_sucks.Controllers
             String JsonString = json.ToString();
 
             Course course = JsonConvert.DeserializeObject<Course>(JsonString);
-
-            List<EvalTemplate> templates = DBHelper.GetTemplates(course.instructorID);
+            List<EvalTemplate> templates = DBHelper.GetTemplates(DBHelper.GetInstructorForCourse(course.courseID));
 
             if (templates.Count > 0) return Ok(templates);
             return NoContent();
@@ -1076,21 +1075,13 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
 
-            Project project = JsonConvert.DeserializeObject<Project>(JsonString); //don't know how getting multiple project ids??
-
-            List<int> projectIDs = new List<int>();
-            int evalTemplateID = 0;
-
-            foreach (int projectID in projectIDs)
-            {
-                projectIDs.Add(project.projectID);
-            }
+            AssignEvals assignEvals = JsonConvert.DeserializeObject<AssignEvals>(JsonString);
 
             //call and set the inUse flag with another query 
 
-            if (DBHelper.AssignEvals(projectIDs, evalTemplateID))
+            if (DBHelper.AssignEvals(assignEvals.projectIDs, assignEvals.evalTemplateID))
             {
-                DBHelper.SetInUse(evalTemplateID);
+                DBHelper.SetInUse(assignEvals.evalTemplateID);
                 return Ok();
             }
 
@@ -1103,10 +1094,48 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
 
-            int evalTemplateID = 0;
+            int evalID = 0;
 
-            return Ok(DBHelper.GetEvaluation(evalTemplateID));
+            return Ok(DBHelper.GetEvaluation(evalID));
 
+        }
+
+        [HttpPost]
+        public IActionResult GetLatestIncompleteEvaluation([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+
+            int evalID = DBHelper.GetLatestIncompleteEvaluationID(group.groupID, GetUserID());
+            if (evalID > 0)
+            {
+                return Ok(DBHelper.GetEvaluation(evalID));
+            }
+            return NoContent();
+            
+        }
+
+        [HttpPost]
+        public IActionResult CompleteEvaluation([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            List<EvalResponse> responses = JsonConvert.DeserializeObject<List<EvalResponse>>(JsonString);
+            //Evals eval = JsonConvert.DeserializeObject<Evals>(JsonString);
+            bool failed = false;
+            int evalID = 0;
+            //if (GetUserID() == eval.userID)
+            //{
+                foreach (EvalResponse response in responses)
+                {
+                    if (evalID == 0) evalID = response.evalID;
+                    if (!DBHelper.SaveResponse(response.userID, response.evalID, response.evalTemplateQuestionID, response.response)) failed = true;
+                }
+            //}
+            if (failed) return StatusCode(500);
+
+            if (!DBHelper.CompleteEval(evalID)) return StatusCode(500);
+            
+            return Ok();
         }
 
         [HttpPost]
@@ -1116,13 +1145,11 @@ namespace time_sucks.Controllers
 
             Group group = JsonConvert.DeserializeObject<Group>(JsonString);
 
-            int groupID = group.groupID;
-            int userID = GetUserID();
-
-            return Ok(DBHelper.GetAllCompleteEvaluations(groupID, userID));
-
-
-
+            if (IsActiveStudentInGroup(group.groupID) || IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
+            {
+                return Ok(DBHelper.GetAllCompleteEvaluations(group.groupID, GetUserID()));
+            }
+            return Unauthorized();
         }
 
 

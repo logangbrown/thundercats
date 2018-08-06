@@ -291,6 +291,7 @@
         }
 
         $scope.saveQuestion = function (question) {
+            if (question.number === null || isNaN(question.number)) { question.number = 0 };
             $http.post("/Home/SaveQuestion", question)
                 .then(function (response) {
                     toastr["success"]("Question saved.");

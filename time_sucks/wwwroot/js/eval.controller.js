@@ -4,15 +4,32 @@
     $scope.currentEval = 0;
     $scope.group = {};
     $scope.users = {};
-    $scope.evaulation = {};
+    $scope.evaluation = {};
+    $scope.evaluation.templateQuestions = {};
+    $scope.evaluation.categories = {};
+    $scope.evaluation.responses = [];
+
+    $scope.responsecounter = 1;
 
     $scope.load = function () {
         $scope.groupID = $routeParams.ID;
         if (!$scope.groupID) window.history.back();
         usSpinnerService.spin('spinner');
-        $http.post("/Home/GetCurrentEval", { groupID: $scope.groupID })
+        $http.post("/Home/GetLatestIncompleteEvaluation", { groupID: $scope.groupID })
             .then(function (response) {
                 usSpinnerService.stop('spinner');
+                $scope.evaluation.evalID = response.data.evalID;
+                $scope.evaluation.templateName = response.data.templateName;
+                $scope.evaluation.number = response.data.number;
+                $.each(response.data.categories, function (index, category) {
+                    $scope.evaluation.categories[category.evalTemplateQuestionCategoryID] = category;
+                });
+                $.each(response.data.templateQuestions, function (index, templateQuestion) {
+                    $scope.evaluation.templateQuestions[templateQuestion.evalTemplateQuestionID] = templateQuestion;
+                });
+                $.each(response.data.users, function (index, user) {
+                    $scope.users[user.userID] = user;
+                });
             }, function () {
                 usSpinnerService.stop('spinner');
                 toastr["error"]("Failed to retrieve evaluation. Using Dummy Data.");
@@ -21,32 +38,6 @@
                 $scope.group = {
                     groupID: $scope.groupID,
                     groupName: 'Test Group'
-                }
-                $scope.users = {
-                    67: {
-                        userID: 67,
-                        firstName: 'Logan',
-                        lastName: 'Brown',
-                        isActive: true
-                    },
-                    2: {
-                        userID: 2,
-                        firstName: 'Tashi',
-                        lastName: 'Aguilar',
-                        isActive: true
-                    },
-                    3: {
-                        userID: 3,
-                        firstName: 'Steven',
-                        lastName: 'Bate',
-                        isActive: true
-                    },
-                    4: {
-                        userID: 4,
-                        firstName: 'Jeff',
-                        lastName: 'Garcia',
-                        isActive: true
-                    }
                 }
                 $scope.evaluation = {
                     evalID: 1, //Should we randomize this number on the back end?
@@ -98,150 +89,7 @@
                             questionText: "Test question 5, what do you think?",
                             number: 1
                         }
-                    }/*,
-                    responses: {
-                        1: {
-                            evalResponseID: 1,
-                            evalID: 1,
-                            evalTemplateQuestionID: 1,
-                            response: "",
-                            userID: 2
-                        },
-                        2: {
-                            evalResponseID: 2,
-                            evalID: 2,
-                            evalTemplateQuestionID: 1,
-                            response: "4",
-                            userID: 67
-                        },
-                        3: {
-                            evalResponseID: 3,
-                            evalID: 1,
-                            evalTemplateQuestionID: 2,
-                            response: "",
-                            userID: 2
-                        },
-                        4: {
-                            evalResponseID: 4,
-                            evalID: 2,
-                            evalTemplateQuestionID: 2,
-                            response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
-                            userID: 67
-                        },
-                        5: {
-                            evalResponseID: 5,
-                            evalID: 1,
-                            evalTemplateQuestionID: 3,
-                            response: "",
-                            userID: 2
-                        },
-                        6: {
-                            evalResponseID: 6,
-                            evalID: 2,
-                            evalTemplateQuestionID: 3,
-                            response: "4",
-                            userID: 67
-                        },
-                        7: {
-                            evalResponseID: 7,
-                            evalID: 1,
-                            evalTemplateQuestionID: 4,
-                            response: "",
-                            userID: 2
-                        },
-                        8: {
-                            evalResponseID: 8,
-                            evalID: 2,
-                            evalTemplateQuestionID: 4,
-                            response: "Hello! This is a response that has been thought out and considered. It takes up more space, because they wanted to be detailed and make a coherent argument. Hopefully it illustrates what a long response could be.",
-                            userID: 67
-                        },
-                        9: {
-                            evalResponseID: 9,
-                            evalID: 1,
-                            evalTemplateQuestionID: 1,
-                            response: "",
-                            userID: 3
-                        },
-                        10: {
-                            evalResponseID: 10,
-                            evalID: 1,
-                            evalTemplateQuestionID: 2,
-                            response: "",
-                            userID: 3
-                        },
-                        11: {
-                            evalResponseID: 11,
-                            evalID: 1,
-                            evalTemplateQuestionID: 3,
-                            response: "",
-                            userID: 3
-                        },
-                        12: {
-                            evalResponseID: 12,
-                            evalID: 1,
-                            evalTemplateQuestionID: 4,
-                            response: "",
-                            userID: 3
-                        },
-                        13: {
-                            evalResponseID: 13,
-                            evalID: 1,
-                            evalTemplateQuestionID: 1,
-                            response: "",
-                            userID: 4
-                        },
-                        14: {
-                            evalResponseID: 14,
-                            evalID: 1,
-                            evalTemplateQuestionID: 2,
-                            response: "",
-                            userID: 4
-                        },
-                        15: {
-                            evalResponseID: 15,
-                            evalID: 1,
-                            evalTemplateQuestionID: 3,
-                            response: "",
-                            userID: 4
-                        },
-                        16: {
-                            evalResponseID: 16,
-                            evalID: 1,
-                            evalTemplateQuestionID: 4,
-                            response: "",
-                            userID: 4
-                        },
-                        17: {
-                            evalResponseID: 17,
-                            evalID: 1,
-                            evalTemplateQuestionID: 5,
-                            response: "",
-                            userID: 4
-                        },
-                        18: {
-                            evalResponseID: 18,
-                            evalID: 1,
-                            evalTemplateQuestionID: 5,
-                            response: "",
-                            userID: 3
-                        },
-                        19: {
-                            evalResponseID: 19,
-                            evalID: 1,
-                            evalTemplateQuestionID: 5,
-                            response: "",
-                            userID: 2
-                        },
-                        20: {
-                            evalResponseID: 20,
-                            evalID: 1,
-                            evalTemplateQuestionID: 5,
-                            response: "",
-                            userID: 67
-                        }
                     }
-                    */
                 }
 
                 //create empty responses
@@ -266,18 +114,26 @@
                     $scope.evaluation.responses[responseID].evalTemplateQuestionID === evalTemplateQuestionID)
                     return $scope.evaluation.responses[responseID];
             }
-            return '';
+
+            return $scope.evaluation.responses.push({
+                evalID: $scope.evaluation.evalID,
+                evalTemplateQuestionID: evalTemplateQuestionID,
+                response: "",
+                userID: userID
+            });
         };
 
         $scope.completeEvaluation = function () {
             if (confirm('Are you sure you want to submit this evaluation?')) {
                 usSpinnerService.spin('spinner');
-                $http.post("/Home/CompleteEval", { responses: $scope.evaluation.responses })
+                $http.post("/Home/CompleteEvaluation", $scope.evaluation.responses )
                     .then(function (response) {
                         usSpinnerService.stop('spinner');
+                        toastr["success"]("Evaluation completed.");
+                        $location.path('/group/' + $scope.groupID)
                     }, function () {
                         usSpinnerService.stop('spinner');
-                        toastr["error"]("Failed to complete evaluation. Endpoint undefined.");
+                        toastr["error"]("Failed to complete evaluation.");
                     });
             } else {
                 // Do nothing!

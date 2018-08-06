@@ -102,13 +102,13 @@
 
         $scope.assignEvaluation = function () {
             projectIDs = [];
-            for (i = 0; i < Object.keys($scope.course.projects).length; i++) {
-                if ($scope.course.projects[i].isSelected) projectIDs.push($scope.course.projects[i].projectID);
+            for (projectID in $scope.course.projects) {
+                if ($scope.course.projects[projectID].isSelected) projectIDs.push($scope.course.projects[projectID].projectID);
             }
 
             evalTemplateID = 0;
-            for (i = 0; i < Object.keys($scope.course.evaluations).length; i++) {
-                if ($scope.course.evaluations[i].isSelected) evalTemplateID = $scope.course.evaluations[i].evalTemplateID;
+            for (templateID in $scope.course.evaluations) {
+                if ($scope.course.evaluations[templateID].isSelected) evalTemplateID = $scope.course.evaluations[templateID].evalTemplateID;
             }
 
             if (projectIDs.length < 1) {
@@ -133,7 +133,7 @@
                     }
                 }
                 usSpinnerService.spin('spinner');
-                $http.post("/Home/AssignEvaluation", { projectIDs: projectIDs, evalTemplateID: evalTemplateID })
+                $http.post("/Home/AssignEvals", { projectIDs: projectIDs, evalTemplateID: evalTemplateID })
                     .then(function (response) {
                         usSpinnerService.stop('spinner');
                         toastr["success"]("Evaluation assigned.");
