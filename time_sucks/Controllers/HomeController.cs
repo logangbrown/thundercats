@@ -531,16 +531,17 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
             Eval eval = JsonConvert.DeserializeObject<Eval>(JsonString);
-            List<EvalResponse> evalsResp = new List<EvalResponse>();
+            Eval evals = new Eval();
+
             if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(eval.groupID)))
             {
-                evalsResp = DBHelper.EvalResponsesA(eval.groupID, eval.userID);
-                return Ok(evalsResp);
+                evals = DBHelper.EvalResponsesA(eval.groupID, eval.userID);
+                return Ok(evals);
             }
             if (eval.userID == GetUserID())
             {
-                evalsResp = DBHelper.EvalResponses(eval.groupID, eval.userID);
-                return Ok(evalsResp);
+                evals = DBHelper.EvalResponses(eval.groupID, eval.userID);
+                return Ok(evals);
             }
             return Unauthorized();
         }

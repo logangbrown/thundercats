@@ -833,9 +833,15 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static List<EvalResponse> EvalResponsesA(int groupID, int userID)
+        public static Eval EvalResponsesA(int groupID, int userID)
         {
-            List<EvalResponse> evalResponse = new List<EvalResponse>();
+            Eval evals = new Eval();
+            evals.categories = new List<EvalTemplateQuestionCategory>();
+            evals.responses = new List<EvalResponse>();
+            evals.users = new List<User>();
+            evals.templateQuestions = new List<EvalTemplateQuestion>();
+
+
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
@@ -853,63 +859,93 @@ namespace time_sucks.Models
                     {
                         while (reader.Read())
                         {
-                            evalResponse.Add(new EvalResponse()
+                            
+                            evals.users.Add(new User()
                             {
                                 userID = reader.GetInt32("er.userID"),
-                                evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID"),
-                                evalID = reader.GetInt32("er.evalID"),
                                 firstName = reader.GetString("u.firstName"),
                                 lastName = reader.GetString("u.lastName"),
+                            });
+
+
+                            evals.responses.Add(new EvalResponse()
+                            {
+
+                                evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID"),
+                                evalID = reader.GetInt32("er.evalID"),
                                 response = reader.GetString("er.response"),
                                 evalNumber = reader.GetInt32("evalNumber"),
                                 questionNumber = reader.GetInt32("questionNumber"),
+                            });
+
+                            evals.categories.Add(new EvalTemplateQuestionCategory()
+                            {
+                                categoryName = reader.GetString("etqc.categoryName"),
+                            });
+
+                            evals.templateQuestions.Add(new EvalTemplateQuestion()
+                            {
                                 questionText = reader.GetString("etq.questionText"),
-                                categoryName = reader.GetString("etqc.categoryName")
                             });
                         }
                     }
                 }
             }
-            return evalResponse;
+            return evals;
         }
 
-        public static List<EvalResponse> EvalResponses(int groupID, int userID)
+        public static Eval EvalResponses(int groupID, int userID)
         {
-            List<EvalResponse> evalResponse = new List<EvalResponse>();
+            Eval evals = new Eval();
+            evals.categories = new List<EvalTemplateQuestionCategory>();
+            evals.responses = new List<EvalResponse>();
+            evals.users = new List<User>();
+            evals.templateQuestions = new List<EvalTemplateQuestion>();
+
+
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT er.*, etqc.categoryName, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
+                    cmd.CommandText = "SELECT er.*, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
                     "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
                     "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
                     "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-                    "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoryID = etq.evalTemplateQuestionCategoryID " +
-                    "WHERE groupID = @groupID ORDER BY etqc.categoryName";
+                    "WHERE groupID = @groupID";
                     cmd.Parameters.AddWithValue("@groupID", groupID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            evalResponse.Add(new EvalResponse()
+                            evals.users.Add(new User()
                             {
-                                userID = reader.GetInt32("er.userID"),
-                                evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID"),
-                                evalID = reader.GetInt32("er.evalID"),
-                                response = reader.GetString("er.response"),
+                                userID = reader.GetInt32("userID"),
+                                firstName = "Team Member"
+                            });
+                                
+                            evals.responses.Add(new EvalResponse()
+                            {
+                                evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                evalID = reader.GetInt32("evalID"),
+                                response = reader.GetString("response"),
                                 evalNumber = reader.GetInt32("evalNumber"),
                                 questionNumber = reader.GetInt32("questionNumber"),
-                                questionText = reader.GetString("etq.questionText"),
-                                categoryName = reader.GetString("etqc.categoryName"),
-                                firstName = "Team Member",
+                                evalResponseID = reader.GetInt32("evalResponseID")
                             });
+
+                            evals.templateQuestions.Add(new EvalTemplateQuestion()
+                            {
+                                questionText = reader.GetString("questionText"),
+                                evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                            });
+                             
                         }
                     }
                 }
             }
-            return evalResponse;
+            return evals;
         }
 
         public static User GetUser(string username, string password)
@@ -2058,18 +2094,39 @@ namespace time_sucks.Models
         public static List<Eval> GetAllCompleteEvaluations(int groupID, int userID)
         {
             Group usersGroup = GetGroup(groupID);
+            Random randNum = new Random();
+            List<Eval> userEvalResponses = new List<Eval>();
+            List<int> evalIDs = new List<int>();
+            Eval eval = new Eval();
+            eval.responses = new List<EvalResponse>();
 
-            foreach(User user in usersGroup.users)
+            foreach (User user in usersGroup.users)
             {
-                List<EvalResponse> userEvalResponses = new List<EvalResponse>();
-
-                userEvalResponses.AddRange(EvalResponses(groupID, user.userID));
-
+                userEvalResponses.Add(EvalResponses(groupID, user.userID));
+                int temp = -1;
+                int[] arr = new int[100];
+                arr[0] = temp;
+                int count = 0;
+                //puts each evalID in list
+                foreach(Eval evalResponse in userEvalResponses)
+                {
+                    count++;
+                    for (int i = 0; i < 99; i++)
+                    {
+                        if (arr[i] == temp)
+                        {
+                            temp = randNum.Next(1, 1000);
+                            continue;
+                        }
+                    }
+                    
+                    eval.evalID = temp;
+                    arr[count] = temp;
+                }
 
             }
-
-            //Temporary so it'll build
-            return new List<Eval>();
+          
+            return userEvalResponses;
         }
     }
 }
