@@ -847,45 +847,42 @@ namespace time_sucks.Models
                 conn.Open();
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT er.*, etqc.categoryName, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
+                    cmd.CommandText = "SELECT er.*, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
                     "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
                     "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
                     "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-                    "INNER JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoryID = etq.evalTemplateQuestionCategoryID " +
-                    "WHERE groupID = @groupID ORDER BY etqc.categoryName";
+                    "WHERE groupID = @groupID";
                     cmd.Parameters.AddWithValue("@groupID", groupID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            
+                            evals.evalID = reader.GetInt32("evalID");
+                            evals.userID = reader.GetInt32("userID");
+                            evals.groupID = groupID;
+                            evals.number = reader.GetInt32("evalNumber");
                             evals.users.Add(new User()
                             {
-                                userID = reader.GetInt32("er.userID"),
-                                firstName = reader.GetString("u.firstName"),
-                                lastName = reader.GetString("u.lastName"),
+                                userID = reader.GetInt32("userID"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
                             });
 
 
                             evals.responses.Add(new EvalResponse()
                             {
 
-                                evalTemplateQuestionID = reader.GetInt32("er.evalTemplateQuestionID"),
-                                evalID = reader.GetInt32("er.evalID"),
-                                response = reader.GetString("er.response"),
+                                evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                evalID = reader.GetInt32("evalID"),
+                                response = reader.GetString("response"),
                                 evalNumber = reader.GetInt32("evalNumber"),
                                 questionNumber = reader.GetInt32("questionNumber"),
                             });
 
-                            evals.categories.Add(new EvalTemplateQuestionCategory()
-                            {
-                                categoryName = reader.GetString("etqc.categoryName"),
-                            });
-
                             evals.templateQuestions.Add(new EvalTemplateQuestion()
                             {
-                                questionText = reader.GetString("etq.questionText"),
+                                questionText = reader.GetString("questionText"),
                             });
                         }
                     }
@@ -919,6 +916,10 @@ namespace time_sucks.Models
                     {
                         while (reader.Read())
                         {
+                            evals.evalID = reader.GetInt32("evalID");
+                            evals.userID = reader.GetInt32("userID");
+                            evals.groupID = groupID;
+                            evals.number = reader.GetInt32("evalNumber");
                             evals.users.Add(new User()
                             {
                                 userID = reader.GetInt32("userID"),
