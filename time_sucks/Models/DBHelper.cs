@@ -1199,6 +1199,36 @@ namespace time_sucks.Models
             return user;
         }
 
+        public static List<User> GetUsersForGroup(int groupID)
+        {
+            List<User> users = new List<User>();
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT * FROM uGroups ug LEFT JOIN users u ON ug.userID = u.userID WHERE ug.groupID = @groupID";
+                    cmd.Parameters.AddWithValue("@groupID", groupID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            users.Add(new User()
+                            {
+                                userID = reader.GetInt32("userID"),
+                                firstName = reader.GetString("firstName"),
+                                lastName = reader.GetString("lastName"),
+                            });
+                        }
+                    }
+                }
+            }
+            return users;
+        }
+
         public static bool IsUserInGroup(int userID, int groupID)
         {
             bool isInGroup = false;

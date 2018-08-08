@@ -668,8 +668,24 @@ namespace time_sucks.Controllers
             }
 
             return NoContent();
+        }
 
+        /// <summary>
+        /// Returns all users in the passed group.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult GetUsersForGroup([FromBody]Object json)
+        {
+            String JsonString = json.ToString();
+            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+            if(IsStudentInGroup(group.groupID) || IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
+            {
+                List<User> users = DBHelper.GetUsersForGroup(group.groupID);
+                return Ok(users);
+            }
 
+            return Unauthorized();
         }
 
         [HttpPost]

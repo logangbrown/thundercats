@@ -18,6 +18,12 @@
         $http.post("/Home/GetLatestIncompleteEvaluation", { groupID: $scope.groupID })
             .then(function (response) {
                 usSpinnerService.stop('spinner');
+
+                if (response.status === 204) {
+                    toastr["error"]("There isn't currently an evaluation for you to complete.");
+                    window.history.back();
+                }
+
                 $scope.evaluation.evalID = response.data.evalID;
                 $scope.evaluation.templateName = response.data.templateName;
                 $scope.evaluation.number = response.data.number;
