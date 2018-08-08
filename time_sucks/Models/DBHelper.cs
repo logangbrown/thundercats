@@ -838,7 +838,7 @@ namespace time_sucks.Models
             Eval evals = new Eval();
             evals.categories = new List<EvalTemplateQuestionCategory>();
             evals.responses = new List<EvalResponse>();
-            evals.users = new List<User>();
+            evals.evals = new List<EvalColumn>();
             evals.templateQuestions = new List<EvalTemplateQuestion>();
 
 
@@ -848,41 +848,102 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "SELECT er.*, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
-                    "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
-                    "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
-                    "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-                    "WHERE groupID = @groupID";
+                                    "u.lastName, etq.questionText, etq.evalTemplateID, etq.questionType, etq.evalTemplateQuestionCategoryID, " +
+                                    "etqc.categoryName, etqc.number AS 'categoryNumber' " +
+                                    "FROM evalResponses er " +
+                                    "  INNER JOIN evals e ON er.evalID = e.evalID " +
+                                    "  INNER JOIN users u ON u.userID = e.userID " +
+                                    "  INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
+                                    "  LEFT JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoryID = etq.evalTemplateQuestionCategoryID " +
+                                    "WHERE groupID = @groupID AND er.userID = @userID";
                     cmd.Parameters.AddWithValue("@groupID", groupID);
+                    cmd.Parameters.AddWithValue("@userID", userID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            evals.evalID = reader.GetInt32("evalID");
+                            evals.evalTemplateID = reader.GetInt32("evalTemplateID");
                             evals.userID = reader.GetInt32("userID");
                             evals.groupID = groupID;
                             evals.number = reader.GetInt32("evalNumber");
-                            evals.users.Add(new User()
+
+                            //Adding Eval entries
+                            bool foundEval = false;
+                            foreach (EvalColumn eval in evals.evals)
                             {
-                                userID = reader.GetInt32("userID"),
-                                firstName = reader.GetString("firstName"),
-                                lastName = reader.GetString("lastName"),
-                            });
+                                if (eval.evalID == reader.GetInt32("evalID"))
+                                {
+                                    foundEval = true;
+                                    break;
+                                }
+                            }
 
+                            if (!foundEval)
+                            {
+                                evals.evals.Add(new EvalColumn()
+                                {
+                                    evalID = reader.GetInt32("evalID"),
+                                    firstName = reader.GetString("firstName"), 
+                                    lastName = reader.GetString("lastName")
+                                });
+                            }
 
+                            //Adding Template Questions
+                            bool foundTemplateQuestion = false;
+                            foreach (EvalTemplateQuestion tq in evals.templateQuestions)
+                            {
+                                if (tq.evalTemplateQuestionID == reader.GetInt32("evalTemplateQuestionID"))
+                                {
+                                    foundTemplateQuestion = true;
+                                    break;
+                                }
+                            }
+
+                            if (!foundTemplateQuestion)
+                            {
+                                evals.templateQuestions.Add(new EvalTemplateQuestion()
+                                {
+                                    questionText = reader.GetString("questionText"),
+                                    evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                    questionType = reader.GetChar("questionType"),
+                                    evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                    number = reader.GetInt32("questionNumber")
+                                });
+                            }
+
+                            //Adding Categories if they're there
+                            if (!reader.IsDBNull(13)) //column 13 = categoryName
+                            {
+                                bool foundCategory = false;
+                                foreach (EvalTemplateQuestionCategory tqc in evals.categories)
+                                {
+                                    if (tqc.evalTemplateQuestionCategoryID == reader.GetInt32("evalTemplateQuestionCategoryID"))
+                                    {
+                                        foundCategory = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!foundCategory)
+                                {
+                                    evals.categories.Add(new EvalTemplateQuestionCategory()
+                                    {
+                                        evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                        categoryName = reader.GetString("categoryName"),
+                                        number = reader.GetInt32("categoryNumber")
+                                    });
+                                }
+                            }
+
+                            //Every row is a unique response, so we don't need to worry about existing ones
                             evals.responses.Add(new EvalResponse()
                             {
-
                                 evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
                                 evalID = reader.GetInt32("evalID"),
                                 response = reader.GetString("response"),
-                                evalNumber = reader.GetInt32("evalNumber"),
-                                questionNumber = reader.GetInt32("questionNumber"),
-                            });
-
-                            evals.templateQuestions.Add(new EvalTemplateQuestion()
-                            {
-                                questionText = reader.GetString("questionText"),
+                                evalResponseID = reader.GetInt32("evalResponseID"),
+                                userID = reader.GetInt32("userID")
                             });
                         }
                     }
@@ -896,7 +957,7 @@ namespace time_sucks.Models
             Eval evals = new Eval();
             evals.categories = new List<EvalTemplateQuestionCategory>();
             evals.responses = new List<EvalResponse>();
-            evals.users = new List<User>();
+            evals.evals = new List<EvalColumn>();
             evals.templateQuestions = new List<EvalTemplateQuestion>();
 
 
@@ -906,42 +967,103 @@ namespace time_sucks.Models
                 using (MySqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "SELECT er.*, u.firstName, e.number AS 'evalNumber', etq.number AS 'questionNumber', " +
-                    "u.lastName, etq.questionText FROM evalResponses er INNER JOIN " +
-                    "evals e ON er.evalID = e.evalID INNER JOIN users u ON u.userID = e.userID " +
-                    "INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
-                    "WHERE groupID = @groupID";
+                                    "u.lastName, etq.questionText, etq.evalTemplateID, etq.questionType, etq.evalTemplateQuestionCategoryID, " +
+                                    "etqc.categoryName, etqc.number AS 'categoryNumber' " +
+                                    "FROM evalResponses er " +
+                                    "  INNER JOIN evals e ON er.evalID = e.evalID " +
+                                    "  INNER JOIN users u ON u.userID = e.userID " +
+                                    "  INNER JOIN evalTemplateQuestions etq ON etq.evalTemplateQuestionID = er.evalTemplateQuestionID " +
+                                    "  LEFT JOIN evalTemplateQuestionCategories etqc ON etqc.evalTemplateQuestionCategoryID = etq.evalTemplateQuestionCategoryID " +
+                                    "WHERE groupID = @groupID AND er.userID = @userID";
                     cmd.Parameters.AddWithValue("@groupID", groupID);
+                    cmd.Parameters.AddWithValue("@userID", userID);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            evals.evalID = reader.GetInt32("evalID");
+                            evals.evalTemplateID = reader.GetInt32("evalTemplateID");
                             evals.userID = reader.GetInt32("userID");
                             evals.groupID = groupID;
                             evals.number = reader.GetInt32("evalNumber");
-                            evals.users.Add(new User()
+
+                            //Adding Eval entries
+                            bool foundEval = false;
+                            foreach (EvalColumn eval in evals.evals)
                             {
-                                userID = reader.GetInt32("userID"),
-                                firstName = "Team Member"
-                            });
-                                
+                                if (eval.evalID == reader.GetInt32("evalID"))
+                                {
+                                    foundEval = true;
+                                    break;
+                                }
+                            }
+
+                            if (!foundEval)
+                            {
+                                evals.evals.Add(new EvalColumn()
+                                {
+                                    evalID = reader.GetInt32("evalID"),
+                                    firstName = "Team", //Name is Team Member for anonymity
+                                    lastName = "Member"
+                                });
+                            }
+
+                            //Adding Template Questions
+                            bool foundTemplateQuestion = false;
+                            foreach (EvalTemplateQuestion tq in evals.templateQuestions)
+                            {
+                                if (tq.evalTemplateQuestionID == reader.GetInt32("evalTemplateQuestionID"))
+                                {
+                                    foundTemplateQuestion = true;
+                                    break;
+                                }
+                            }
+
+                            if (!foundTemplateQuestion)
+                            {
+                                evals.templateQuestions.Add(new EvalTemplateQuestion()
+                                {
+                                    questionText = reader.GetString("questionText"),
+                                    evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                    questionType = reader.GetChar("questionType"),
+                                    evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                    number = reader.GetInt32("questionNumber")
+                                });
+                            }
+
+                            //Adding Categories if they're there
+                            if (!reader.IsDBNull(13)) //column 13 = categoryName
+                            {
+                                bool foundCategory = false;
+                                foreach (EvalTemplateQuestionCategory tqc in evals.categories)
+                                {
+                                    if (tqc.evalTemplateQuestionCategoryID == reader.GetInt32("evalTemplateQuestionCategoryID"))
+                                    {
+                                        foundCategory = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!foundCategory)
+                                {
+                                    evals.categories.Add(new EvalTemplateQuestionCategory()
+                                    {
+                                        evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                        categoryName = reader.GetString("categoryName"),
+                                        number = reader.GetInt32("categoryNumber")
+                                    });
+                                }
+                            }
+
+                            //Every row is a unique response, so we don't need to worry about existing ones
                             evals.responses.Add(new EvalResponse()
                             {
                                 evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
                                 evalID = reader.GetInt32("evalID"),
                                 response = reader.GetString("response"),
-                                evalNumber = reader.GetInt32("evalNumber"),
-                                questionNumber = reader.GetInt32("questionNumber"),
-                                evalResponseID = reader.GetInt32("evalResponseID")
+                                evalResponseID = reader.GetInt32("evalResponseID"),
+                                userID = reader.GetInt32("userID")
                             });
-
-                            evals.templateQuestions.Add(new EvalTemplateQuestion()
-                            {
-                                questionText = reader.GetString("questionText"),
-                                evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
-                            });
-                             
                         }
                     }
                 }
@@ -2122,42 +2244,62 @@ namespace time_sucks.Models
             }
         }
 
-        public static List<Eval> GetAllCompleteEvaluations(int groupID, int userID)
+        public static Eval RandomizeEvaluations(int groupID, int userID)
         {
-            Group usersGroup = GetGroup(groupID);
+            
             Random randNum = new Random();
             List<Eval> userEvalResponses = new List<Eval>();
             List<int> evalIDs = new List<int>();
-            Eval eval = new Eval();
-            eval.responses = new List<EvalResponse>();
+            Eval eval = EvalResponses(groupID, userID);
+            int temp = -1;
+            int[] arr = new int[100];
+            arr[0] = temp;
+            int count = 0;
+            bool repeat = false;
 
-            foreach (User user in usersGroup.users)
+            List<EvalColumn> tempEvalColumns = eval.evals;
+            foreach(EvalColumn evalColumn in tempEvalColumns)
             {
-                userEvalResponses.Add(EvalResponses(groupID, user.userID));
-                int temp = -1;
-                int[] arr = new int[100];
-                arr[0] = temp;
-                int count = 0;
-                //puts each evalID in list
-                foreach(Eval evalResponse in userEvalResponses)
+                count++;
+                do
                 {
-                    count++;
+                    repeat = false;
+                    temp = randNum.Next(1, 1000);
                     for (int i = 0; i < 99; i++)
                     {
                         if (arr[i] == temp)
                         {
-                            temp = randNum.Next(1, 1000);
+                            repeat = true;
                             continue;
                         }
                     }
-                    
-                    eval.evalID = temp;
-                    arr[count] = temp;
-                }
+                } while (repeat);
 
+                evalColumn.originalID = evalColumn.evalID;
+                evalColumn.evalID = temp;
+                arr[count] = temp;
             }
-          
-            return userEvalResponses;
+
+            //puts each evalID in list
+            foreach(EvalColumn evalColumn in eval.evals)
+            {
+                foreach(EvalColumn tempEvalColumn in tempEvalColumns)
+                {
+                    if (evalColumn.evalID == tempEvalColumn.originalID)
+                        evalColumn.evalID = tempEvalColumn.evalID;
+                }
+            }
+
+            foreach (EvalResponse evalResponse in eval.responses)
+            {
+                foreach (EvalColumn tempEvalColumn in tempEvalColumns)
+                {
+                    if (evalResponse.evalID == tempEvalColumn.originalID)
+                        evalResponse.evalID = tempEvalColumn.evalID;
+                }
+            }
+
+            return eval;
         }
     }
 }

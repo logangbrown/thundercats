@@ -39,32 +39,28 @@
             });
 
         $scope.loadEvals = function (userID) {
-            $http.post("/Home/GetAllCompleteEvaluationsFail", { groupID: $scope.groupID, userID: userID })
+            $http.post("/Home/GetAllCompleteEvaluations", { groupID: $scope.groupID, userID: userID })
                 .then(function (response) {
                     usSpinnerService.stop('spinner');
-                    $.each(response.data, function (index, eval) {
-                        $scope.group.evaluations[eval.number] = {};
-                        $scope.group.evaluations[eval.number].evalID = eval.evalTemplateID;
-                        $scope.group.evaluations[eval.number].number = eval.number;
-                        $scope.group.evaluations[eval.number].categories = {};
-                        $scope.group.evaluations[eval.number].templateQuestions = {};
-                        $scope.group.evaluations[eval.number].responses = {};
-                        if ($scope.group.evaluations[eval.number].evals === undefined)
-                            $scope.group.evaluations[eval.number].evals = {};
-                        $scope.group.evaluations[eval.number].evals[eval.evalID] = {
-                            evalID: eval.evalID,
-                            firstName: 'Team',
-                            lastName: 'Member'
-                        };
-                        $.each(eval.categories, function (index, category) {
-                            $scope.group.evaluations[eval.number].categories[category.evalTemplateQuestionCategoryID] = category;
-                        });
-                        $.each(eval.templateQuestions, function (index, templateQuestion) {
-                            $scope.group.evaluations[eval.number].templateQuestions[templateQuestion.evalTemplateQuestionID] = templateQuestion;
-                        });
-                        $.each(eval.responses, function (index, response) {
-                            $scope.group.evaluations[eval.number].responses[response.responseID] = response;
-                        });
+                    eval = response.data;
+                    $scope.group.evaluations[eval.number] = {};
+                    $scope.group.evaluations[eval.number].evalID = eval.evalTemplateID;
+                    $scope.group.evaluations[eval.number].number = eval.number;
+                    $scope.group.evaluations[eval.number].categories = {};
+                    $scope.group.evaluations[eval.number].templateQuestions = {};
+                    $scope.group.evaluations[eval.number].responses = {};
+                    $scope.group.evaluations[eval.number].evals = {};
+                    $.each(eval.evals, function (index, eval) {
+                        $scope.group.evaluations[eval.number].evals[eval.evalID] = eval;
+                    });
+                    $.each(eval.categories, function (index, category) {
+                        $scope.group.evaluations[eval.number].categories[category.evalTemplateQuestionCategoryID] = category;
+                    });
+                    $.each(eval.templateQuestions, function (index, templateQuestion) {
+                        $scope.group.evaluations[eval.number].templateQuestions[templateQuestion.evalTemplateQuestionID] = templateQuestion;
+                    });
+                    $.each(eval.responses, function (index, response) {
+                        $scope.group.evaluations[eval.number].responses[response.responseID] = response;
                     });
 
                 }, function () {

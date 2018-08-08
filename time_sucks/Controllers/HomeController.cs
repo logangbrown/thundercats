@@ -1160,11 +1160,14 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
 
-            Group group = JsonConvert.DeserializeObject<Group>(JsonString);
+            uGroups group = JsonConvert.DeserializeObject<uGroups>(JsonString);
 
-            if (IsActiveStudentInGroup(group.groupID) || IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
-            {
-                return Ok(DBHelper.GetAllCompleteEvaluations(group.groupID, GetUserID()));
+            if (IsActiveStudentInGroup(group.groupID))
+            { //Use logged in users ID if they are a student
+                return Ok(DBHelper.RandomizeEvaluations(group.groupID, GetUserID()));
+            } else if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
+            { //Get passed userID if they are an Admin/Instructor
+                return Ok(DBHelper.EvalResponsesA(group.groupID, group.userID));
             }
             return Unauthorized();
         }
