@@ -859,7 +859,9 @@ namespace time_sucks.Models
                     {
                         while (reader.Read())
                         {
-                            
+                            evals.evalID = reader.GetInt32("evalID");
+                            evals.userID = reader.GetInt32("userID");
+                            evals.groupID = groupID;
                             evals.users.Add(new User()
                             {
                                 userID = reader.GetInt32("er.userID"),
@@ -919,6 +921,9 @@ namespace time_sucks.Models
                     {
                         while (reader.Read())
                         {
+                            evals.evalID = reader.GetInt32("evalID");
+                            evals.userID = reader.GetInt32("userID");
+                            evals.groupID = groupID;
                             evals.users.Add(new User()
                             {
                                 userID = reader.GetInt32("userID"),
