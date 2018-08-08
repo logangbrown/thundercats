@@ -26,7 +26,11 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" ng-if="!hasEvaluationTemplates()">
+        <h4 class="mx-auto mt-4">You don't have any templates, create a new one above.</h4>
+    </div>
+
+    <div class="row" ng-if="hasEvaluationTemplates()">
         <div class="input-group col-12 col-md-6 mt-2">
             <div class="input-group-prepend">
                 <label class="input-group-text" for="templateName">Template Name</label>
@@ -40,7 +44,7 @@
     </div>
 
 
-    <div class="mt-4 table-responsive">
+    <div class="mt-4 table-responsive" ng-if="hasEvaluationTemplates()">
 
         <table class="table table-condensed">
             <thead class="thead-light">

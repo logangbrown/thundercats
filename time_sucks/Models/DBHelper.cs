@@ -990,7 +990,7 @@ namespace time_sucks.Models
                 {
                     //SQL and Parameters
                     cmd.CommandText = "INSERT INTO evalTemplates (userID, templateName) " +
-                        "VALUES (@userID, 'TempName')";
+                        "VALUES (@userID, 'New Template')";
                     cmd.Parameters.AddWithValue("@userID", userID);
 
                     //Return the last inserted ID if successful

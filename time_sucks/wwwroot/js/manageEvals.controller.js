@@ -208,6 +208,10 @@
                 });
         }
 
+        $scope.hasEvaluationTemplates = function () {
+            return !angular.equals({}, $scope.evaluations);
+        }
+
         $scope.createBlankEvaluation = function () {
             if (confirm('Are you sure you want to create a new template?')) {
                 usSpinnerService.spin('spinner');
