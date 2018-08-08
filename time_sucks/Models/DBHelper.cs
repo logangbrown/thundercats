@@ -861,6 +861,7 @@ namespace time_sucks.Models
                             evals.evalID = reader.GetInt32("evalID");
                             evals.userID = reader.GetInt32("userID");
                             evals.groupID = groupID;
+                            evals.number = reader.GetInt32("evalNumber");
                             evals.users.Add(new User()
                             {
                                 userID = reader.GetInt32("userID"),
@@ -918,6 +919,7 @@ namespace time_sucks.Models
                             evals.evalID = reader.GetInt32("evalID");
                             evals.userID = reader.GetInt32("userID");
                             evals.groupID = groupID;
+                            evals.number = reader.GetInt32("evalNumber");
                             evals.users.Add(new User()
                             {
                                 userID = reader.GetInt32("userID"),
