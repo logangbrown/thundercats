@@ -3,13 +3,13 @@
         <h3 class="mt-3 float-left">Courses</h3>
         <div class="ml-auto mr-0 mt-4 mb-2">
             <input class="mr-2" type="text" name="search" placeholder="Search..." ng-model="search" style="width: 130px;" />
-            <div class="pretty p-switch p-slim mr-1" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">
+            <div class="pretty p-switch p-slim mr-1" ng-if="$parent.user.type === 'A' || $parent.user.type === 'I'">
                 <input type="checkbox" ng-model="config.showInactiveCourses" />
-                <div class="float-left mr-2 mt-2 state" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">
+                <div class="float-left mr-2 mt-2 state" ng-if="$parent.user.type === 'A' || $parent.user.type === 'I'">
                     <label>Show Inactive</label>
                 </div>
             </div>
-            <i class="fa fa-plus mr-2 big-button align-bottom" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID" ng-click="createCourse()" title="Create a new course."></i>
+            <i class="fa fa-plus mr-2 big-button align-bottom" ng-if="$parent.user.type === 'A' || $parent.user.type === 'I'" ng-click="createCourse()" title="Create a new course."></i>
         </div>
     </div>
 
