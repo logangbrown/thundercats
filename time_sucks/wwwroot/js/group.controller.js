@@ -241,6 +241,7 @@
                         $scope.group.users[$scope.$parent.user.userID].timecards[time.timeslotID].hours = moment.duration(
                             moment($scope.group.users[$scope.$parent.user.userID].timecards[time.timeslotID].timeOut).diff(
                                 $scope.group.users[$scope.$parent.user.userID].timecards[time.timeslotID].timeIn)).asHours().toFixed(2);
+                        $scope.saveTime($scope.$parent.user.userID, time.timeslotID);
                         return false;
                     }
                 });
