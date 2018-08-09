@@ -833,14 +833,9 @@ namespace time_sucks.Models
             return user;
         }
 
-        public static Eval EvalResponsesA(int groupID, int userID)
+        public static List<Eval> EvalResponsesA(int groupID, int userID)
         {
-            Eval evals = new Eval();
-            evals.categories = new List<EvalTemplateQuestionCategory>();
-            evals.responses = new List<EvalResponse>();
-            evals.evals = new List<EvalColumn>();
-            evals.templateQuestions = new List<EvalTemplateQuestion>();
-
+            List<Eval> evals = new List<Eval>();
 
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -863,46 +858,114 @@ namespace time_sucks.Models
                     {
                         while (reader.Read())
                         {
-                            evals.evalTemplateID = reader.GetInt32("evalTemplateID");
-                            evals.userID = reader.GetInt32("userID");
-                            evals.groupID = groupID;
-                            evals.number = reader.GetInt32("evalNumber");
-
-                            //Adding Eval entries
                             bool foundEval = false;
-                            foreach (EvalColumn eval in evals.evals)
+                            foreach (Eval eval in evals)
                             {
-                                if (eval.evalID == reader.GetInt32("evalID"))
+                                if (eval.number != reader.GetInt32("evalNumber"))
                                 {
-                                    foundEval = true;
                                     break;
                                 }
+                                foundEval = true;
+
+                                //Adding Eval entries
+                                bool foundEvalColumn = false;
+                                foreach (EvalColumn evalColumn in eval.evals)
+                                {
+                                    if (evalColumn.evalID == reader.GetInt32("evalID"))
+                                    {
+                                        foundEvalColumn = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!foundEvalColumn)
+                                {
+                                    eval.evals.Add(new EvalColumn()
+                                    {
+                                        evalID = reader.GetInt32("evalID"),
+                                        firstName = reader.GetString("firstName"), //Name is Team Member for anonymity
+                                        lastName = reader.GetString("lastName")
+                                    });
+                                }
+
+                                //Adding Template Questions
+                                bool foundTemplateQuestion = false;
+                                foreach (EvalTemplateQuestion tq in eval.templateQuestions)
+                                {
+                                    if (tq.evalTemplateQuestionID == reader.GetInt32("evalTemplateQuestionID"))
+                                    {
+                                        foundTemplateQuestion = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!foundTemplateQuestion)
+                                {
+                                    eval.templateQuestions.Add(new EvalTemplateQuestion()
+                                    {
+                                        questionText = reader.GetString("questionText"),
+                                        evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                        questionType = reader.GetChar("questionType"),
+                                        evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                        number = reader.GetInt32("questionNumber")
+                                    });
+                                }
+
+                                //Adding Categories if they're there
+                                if (!reader.IsDBNull(13)) //column 13 = categoryName
+                                {
+                                    bool foundCategory = false;
+                                    foreach (EvalTemplateQuestionCategory tqc in eval.categories)
+                                    {
+                                        if (tqc.evalTemplateQuestionCategoryID == reader.GetInt32("evalTemplateQuestionCategoryID"))
+                                        {
+                                            foundCategory = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!foundCategory)
+                                    {
+                                        eval.categories.Add(new EvalTemplateQuestionCategory()
+                                        {
+                                            evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                            categoryName = reader.GetString("categoryName"),
+                                            number = reader.GetInt32("categoryNumber")
+                                        });
+                                    }
+                                }
+
+                                //Every row is a unique response, so we don't need to worry about existing ones
+                                eval.responses.Add(new EvalResponse()
+                                {
+                                    evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                    evalID = reader.GetInt32("evalID"),
+                                    response = reader.GetString("response"),
+                                    evalResponseID = reader.GetInt32("evalResponseID"),
+                                    userID = reader.GetInt32("userID")
+                                });
                             }
 
                             if (!foundEval)
                             {
-                                evals.evals.Add(new EvalColumn()
+                                Eval eval = new Eval();
+                                eval.evalTemplateID = reader.GetInt32("evalTemplateID");
+                                eval.userID = reader.GetInt32("userID");
+                                eval.groupID = groupID;
+                                eval.number = reader.GetInt32("evalNumber");
+
+                                //Adding evalColumn
+                                eval.evals = new List<EvalColumn>();
+                                eval.evals.Add(new EvalColumn()
                                 {
                                     evalID = reader.GetInt32("evalID"),
-                                    firstName = reader.GetString("firstName"), 
+                                    firstName = reader.GetString("firstName"), //Name is Team Member for anonymity
                                     lastName = reader.GetString("lastName")
                                 });
-                            }
 
-                            //Adding Template Questions
-                            bool foundTemplateQuestion = false;
-                            foreach (EvalTemplateQuestion tq in evals.templateQuestions)
-                            {
-                                if (tq.evalTemplateQuestionID == reader.GetInt32("evalTemplateQuestionID"))
-                                {
-                                    foundTemplateQuestion = true;
-                                    break;
-                                }
-                            }
-
-                            if (!foundTemplateQuestion)
-                            {
-                                evals.templateQuestions.Add(new EvalTemplateQuestion()
+                                //Adding templateQuestion
+                                eval.templateQuestions = new List<EvalTemplateQuestion>();
+                                eval.templateQuestions.Add(new EvalTemplateQuestion()
                                 {
                                     questionText = reader.GetString("questionText"),
                                     evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
@@ -910,41 +973,32 @@ namespace time_sucks.Models
                                     evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
                                     number = reader.GetInt32("questionNumber")
                                 });
-                            }
 
-                            //Adding Categories if they're there
-                            if (!reader.IsDBNull(13)) //column 13 = categoryName
-                            {
-                                bool foundCategory = false;
-                                foreach (EvalTemplateQuestionCategory tqc in evals.categories)
+                                //Adding Categories if they're there
+                                eval.categories = new List<EvalTemplateQuestionCategory>();
+                                if (!reader.IsDBNull(13)) //column 13 = categoryName
                                 {
-                                    if (tqc.evalTemplateQuestionCategoryID == reader.GetInt32("evalTemplateQuestionCategoryID"))
-                                    {
-                                        foundCategory = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!foundCategory)
-                                {
-                                    evals.categories.Add(new EvalTemplateQuestionCategory()
+                                    eval.categories.Add(new EvalTemplateQuestionCategory()
                                     {
                                         evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
                                         categoryName = reader.GetString("categoryName"),
                                         number = reader.GetInt32("categoryNumber")
                                     });
                                 }
-                            }
 
-                            //Every row is a unique response, so we don't need to worry about existing ones
-                            evals.responses.Add(new EvalResponse()
-                            {
-                                evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
-                                evalID = reader.GetInt32("evalID"),
-                                response = reader.GetString("response"),
-                                evalResponseID = reader.GetInt32("evalResponseID"),
-                                userID = reader.GetInt32("userID")
-                            });
+                                //Adding Response
+                                eval.responses = new List<EvalResponse>();
+                                eval.responses.Add(new EvalResponse()
+                                {
+                                    evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                    evalID = reader.GetInt32("evalID"),
+                                    response = reader.GetString("response"),
+                                    evalResponseID = reader.GetInt32("evalResponseID"),
+                                    userID = reader.GetInt32("userID")
+                                });
+
+                                evals.Add(eval); //Adding new eval to the list
+                            }
                         }
                     }
                 }
@@ -952,14 +1006,9 @@ namespace time_sucks.Models
             return evals;
         }
 
-        public static Eval EvalResponses(int groupID, int userID)
+        public static List<Eval> EvalResponses(int groupID, int userID)
         {
-            Eval evals = new Eval();
-            evals.categories = new List<EvalTemplateQuestionCategory>();
-            evals.responses = new List<EvalResponse>();
-            evals.evals = new List<EvalColumn>();
-            evals.templateQuestions = new List<EvalTemplateQuestion>();
-
+            List<Eval> evals = new List<Eval>();
 
             using (var conn = new MySqlConnection(connstring.ToString()))
             {
@@ -982,46 +1031,122 @@ namespace time_sucks.Models
                     {
                         while (reader.Read())
                         {
-                            evals.evalTemplateID = reader.GetInt32("evalTemplateID");
-                            evals.userID = reader.GetInt32("userID");
-                            evals.groupID = groupID;
-                            evals.number = reader.GetInt32("evalNumber");
-
-                            //Adding Eval entries
-                            bool foundEval = false;
-                            foreach (EvalColumn eval in evals.evals)
+                            bool foundEval = true;
+                            foreach(Eval eval in evals)
                             {
-                                if (eval.evalID == reader.GetInt32("evalID"))
-                                {
-                                    foundEval = true;
+                                if(eval.number != reader.GetInt32("evalNumber")){
+                                    foundEval = false;
                                     break;
                                 }
+
+                                eval.evalTemplateID = reader.GetInt32("evalTemplateID");
+                                eval.userID = reader.GetInt32("userID");
+                                eval.groupID = groupID;
+                                eval.number = reader.GetInt32("evalNumber");
+
+                                //Adding Eval entries
+                                if (eval.evals == null) eval.evals = new List<EvalColumn>();
+                                bool foundEvalColumn = false;
+                                foreach (EvalColumn evalColumn in eval.evals)
+                                {
+                                    if (evalColumn.evalID == reader.GetInt32("evalID"))
+                                    {
+                                        foundEvalColumn = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!foundEvalColumn)
+                                {
+                                    eval.evals.Add(new EvalColumn()
+                                    {
+                                        evalID = reader.GetInt32("evalID"),
+                                        firstName = "Team", //Name is Team Member for anonymity
+                                        lastName = "Member"
+                                    });
+                                }
+
+                                //Adding Template Questions
+                                if (eval.templateQuestions == null) eval.templateQuestions = new List<EvalTemplateQuestion>();
+                                bool foundTemplateQuestion = false;
+                                foreach (EvalTemplateQuestion tq in eval.templateQuestions)
+                                {
+                                    if (tq.evalTemplateQuestionID == reader.GetInt32("evalTemplateQuestionID"))
+                                    {
+                                        foundTemplateQuestion = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!foundTemplateQuestion)
+                                {
+                                    eval.templateQuestions.Add(new EvalTemplateQuestion()
+                                    {
+                                        questionText = reader.GetString("questionText"),
+                                        evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                        questionType = reader.GetChar("questionType"),
+                                        evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                        number = reader.GetInt32("questionNumber")
+                                    });
+                                }
+
+                                //Adding Categories if they're there
+                                if (eval.categories == null) eval.categories = new List<EvalTemplateQuestionCategory>();
+                                if (!reader.IsDBNull(13)) //column 13 = categoryName
+                                {
+                                    bool foundCategory = false;
+                                    foreach (EvalTemplateQuestionCategory tqc in eval.categories)
+                                    {
+                                        if (tqc.evalTemplateQuestionCategoryID == reader.GetInt32("evalTemplateQuestionCategoryID"))
+                                        {
+                                            foundCategory = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!foundCategory)
+                                    {
+                                        eval.categories.Add(new EvalTemplateQuestionCategory()
+                                        {
+                                            evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
+                                            categoryName = reader.GetString("categoryName"),
+                                            number = reader.GetInt32("categoryNumber")
+                                        });
+                                    }
+                                }
+
+                                //Every row is a unique response, so we don't need to worry about existing ones
+                                if (eval.responses == null) eval.responses = new List<EvalResponse>();
+                                eval.responses.Add(new EvalResponse()
+                                {
+                                    evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                    evalID = reader.GetInt32("evalID"),
+                                    response = reader.GetString("response"),
+                                    evalResponseID = reader.GetInt32("evalResponseID"),
+                                    userID = reader.GetInt32("userID")
+                                });
                             }
 
                             if (!foundEval)
                             {
-                                evals.evals.Add(new EvalColumn()
+                                Eval eval = new Eval();
+                                eval.evalTemplateID = reader.GetInt32("evalTemplateID");
+                                eval.userID = reader.GetInt32("userID");
+                                eval.groupID = groupID;
+                                eval.number = reader.GetInt32("evalNumber");
+
+                                //Adding evalColumn
+                                eval.evals = new List<EvalColumn>();
+                                eval.evals.Add(new EvalColumn()
                                 {
                                     evalID = reader.GetInt32("evalID"),
                                     firstName = "Team", //Name is Team Member for anonymity
                                     lastName = "Member"
                                 });
-                            }
 
-                            //Adding Template Questions
-                            bool foundTemplateQuestion = false;
-                            foreach (EvalTemplateQuestion tq in evals.templateQuestions)
-                            {
-                                if (tq.evalTemplateQuestionID == reader.GetInt32("evalTemplateQuestionID"))
-                                {
-                                    foundTemplateQuestion = true;
-                                    break;
-                                }
-                            }
-
-                            if (!foundTemplateQuestion)
-                            {
-                                evals.templateQuestions.Add(new EvalTemplateQuestion()
+                                //Adding templateQuestion
+                                eval.templateQuestions = new List<EvalTemplateQuestion>();
+                                eval.templateQuestions.Add(new EvalTemplateQuestion()
                                 {
                                     questionText = reader.GetString("questionText"),
                                     evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
@@ -1029,41 +1154,32 @@ namespace time_sucks.Models
                                     evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
                                     number = reader.GetInt32("questionNumber")
                                 });
-                            }
 
-                            //Adding Categories if they're there
-                            if (!reader.IsDBNull(13)) //column 13 = categoryName
-                            {
-                                bool foundCategory = false;
-                                foreach (EvalTemplateQuestionCategory tqc in evals.categories)
+                                //Adding Categories if they're there
+                                eval.categories = new List<EvalTemplateQuestionCategory>();
+                                if (!reader.IsDBNull(13)) //column 13 = categoryName
                                 {
-                                    if (tqc.evalTemplateQuestionCategoryID == reader.GetInt32("evalTemplateQuestionCategoryID"))
-                                    {
-                                        foundCategory = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!foundCategory)
-                                {
-                                    evals.categories.Add(new EvalTemplateQuestionCategory()
+                                    eval.categories.Add(new EvalTemplateQuestionCategory()
                                     {
                                         evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID"),
                                         categoryName = reader.GetString("categoryName"),
                                         number = reader.GetInt32("categoryNumber")
                                     });
                                 }
-                            }
+                                
+                                //Adding Response
+                                eval.responses = new List<EvalResponse>();
+                                eval.responses.Add(new EvalResponse()
+                                {
+                                    evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                    evalID = reader.GetInt32("evalID"),
+                                    response = reader.GetString("response"),
+                                    evalResponseID = reader.GetInt32("evalResponseID"),
+                                    userID = reader.GetInt32("userID")
+                                });
 
-                            //Every row is a unique response, so we don't need to worry about existing ones
-                            evals.responses.Add(new EvalResponse()
-                            {
-                                evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
-                                evalID = reader.GetInt32("evalID"),
-                                response = reader.GetString("response"),
-                                evalResponseID = reader.GetInt32("evalResponseID"),
-                                userID = reader.GetInt32("userID")
-                            });
+                                evals.Add(eval); //Adding new eval to the list
+                            }
                         }
                     }
                 }
@@ -2244,62 +2360,64 @@ namespace time_sucks.Models
             }
         }
 
-        public static Eval RandomizeEvaluations(int groupID, int userID)
+        public static List<Eval> RandomizeEvaluations(int groupID, int userID)
         {
             
             Random randNum = new Random();
-            List<Eval> userEvalResponses = new List<Eval>();
+            List<Eval> userEvalResponses = EvalResponses(groupID, userID);
             List<int> evalIDs = new List<int>();
-            Eval eval = EvalResponses(groupID, userID);
             int temp = -1;
             int[] arr = new int[100];
             arr[0] = temp;
             int count = 0;
             bool repeat = false;
 
-            List<EvalColumn> tempEvalColumns = eval.evals;
-            foreach(EvalColumn evalColumn in tempEvalColumns)
+            foreach(Eval eval in userEvalResponses)
             {
-                count++;
-                do
+                List<EvalColumn> tempEvalColumns = eval.evals;
+                foreach (EvalColumn evalColumn in tempEvalColumns)
                 {
-                    repeat = false;
-                    temp = randNum.Next(1, 1000);
-                    for (int i = 0; i < 99; i++)
+                    count++;
+                    do
                     {
-                        if (arr[i] == temp)
+                        repeat = false;
+                        temp = randNum.Next(1, 1000);
+                        for (int i = 0; i < 99; i++)
                         {
-                            repeat = true;
-                            continue;
+                            if (arr[i] == temp)
+                            {
+                                repeat = true;
+                                continue;
+                            }
                         }
+                    } while (repeat);
+
+                    evalColumn.originalID = evalColumn.evalID;
+                    evalColumn.evalID = temp;
+                    arr[count] = temp;
+                }
+
+                //puts each evalID in list
+                foreach (EvalColumn evalColumn in eval.evals)
+                {
+                    foreach (EvalColumn tempEvalColumn in tempEvalColumns)
+                    {
+                        if (evalColumn.evalID == tempEvalColumn.originalID)
+                            evalColumn.evalID = tempEvalColumn.evalID;
                     }
-                } while (repeat);
+                }
 
-                evalColumn.originalID = evalColumn.evalID;
-                evalColumn.evalID = temp;
-                arr[count] = temp;
-            }
-
-            //puts each evalID in list
-            foreach(EvalColumn evalColumn in eval.evals)
-            {
-                foreach(EvalColumn tempEvalColumn in tempEvalColumns)
+                foreach (EvalResponse evalResponse in eval.responses)
                 {
-                    if (evalColumn.evalID == tempEvalColumn.originalID)
-                        evalColumn.evalID = tempEvalColumn.evalID;
+                    foreach (EvalColumn tempEvalColumn in tempEvalColumns)
+                    {
+                        if (evalResponse.evalID == tempEvalColumn.originalID)
+                            evalResponse.evalID = tempEvalColumn.evalID;
+                    }
                 }
             }
 
-            foreach (EvalResponse evalResponse in eval.responses)
-            {
-                foreach (EvalColumn tempEvalColumn in tempEvalColumns)
-                {
-                    if (evalResponse.evalID == tempEvalColumn.originalID)
-                        evalResponse.evalID = tempEvalColumn.evalID;
-                }
-            }
-
-            return eval;
+            return userEvalResponses;
         }
     }
 }

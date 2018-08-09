@@ -531,7 +531,7 @@ namespace time_sucks.Controllers
         {
             String JsonString = json.ToString();
             Eval eval = JsonConvert.DeserializeObject<Eval>(JsonString);
-            Eval evals = new Eval();
+            List<Eval> evals = new List<Eval>();
 
             if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(eval.groupID)))
             {

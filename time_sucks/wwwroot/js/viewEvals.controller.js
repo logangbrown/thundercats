@@ -32,43 +32,44 @@
                         break;
                     }
                 }
-                $scope.loadEvals($scope.currentUser);
+                $scope.loadEvals();
             }, function () {
                 usSpinnerService.stop('spinner');
                 toastr["error"]("Failed to retrieve group users.");
             });
 
-        $scope.loadEvals = function (userID) {
-            $http.post("/Home/GetAllCompleteEvaluations", { groupID: $scope.groupID, userID: userID })
+        $scope.loadEvals = function () {
+            usSpinnerService.spin('spinner');
+            $http.post("/Home/GetAllCompleteEvaluations", { groupID: $scope.groupID, userID: $scope.currentUser })
                 .then(function (response) {
                     usSpinnerService.stop('spinner');
-                    eval = response.data;
-                    $scope.group.evaluations[eval.number] = {};
-                    $scope.group.evaluations[eval.number].evalID = eval.evalTemplateID;
-                    $scope.group.evaluations[eval.number].number = eval.number;
-                    $scope.group.evaluations[eval.number].categories = {};
-                    $scope.group.evaluations[eval.number].templateQuestions = {};
-                    $scope.group.evaluations[eval.number].responses = {};
-                    $scope.group.evaluations[eval.number].evals = {};
-                    $.each(eval.evals, function (index, eval) {
-                        $scope.group.evaluations[eval.number].evals[eval.evalID] = eval;
-                    });
-                    $.each(eval.categories, function (index, category) {
-                        $scope.group.evaluations[eval.number].categories[category.evalTemplateQuestionCategoryID] = category;
-                    });
-                    $.each(eval.templateQuestions, function (index, templateQuestion) {
-                        $scope.group.evaluations[eval.number].templateQuestions[templateQuestion.evalTemplateQuestionID] = templateQuestion;
-                    });
-                    $.each(eval.responses, function (index, response) {
-                        $scope.group.evaluations[eval.number].responses[response.responseID] = response;
+                    $.each(response.data, function (index, eval) {
+                        if ($scope.currentEval < eval.number) $scope.currentEval = eval.number;
+                        $scope.group.evaluations[eval.number] = {};
+                        $scope.group.evaluations[eval.number].evalID = eval.evalTemplateID;
+                        $scope.group.evaluations[eval.number].number = eval.number;
+                        $scope.group.evaluations[eval.number].categories = {};
+                        $scope.group.evaluations[eval.number].templateQuestions = {};
+                        $scope.group.evaluations[eval.number].responses = {};
+                        $scope.group.evaluations[eval.number].evals = {};
+                        $.each(eval.evals, function (index, evalColumn) {
+                            $scope.group.evaluations[eval.number].evals[evalColumn.evalID] = evalColumn;
+                        });
+                        $.each(eval.categories, function (index, category) {
+                            $scope.group.evaluations[eval.number].categories[category.evalTemplateQuestionCategoryID] = category;
+                        });
+                        $.each(eval.templateQuestions, function (index, templateQuestion) {
+                            $scope.group.evaluations[eval.number].templateQuestions[templateQuestion.evalTemplateQuestionID] = templateQuestion;
+                        });
+                        $.each(eval.responses, function (index, response) {
+                            $scope.group.evaluations[eval.number].responses[response.evalResponseID] = response;
+                        });
                     });
 
-                }, function () {
-                    usSpinnerService.stop('spinner');
-                    toastr["error"]("Failed to retrieve group evaluations. Using Dummy Data.");
 
-                    //Dummy Data
-                    $scope.group.evaluations = {
+
+
+                    $scope.group.testEvaluations = {
                         1: {
                             evalTemplateID: 1,
                             number: 1,
@@ -312,7 +313,10 @@
                             }
                         }
                     }
-                    $scope.currentEval = 1;
+
+                }, function () {
+                    usSpinnerService.stop('spinner');
+                    toastr["error"]("Failed to retrieve group evaluations.");
                 });
         }
         

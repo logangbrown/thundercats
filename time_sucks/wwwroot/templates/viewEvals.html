@@ -5,7 +5,7 @@
         <div class="input-group-prepend">
             <label class="input-group-text" for="student">Student</label>
         </div>
-        <select class="custom-select" id="student" ng-model="currentUser"
+        <select class="custom-select" id="student" ng-model="currentUser" ng-change="loadEvals(currentUser)"
                 ng-options="u.userID as (u.firstName + ' ' + u.lastName) for u in group.users" >
         </select>
     </div>
