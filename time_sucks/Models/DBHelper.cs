@@ -1031,21 +1031,16 @@ namespace time_sucks.Models
                     {
                         while (reader.Read())
                         {
-                            bool foundEval = true;
-                            foreach(Eval eval in evals)
+                            bool foundEval = false;
+                            foreach (Eval eval in evals)
                             {
-                                if(eval.number != reader.GetInt32("evalNumber")){
-                                    foundEval = false;
+                                if (eval.number != reader.GetInt32("evalNumber"))
+                                {
                                     break;
                                 }
-
-                                eval.evalTemplateID = reader.GetInt32("evalTemplateID");
-                                eval.userID = reader.GetInt32("userID");
-                                eval.groupID = groupID;
-                                eval.number = reader.GetInt32("evalNumber");
+                                foundEval = true;
 
                                 //Adding Eval entries
-                                if (eval.evals == null) eval.evals = new List<EvalColumn>();
                                 bool foundEvalColumn = false;
                                 foreach (EvalColumn evalColumn in eval.evals)
                                 {
@@ -1067,7 +1062,6 @@ namespace time_sucks.Models
                                 }
 
                                 //Adding Template Questions
-                                if (eval.templateQuestions == null) eval.templateQuestions = new List<EvalTemplateQuestion>();
                                 bool foundTemplateQuestion = false;
                                 foreach (EvalTemplateQuestion tq in eval.templateQuestions)
                                 {
@@ -1091,7 +1085,6 @@ namespace time_sucks.Models
                                 }
 
                                 //Adding Categories if they're there
-                                if (eval.categories == null) eval.categories = new List<EvalTemplateQuestionCategory>();
                                 if (!reader.IsDBNull(13)) //column 13 = categoryName
                                 {
                                     bool foundCategory = false;
@@ -1116,7 +1109,6 @@ namespace time_sucks.Models
                                 }
 
                                 //Every row is a unique response, so we don't need to worry about existing ones
-                                if (eval.responses == null) eval.responses = new List<EvalResponse>();
                                 eval.responses.Add(new EvalResponse()
                                 {
                                     evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
@@ -1166,7 +1158,7 @@ namespace time_sucks.Models
                                         number = reader.GetInt32("categoryNumber")
                                     });
                                 }
-                                
+
                                 //Adding Response
                                 eval.responses = new List<EvalResponse>();
                                 eval.responses.Add(new EvalResponse()
