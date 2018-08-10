@@ -1,6 +1,7 @@
 ﻿<div id="group"  ng-cloak>
     <div class="row position-relative">
-        <h4 class="mt-3 col-sm-9 col-12 float-left"><input class="input-header" type="text" name="groupName" ng-model-options="{debounce: 750}" ng-change="saveGroup()" ng-model="group.groupName" /></h4>
+        <h4 class="mt-3 col-sm-9 col-12 float-left"><input class="input-header" type="text" name="groupName" ng-model-options="{debounce: 750}" ng-change="saveGroup()" ng-model="group.groupName" ng-class="{'input-header-admin': ($parent.user.type === 'A' || userInGroup() || $parent.user.type === 'I')}"
+                                                           ng-readonly="$parent.user.type !== 'A' && !userInGroup() && $parent.user.type !== 'I'"/></h4>
         <div class="mt-3 pretty p-switch p-slim col-sm-2 col-12 header-checkbox" ng-if="$parent.user.type === 'A' || $parent.user.type === 'I'">
             <input type="checkbox" ng-model="group.isActive" ng-change="saveGroup()" />
             <div class="mt-2 state float-right">
@@ -33,7 +34,7 @@
             </div>
             <div>
                 <button class="btn btn-primary mt-2" ng-click="completeEval()" ng-if="userInGroup()">Complete Eval</button>
-                <button class="btn btn-primary mt-2" ng-click="viewEvals()" ng-if="userInGroup()">View Evals</button>
+                <button class="btn btn-primary mt-2" ng-click="viewEvals()" ng-if="userInGroup() || $parent.user.type === 'A' || $parent.user.type === 'I'">View Evals</button>
             </div>
         </div>
     </div>

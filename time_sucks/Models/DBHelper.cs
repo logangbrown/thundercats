@@ -863,7 +863,7 @@ namespace time_sucks.Models
                             {
                                 if (eval.number != reader.GetInt32("evalNumber"))
                                 {
-                                    break;
+                                    continue;
                                 }
                                 foundEval = true;
 
@@ -1036,7 +1036,7 @@ namespace time_sucks.Models
                             {
                                 if (eval.number != reader.GetInt32("evalNumber"))
                                 {
-                                    break;
+                                    continue;
                                 }
                                 foundEval = true;
 

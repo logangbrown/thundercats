@@ -1164,7 +1164,7 @@ namespace time_sucks.Controllers
 
             if (IsActiveStudentInGroup(group.groupID))
             { //Use logged in users ID if they are a student
-                return Ok(DBHelper.RandomizeEvaluations(group.groupID, GetUserID()));
+                return Ok(DBHelper.RandomizeEvaluations(group.groupID, group.userID));
             } else if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
             { //Get passed userID if they are an Admin/Instructor
                 return Ok(DBHelper.EvalResponsesA(group.groupID, group.userID));
