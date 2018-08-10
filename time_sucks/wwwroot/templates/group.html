@@ -32,8 +32,8 @@
                 </ul>
             </div>
             <div>
-                <button class="btn btn-primary mt-2" ng-click="completeEval()">Complete Eval</button>
-                <button class="btn btn-primary mt-2" ng-click="viewEvals()">View Evals</button>
+                <button class="btn btn-primary mt-2" ng-click="completeEval()" ng-if="userInGroup()">Complete Eval</button>
+                <button class="btn btn-primary mt-2" ng-click="viewEvals()" ng-if="userInGroup()">View Evals</button>
             </div>
         </div>
     </div>

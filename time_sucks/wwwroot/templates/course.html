@@ -1,8 +1,8 @@
 ﻿<div id="course" ng-cloak>
     <div class="row position-relative">
-        <h4 class="mt-3 col-sm-9 col-12 float-left"><input class="input-header" type="text" name="courseName" ng-model-options="{debounce: 750}" ng-change="saveCourse()" ng-model="course.courseName" ng-readonly="$parent.user.type !== 'A' && $parent.user.userID !== course.instructorID" /></h4>
+        <h4 class="mt-3 col-sm-9 col-12 float-left"><input class="input-header" type="text" name="courseName" ng-model-options="{debounce: 750}" ng-change="saveCourse()" ng-model="course.courseName" ng-readonly="$parent.user.type !== 'A' && $parent.user.userID !== course.instructorID" ng-class="{'input-header-admin': ($parent.user.type === 'A' || $parent.user.userID === course.instructorID), 'input-header': ($parent.user.type !== 'A' || $parent.user.userID !== course.instructorID)}"/></h4>
         <div class="mt-3 pretty p-switch p-slim col-sm-2 col-12 header-checkbox" ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID">
-            <input type="checkbox" ng-model="course.isActive" ng-change="saveCourse()" />
+            <input type="checkbox" ng-model="course.isActive" ng-change="saveCourse()" title="Controls whether the course is Active and displays in the course list." />
             <div class="mt-2 state float-right">
                 <label>Active</label>
             </div>
@@ -34,7 +34,7 @@
             <div class="position-relative">
                 <h5>Students</h5>
                 <div class="float-right top-right-buttons">
-                    <button class="btn btn-primary mr-1" ng-click="joinCourse()" ng-if="!userInCourse()">Join</button>
+                    <button class="btn btn-primary mr-1" ng-click="joinCourse()" ng-if="!userInCourse() && $parent.user.userID !== course.instructorID">Join</button>
                     <button class="btn btn-danger mr-1" ng-click="leaveCourse()" ng-if="userActiveInCourse()">Leave</button>
                     <span ng-if="$parent.user.type === 'A' || $parent.user.userID === course.instructorID" class="align-middle">Accepted</span>
                 </div>

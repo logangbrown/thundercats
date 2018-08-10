@@ -136,6 +136,11 @@ nav a {
         width: 100%;
     }
 
+    .input-header-admin {
+        border: 1px #d0d0d0 solid;
+        border-radius: 4px;
+    }
+
     .top-right-checkbox {
         position: absolute;
         bottom: 3px;
@@ -298,3 +303,4 @@ nav a {
     .custom-select {
         color: black;
     }
+
