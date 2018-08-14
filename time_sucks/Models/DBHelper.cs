@@ -1334,6 +1334,24 @@ namespace time_sucks.Models
             }
         }
 
+        public static bool SaveEval(AdminEval eval)
+        {
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "UPDATE evals SET isComplete = @isComplete " +
+                        "WHERE evalID = @evalID";
+                    cmd.Parameters.AddWithValue("@evalId", eval.evalID);
+                    cmd.Parameters.AddWithValue("@isComplete", eval.isComplete);
+
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
         public static bool CreateTemplateCopy(int userID, int evalTemplateID)
         {
             string templateName = "";

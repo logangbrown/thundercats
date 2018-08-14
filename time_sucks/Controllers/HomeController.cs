@@ -376,6 +376,19 @@ namespace time_sucks.Controllers
         }
 
         [HttpPost]
+        public IActionResult SaveEval([FromBody]Object json)
+        {
+            string JsonString = json.ToString();
+            AdminEval eval = JsonConvert.DeserializeObject<AdminEval>(JsonString);
+
+            if (IsAdmin())
+            {
+                return Ok(DBHelper.SaveEval(eval));
+            }
+            return Unauthorized();
+        }
+
+        [HttpPost]
         public IActionResult CreateTemplateCopy([FromBody]Object json)
         {
             string JsonString = json.ToString();

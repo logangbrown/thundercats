@@ -23,10 +23,10 @@
                 }
             });
 
-        $scope.saveEval = function (user) {
-            $http.post("/Home/UpdateEval", user)
+        $scope.saveEval = function (eval) {
+            $http.post("/Home/SaveEval", eval)
                 .then(function (response) {
-                    toastr["success"]("User saved.");
+                    toastr["success"]("Eval saved.");
                 }, function (response) {
                     if (response.status === 500) {
                         toastr["error"]("Failed to save eval, query error.");
