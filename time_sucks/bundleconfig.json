@@ -34,7 +34,9 @@
     {
         "outputFileName": "wwwroot/js/nonessentials.min.js",
         "inputFiles": [
+            "wwwroot/js/adminEvals.controller.js",
             "wwwroot/js/assignEval.controller.js",
+            "wwwroot/js/viewEval.controller.js",
             "wwwroot/js/viewEvals.controller.js",
             "wwwroot/js/eval.controller.js",
             "wwwroot/js/manageEvals.controller.js",

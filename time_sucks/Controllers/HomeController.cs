@@ -1110,11 +1110,12 @@ namespace time_sucks.Controllers
         public IActionResult GetEvaluation([FromBody]Object json)
         {
             String JsonString = json.ToString();
-
-            int evalID = 0;
-
-            return Ok(DBHelper.GetEvaluation(evalID));
-
+            Eval eval = JsonConvert.DeserializeObject<Eval>(JsonString);
+            if(IsAdmin())
+            {
+                return Ok(DBHelper.GetEvaluation(eval.evalID));
+            }
+            return Unauthorized();
         }
 
         [HttpPost]
@@ -1168,6 +1169,16 @@ namespace time_sucks.Controllers
             } else if (IsAdmin() || IsInstructorForCourse(GetCourseForGroup(group.groupID)))
             { //Get passed userID if they are an Admin/Instructor
                 return Ok(DBHelper.EvalResponsesA(group.groupID, group.userID));
+            }
+            return Unauthorized();
+        }
+
+        [HttpGet]
+        public IActionResult GetAllEvaluations()
+        {
+            if (IsAdmin())
+            {
+                return Ok(DBHelper.GetAllEvals());
             }
             return Unauthorized();
         }

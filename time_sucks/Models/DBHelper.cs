@@ -833,6 +833,55 @@ namespace time_sucks.Models
             return user;
         }
 
+        public static List<AdminEval> GetAllEvals()
+        {
+            List<AdminEval> evals = new List<AdminEval>();
+            using (var conn = new MySqlConnection(connstring.ToString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    //SQL and Parameters
+                    cmd.CommandText = "SELECT e.*, CONCAT(u.firstName, ' ', u.lastName) AS usersName, g.groupName, p.projectID, p.projectName, " +
+                                          "c.courseID, c.courseName, et.templateName, c.instructorID, CONCAT(ui.firstName, ' ', ui.lastName) AS instructorName " +
+                                        "FROM evals e " +
+                                        "LEFT JOIN groups g on e.groupID = g.groupID " +
+                                        "LEFT JOIN users u on e.userID = u.userID " +
+                                        "LEFT JOIN projects p on g.projectID = p.projectID " +
+                                        "LEFT JOIN courses c on p.courseID = c.courseID " +
+                                        "LEFT JOIN evalTemplates et on e.evalTemplateID = et.evalTemplateID " +
+                                        "LEFT JOIN users ui on c.instructorID = ui.userID";
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        //Runs once per record retrieved
+                        while (reader.Read())
+                        {
+                            evals.Add(new AdminEval()
+                            {
+                                evalID = reader.GetInt32("evalID"),
+                                evalTemplateID = reader.GetInt32("evalTemplateID"),
+                                groupID = reader.GetInt32("groupID"),
+                                userID = reader.GetInt32("userID"),
+                                number = reader.GetInt32("number"),
+                                isComplete = reader.GetBoolean("isComplete"),
+                                usersName = reader.GetString("usersName"),
+                                groupName = reader.GetString("groupName"),
+                                projectID = reader.GetInt32("projectID"),
+                                projectName = reader.GetString("projectName"),
+                                courseID = reader.GetInt32("courseID"),
+                                courseName = reader.GetString("courseName"),
+                                templateName = reader.GetString("templateName"),
+                                instructorID = reader.GetInt32("instructorID"),
+                                instructorName = reader.GetString("instructorName")
+                            });
+                        }
+                    }
+                }
+            }
+            return evals;
+        }
+
         public static List<Eval> EvalResponsesA(int groupID, int userID)
         {
             List<Eval> evals = new List<Eval>();
@@ -2274,6 +2323,7 @@ namespace time_sucks.Models
                 Eval eval = new Eval();
                 eval.templateQuestions = new List<EvalTemplateQuestion>();
                 eval.categories = new List<EvalTemplateQuestionCategory>();
+                eval.responses = new List<EvalResponse>();
                 eval.users = new List<User>();
 
                 conn.Open();
@@ -2328,6 +2378,23 @@ namespace time_sucks.Models
                             {
                                 categoryName = reader.GetString("categoryName"),
                                 evalTemplateQuestionCategoryID = reader.GetInt32("evalTemplateQuestionCategoryID")
+                            });
+                        }
+                    }
+
+                    cmd.CommandText = "Select * From evalResponses Where evalID = @evalID";
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            eval.responses.Add(new EvalResponse()
+                            {
+                                evalResponseID = reader.GetInt32("evalResponseID"),
+                                evalID = reader.GetInt32("evalID"),
+                                evalTemplateQuestionID = reader.GetInt32("evalTemplateQuestionID"),
+                                userID = reader.GetInt32("userID"),
+                                response = reader.GetString("response")
                             });
                         }
                     }

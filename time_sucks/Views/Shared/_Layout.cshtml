@@ -85,6 +85,9 @@
                 <li class="nav-item" ng-cloak ng-if="user.type === 'A' || user.type === 'I'">
                     <a class="nav-link" href="/#!/manageEvals/{{user.userID}}" ng-click="collapse()" data-target="#navbarSupportedContent">Evals</a>
                 </li>
+                <li class="nav-item" ng-cloak ng-if="user.type === 'A'">
+                    <a class="nav-link" href="/#!/adminEvals" ng-click="collapse()" data-target="#navbarSupportedContent">Admin Evals</a>
+                </li>
             </ul>
             <div class="my-2 my-lg-0" ng-cloak ng-if="user">
                 <span class="mr-2 navbar-text-color"><a href="/#!/user/{{user.userID}}" ng-click="collapse()">{{user.firstName}} {{user.lastName}}</a></span>
@@ -117,7 +120,9 @@
     <environment include="Development">
         <!-- Full versions for debugging -->
         <script src="~/js/app.js" asp-append-version="true"></script>
+        <script src="~/js/adminEvals.controller.js" asp-append-version="true"></script>
         <script src="~/js/assignEval.controller.js" asp-append-version="true"></script>
+        <script src="~/js/viewEval.controller.js" asp-append-version="true"></script>
         <script src="~/js/viewEvals.controller.js" asp-append-version="true"></script>
         <script src="~/js/course.controller.js" asp-append-version="true"></script>
         <script src="~/js/courses.controller.js" asp-append-version="true"></script>
